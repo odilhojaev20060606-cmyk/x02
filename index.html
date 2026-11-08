@@ -216,6 +216,19 @@ button { font-family: inherit; }
 .mark.o path { stroke: var(--ink-o); }
 .mark.fresh path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .3s ease-out forwards; }
 .mark.fresh path:nth-child(2) { animation-delay: .15s; }
+.mark.fresh path:nth-child(3) { animation-delay: .22s; }
+.mark.fresh path:nth-child(4) { animation-delay: .29s; }
+/* skins: pen colors */
+.mark.col-purple path, .overlay.col-purple path, .fly.col-purple path { stroke: #6b3fa0; }
+.mark.col-graphite path, .overlay.col-graphite path, .fly.col-graphite path { stroke: #4a4d55; }
+.mark.col-green path, .overlay.col-green path, .fly.col-green path { stroke: #1f8a4c; }
+.mark.col-orange path, .overlay.col-orange path, .fly.col-orange path { stroke: #d9731a; }
+/* premium: golden marks */
+.mark.gold path, .overlay.gold path, .fly.gold path { stroke: #b8860b; }
+.mark.gold { animation: goldGlow 2.4s ease-in-out infinite; }
+@keyframes goldGlow { 0%, 100% { filter: drop-shadow(0 0 1px rgba(255,190,0,.45)); } 50% { filter: drop-shadow(0 0 6px rgba(255,200,40,.95)); } }
+.mark.gold.fresh { animation: goldGlow 2.4s ease-in-out infinite, goldPop .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes goldPop { 0% { transform: scale(.4) rotate(-20deg); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 .mark.is-star path { stroke-width: 7; }
 .mark.is-star.x path { fill: rgba(31,63,168,.12); }
 .mark.is-star.o path { fill: rgba(196,54,47,.12); }
@@ -360,6 +373,38 @@ aside.notes { display: grid; gap: 22px; }
 .sheet li.mystery { color: var(--pencil-soft); font-style: italic; }
 .sheet li.mystery b { font-style: normal; color: var(--ink-o); letter-spacing: .1em; }
 
+/* ---------- wallet & shop ---------- */
+.wallet { display: inline-flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.cur { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px 4px 6px; border: 1.5px solid var(--pen); border-radius: 20px; background: var(--paper); font-variant-numeric: tabular-nums; }
+.cur b { color: var(--pen); }
+.cur-name { color: var(--pencil-soft); font-size: 13px; }
+.ico-five { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 3px; border: 2px solid var(--ink-o); border-radius: 50%; color: var(--ink-o); font: 700 15px/1 var(--font-hand); font-style: normal; transform: rotate(-8deg); }
+.ico-ink { width: 18px; height: 18px; fill: #2f3fb0; }
+.shop-body { display: grid; gap: 22px; }
+.shop-sec h3 { font-family: var(--font-hand); font-size: 32px; margin: 0 0 6px; color: var(--pen); line-height: 1; }
+.shop-hint { margin: 0 0 10px; color: var(--pencil-soft); max-width: 70ch; }
+.shop-hint.earn { color: var(--pencil); }
+.shop-note { margin: 0; font-family: var(--font-hand); font-size: 24px; animation: fadeUp .3s both; }
+.shop-note.ok { color: #1f8a4c; } .shop-note.warn { color: var(--ink-o); }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.item { background: var(--paper); border: 1.5px solid var(--pen); border-radius: 4px 10px 6px 12px; box-shadow: 3px 3px 0 var(--pen); padding: 12px; display: grid; gap: 6px; justify-items: center; text-align: center; transition: transform .12s; }
+.item:hover { transform: translateY(-2px); }
+.item.on { box-shadow: 3px 3px 0 var(--ink-x), 0 0 0 2px var(--ink-x) inset; }
+.item.premium { background: linear-gradient(160deg, #fffaf0, #fff3cf); border-color: #a97c00; box-shadow: 3px 3px 0 #a97c00; }
+.item.just-bought { animation: thump .5s ease-out; }
+.item-prev { width: 72px; height: 72px; position: relative; }
+.item-prev svg.mark { width: 100%; height: 100%; overflow: visible; }
+.ink-prev { display: grid; place-items: center; }
+.ink-prev .ico-ink { width: 44px; height: 44px; }
+.item-name { font-family: var(--font-hand); font-size: 22px; font-weight: 700; color: var(--pen); line-height: 1.05; }
+.item-price { font-size: 12.5px; color: var(--pencil-soft); min-height: 1.2em; }
+.item .btn { display: inline-flex; align-items: center; gap: 5px; }
+.item .btn .ico-five { min-width: 18px; height: 18px; font-size: 12px; border-width: 1.5px; }
+.item .btn .ico-ink { width: 14px; height: 14px; }
+.btn.gold-btn { background: #c99700; color: #fff; border-color: #7a5a00; box-shadow: 2px 2px 0 #7a5a00; }
+.btn.gold-btn .ico-ink { fill: #fff; }
+.banner-reward:empty { display: none; }
+.reward-pop { display: inline-block; font-family: var(--font-hand); font-size: 28px; font-weight: 700; color: #1f8a4c; animation: popStar .7s 1.1s both cubic-bezier(.3,1.6,.5,1); }
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
 
 /* ---------- responsive ---------- */
@@ -444,6 +489,8 @@ aside.notes { display: grid; gap: 22px; }
     </div>
 
     <div class="menu-foot">
+      <button class="btn primary" type="button" data-act="shop" data-i18n="shop"></button>
+      <span class="wallet" id="menuWallet"></span>
       <button class="btn" type="button" data-act="rules" data-i18n="rules"></button>
       <small data-i18n="footNote"></small>
     </div>
@@ -494,6 +541,7 @@ aside.notes { display: grid; gap: 22px; }
             <div class="banner-title" id="bannerTitle"></div>
             <div class="taunt" id="bannerTaunt"></div>
             <div class="banner-text" id="bannerText"></div>
+            <div class="banner-reward" id="bannerReward"></div>
             <div class="banner-actions">
               <button class="btn primary" type="button" data-act="again" data-i18n="again"></button>
               <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
@@ -557,6 +605,7 @@ aside.notes { display: grid; gap: 22px; }
           <div class="banner-card">
             <div class="banner-title" id="cBannerTitle"></div>
             <div class="taunt" id="cBannerTaunt"></div>
+            <div class="banner-reward" id="cBannerReward"></div>
             <div class="banner-actions">
               <button class="btn primary" type="button" data-act="again" data-i18n="classicAgain"></button>
               <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
@@ -579,6 +628,15 @@ aside.notes { display: grid; gap: 22px; }
         </div>
       </aside>
     </div>
+  </section>
+  <!-- ================= SHOP ================= -->
+  <section class="screen" id="scr-shop" aria-labelledby="shopTitle">
+    <header class="game-bar">
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
+      <div class="bar-title"><span class="mini-logo" id="shopTitle" data-i18n="shop"></span></div>
+      <span class="wallet" id="shopWallet"></span>
+    </header>
+    <div id="shopBody" class="shop-body"></div>
   </section>
 </div>
 
@@ -1003,6 +1061,18 @@ ru: {
   xStarts: 'X начинает.', goodLuck: 'Удачи. Она понадобится.', threeWins: 'Три в ряд — победа',
   logBoard: b => `· поле ${b}`, logDraw: '· ничья', logStrike: 'удар', noMoves: 'Пока ходов нет',
   aBoard: 'Поле', aCell: 'клетка', aEmpty: 'свободно', aPlayable: 'свободно, можно ходить', aStar: 'звезда', aSendHere: 'отправить соперника сюда', aTCell: 'Клетка',
+  shop: 'Магазин', fives: 'пятёрки', ink: 'чернила', fiveIcon: '5',
+  equip: 'Надеть', equipped: 'Надето', buy: 'Купить', free: 'бесплатно', owned: 'куплено', testPrice: 'тест, бесплатно',
+  getInk: n => `+${n} (тест)`,
+  earnHint: 'Пятёрки дают за победы над ботами: «Лёгкий?» +10, «Уже нет» +20, «Конец» +40, в Ностальгии +3 и +5, ничья с «Нет» +5.',
+  secPremium: 'Премиум', premiumHint: 'Золотые скины покупаются только за чернила.',
+  secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secInk: 'Чернила',
+  inkTest: 'Тестовая версия: чернила начисляются бесплатно. Настоящая оплата появится в Play Market.',
+  notEnoughFives: n => `Не хватает пятёрок: нужно ещё ${n}. Побеждай ботов.`, notEnoughInk: n => `Не хватает чернил: нужно ещё ${n}.`,
+  bought: n => `Куплено и надето: ${n}.`, inkAdded: n => `+${n} чернил.`, reward: n => `+${n} пятёрок`,
+  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_gold: 'Золотой X',
+    o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0',
+    xc_blue: 'Синяя ручка', xc_purple: 'Фиолетовая ручка', xc_graphite: 'Карандаш', oc_red: 'Красная ручка', oc_green: 'Зелёная ручка', oc_orange: 'Оранжевый маркер' },
   bots: {
     x1: { name: 'Лёгкий?', line: 'Самый слабый. Наверное.', win: 'Ну вот. А говорили, лёгкий.', lose: 'Ладно. Это была разминка.', draw: 'Ничья. Для начала неплохо.' },
     x2: { name: 'Уже нет', line: 'Думает дольше. Ошибается реже.', win: 'Я же говорил: уже нет.', lose: 'Хм. Повезло. Ещё одну?', draw: 'Ничья. Ты стал опаснее.' },
@@ -1093,6 +1163,18 @@ uz: {
   xStarts: 'X boshlaydi.', goodLuck: "Omad. U sizga kerak bo'ladi.", threeWins: "Uchtasi bir qatorda — g'alaba",
   logBoard: b => `· ${b}-maydon`, logDraw: '· durang', logStrike: 'zarba', noMoves: "Hozircha yurish yo'q",
   aBoard: 'Maydon', aCell: 'katak', aEmpty: "bo'sh", aPlayable: "bo'sh, yurish mumkin", aStar: 'yulduz', aSendHere: 'raqibni shu yerga yuborish', aTCell: 'Katak',
+  shop: "Do'kon", fives: 'beshlar', ink: 'siyoh', fiveIcon: '5',
+  equip: 'Kiyish', equipped: 'Kiyilgan', buy: 'Sotib olish', free: 'bepul', owned: 'sotib olingan', testPrice: 'test, bepul',
+  getInk: n => `+${n} (test)`,
+  earnHint: "Beshlar botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +20, «Tamom» +40, Nostalgiyada +3 va +5, «Yo'q» bilan durang +5.",
+  secPremium: 'Premium', premiumHint: 'Oltin skinlar faqat siyohga sotib olinadi.',
+  secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secInk: 'Siyoh',
+  inkTest: "Test versiyasi: siyoh bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
+  notEnoughFives: n => `Beshlar yetarli emas: yana ${n} kerak. Botlarni yuting.`, notEnoughInk: n => `Siyoh yetarli emas: yana ${n} kerak.`,
+  bought: n => `Sotib olindi va kiyildi: ${n}.`, inkAdded: n => `+${n} siyoh.`, reward: n => `+${n} besh`,
+  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_gold: 'Oltin X',
+    o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0',
+    xc_blue: "Ko'k ruchka", xc_purple: 'Binafsha ruchka', xc_graphite: 'Qalam', oc_red: 'Qizil ruchka', oc_green: 'Yashil ruchka', oc_orange: "To'q sariq marker" },
   bots: {
     x1: { name: 'Osonmi?', line: 'Eng kuchsizi. Ehtimol.', win: 'Mana. Oson deyishgandi-ku.', lose: 'Mayli. Bu razminka edi.', draw: 'Durang. Boshlanishiga yomon emas.' },
     x2: { name: "Endi yo'q", line: "Uzoqroq o'ylaydi. Kamroq xato qiladi.", win: "Aytgandim-ku: endi yo'q.", lose: 'Hm. Omading keldi. Yana bittami?', draw: "Durang. Xavfliroq bo'lib qolding." },
@@ -1183,6 +1265,18 @@ en: {
   xStarts: 'X starts.', goodLuck: "Good luck. You'll need it.", threeWins: 'Three in a row wins',
   logBoard: b => `· board ${b}`, logDraw: '· draw', logStrike: 'strike', noMoves: 'No moves yet',
   aBoard: 'Board', aCell: 'cell', aEmpty: 'empty', aPlayable: 'empty, playable', aStar: 'star', aSendHere: 'send your opponent here', aTCell: 'Cell',
+  shop: 'Shop', fives: 'A+ grades', ink: 'ink', fiveIcon: 'A+',
+  equip: 'Equip', equipped: 'Equipped', buy: 'Buy', free: 'free', owned: 'owned', testPrice: 'test, free',
+  getInk: n => `+${n} (test)`,
+  earnHint: 'You earn A+ grades by beating bots: “Easy?” +10, “Not Anymore” +20, “The End” +40, in Nostalgia +3 and +5, a draw with “No” +5.',
+  secPremium: 'Premium', premiumHint: 'Golden skins can only be bought with ink.',
+  secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secInk: 'Ink',
+  inkTest: 'Test version: ink is added for free. Real payments will come with the Play Store release.',
+  notEnoughFives: n => `Not enough A+ grades: you need ${n} more. Beat some bots.`, notEnoughInk: n => `Not enough ink: you need ${n} more.`,
+  bought: n => `Bought and equipped: ${n}.`, inkAdded: n => `+${n} ink.`, reward: n => `+${n} A+`,
+  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_gold: 'Golden X',
+    o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0',
+    xc_blue: 'Blue pen', xc_purple: 'Purple pen', xc_graphite: 'Pencil', oc_red: 'Red pen', oc_green: 'Green pen', oc_orange: 'Orange marker' },
   bots: {
     x1: { name: 'Easy?', line: 'The weakest. Probably.', win: 'See? And they said easy.', lose: 'Fine. That was a warm-up.', draw: 'A draw. Not bad for a start.' },
     x2: { name: 'Not Anymore', line: 'Thinks longer. Errs less.', win: 'Told you: not anymore.', lose: 'Hm. Lucky. One more?', draw: "A draw. You're getting dangerous." },
@@ -1247,7 +1341,7 @@ function applyStatic() {
 function setLang(l) {
   if (!LANGS.includes(l) || l === lang) return;
   lang = l; store.set("lang", l);
-  applyStatic(); buildMenu(); render(null);
+  applyStatic(); buildMenu(); if (app.screen === "shop") renderShop(); else render(null);
 }
 
 const app = {
@@ -1255,7 +1349,7 @@ const app = {
   side: store.get("side", 1) === 2 ? 2 : 1,
   scores: store.get("scores", {}) || {}
 };
-const recorded = new Set();
+const recorded = new Set(), rewarded = new Set();
 const cur = () => app.history[app.history.length - 1];
 const isBot = p => !!app.bot && p > 0 && p !== app.side;
 const nameOf = p => (app.bot ? (p === app.side ? t("you") : botQ()) : SYM[p]);
@@ -1289,14 +1383,84 @@ function starPath(k) {
   }
   return d + " Z";
 }
-const pathsFor = (p, k, star) => (star ? [starPath(k)] : p === 1 ? xPaths(k) : [oPath(k)]).map(d => `<path pathLength="1" d="${d}"/>`).join("");
-function markSVG(p, k, cls, star) {
-  return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""} ${cls || ""}">${pathsFor(p, k, star)}</svg>`;
+// ---------------- skins & wallet ----------------
+const SHOP = [
+  { id: "x_classic", kind: "xShape", price: 0 },
+  { id: "x_plus", kind: "xShape", price: 100, cur: "fives" },
+  { id: "x_star", kind: "xShape", price: 150, cur: "fives" },
+  { id: "x_hash", kind: "xShape", price: 150, cur: "fives" },
+  { id: "o_classic", kind: "oShape", price: 0 },
+  { id: "o_square", kind: "oShape", price: 100, cur: "fives" },
+  { id: "o_diamond", kind: "oShape", price: 120, cur: "fives" },
+  { id: "o_pent", kind: "oShape", price: 150, cur: "fives" },
+  { id: "o_hex", kind: "oShape", price: 150, cur: "fives" },
+  { id: "xc_blue", kind: "xColor", price: 0 },
+  { id: "xc_purple", kind: "xColor", price: 150, cur: "fives" },
+  { id: "xc_graphite", kind: "xColor", price: 150, cur: "fives" },
+  { id: "oc_red", kind: "oColor", price: 0 },
+  { id: "oc_green", kind: "oColor", price: 150, cur: "fives" },
+  { id: "oc_orange", kind: "oColor", price: 150, cur: "fives" },
+  { id: "x_gold", kind: "xShape", price: 100, cur: "ink", premium: true },
+  { id: "o_gold", kind: "oShape", price: 100, cur: "ink", premium: true }
+];
+const INK_PACKS = [100, 500];
+const REWARD = { x1: 10, x2: 20, x3: 40, c1: 3, c2: 5, c3: 0 };
+const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
+function loadProfile() {
+  const p = store.get("profile", null) || {};
+  return { fives: p.fives | 0, ink: p.ink | 0, owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}) };
+}
+let profile = loadProfile(), skinRev = 0;
+const saveProfile = () => store.set("profile", profile);
+const itemOf = id => SHOP.find(s => s.id === id);
+const owns = id => { const it = itemOf(id); return !!it && (it.price === 0 || profile.owned.includes(id)); };
+const DEF_SKIN = { shape: null, color: null };
+function skinOf(p) {
+  if (app.bot && p !== app.side) return DEF_SKIN;
+  const e = profile.equip;
+  return p === 1 ? { shape: e.xShape, color: e.xColor } : { shape: e.oShape, color: e.oColor };
+}
+function skinClasses(sk) {
+  let c = "";
+  if (sk.color && sk.color !== "xc_blue" && sk.color !== "oc_red") c += " col-" + sk.color.slice(3);
+  if (sk.shape === "x_gold" || sk.shape === "o_gold") c += " gold";
+  return c;
+}
+const jit = (k, i, a) => (seeded(k * 17 + i) - .5) * a;
+function polyPath(k, n, r, rot) {
+  let d = "";
+  for (let i = 0; i < n; i++) {
+    const a = rot + i * 2 * Math.PI / n;
+    d += (i ? " L" : "M") + (50 + Math.cos(a) * r + jit(k, i, 4)).toFixed(1) + " " + (52 + Math.sin(a) * r + jit(k, i + 9, 4)).toFixed(1);
+  }
+  return d + " Z";
+}
+function shapePaths(p, k, shape) {
+  switch (shape) {
+    case "x_plus": return [`M${(50 + jit(k, 1, 5)).toFixed(1)} 12 L${(50 + jit(k, 3, 5)).toFixed(1)} 88`, `M12 ${(50 + jit(k, 6, 5)).toFixed(1)} L88 ${(50 + jit(k, 8, 5)).toFixed(1)}`];
+    case "x_star": return [90, 30, 150].map((deg, i) => {
+      const a = deg * Math.PI / 180, dx = Math.cos(a) * 40, dy = Math.sin(a) * 40;
+      return `M${(50 - dx + jit(k, i, 3)).toFixed(1)} ${(50 - dy + jit(k, i + 3, 3)).toFixed(1)} L${(50 + dx + jit(k, i + 6, 3)).toFixed(1)} ${(50 + dy + jit(k, i + 9, 3)).toFixed(1)}`;
+    });
+    case "x_hash": return [`M${(40 + jit(k, 1, 3)).toFixed(1)} 12 L${(32 + jit(k, 2, 3)).toFixed(1)} 88`, `M${(70 + jit(k, 3, 3)).toFixed(1)} 12 L${(62 + jit(k, 4, 3)).toFixed(1)} 88`,
+      `M12 ${(38 + jit(k, 5, 3)).toFixed(1)} L88 ${(35 + jit(k, 6, 3)).toFixed(1)}`, `M12 ${(66 + jit(k, 7, 3)).toFixed(1)} L88 ${(63 + jit(k, 8, 3)).toFixed(1)}`];
+    case "o_square": return [polyPath(k, 4, 45, Math.PI / 4)];
+    case "o_diamond": return [polyPath(k, 4, 42, -Math.PI / 2)];
+    case "o_pent": return [polyPath(k, 5, 42, -Math.PI / 2)];
+    case "o_hex": return [polyPath(k, 6, 41, 0)];
+    default: return p === 1 ? xPaths(k) : [oPath(k)];
+  }
+}
+const pathsFor = (p, k, star, sk) => (star ? [starPath(k)] : shapePaths(p, k, (sk || skinOf(p)).shape)).map(d => `<path pathLength="1" d="${d}"/>`).join("");
+function markSVG(p, k, cls, star, sk) {
+  sk = sk || skinOf(p);
+  return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
 }
 function setTurnMark(el, p, star) {
   if (!p) { el.innerHTML = ""; return; }
-  el.innerHTML = pathsFor(p, 999, star);
-  el.setAttribute("class", `mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}`);
+  const sk = skinOf(p);
+  el.innerHTML = pathsFor(p, 999, star, sk);
+  el.setAttribute("class", `mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)}`);
 }
 const dots = '<span class="thinking" aria-hidden="true"><i></i><i></i><i></i></span>';
 
@@ -1319,8 +1483,8 @@ function buildDOM() {
   $("preludeGrid").innerHTML = ttt("pc");
   $("tttBoard").innerHTML = ttt("tc");
   for (let i = 0; i < 9; i++) { pCells[i] = $("pc-" + i); cCells[i] = $("tc-" + i); }
-  $("faceX").innerHTML = markSVG(1, 777);
-  $("faceO").innerHTML = markSVG(2, 778);
+  $("faceX").innerHTML = markSVG(1, 777, "", false, DEF_SKIN);
+  $("faceO").innerHTML = markSVG(2, 778, "", false, DEF_SKIN);
 }
 
 // ---------------- menu ----------------
@@ -1342,10 +1506,11 @@ function buildMenu() {
     box.innerHTML = h;
   }
   document.querySelectorAll(".seg[data-side]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
+  $("menuWallet").innerHTML = walletHTML();
 }
 function show(screen) {
   app.screen = screen;
-  for (const id of ["menu", "x02", "classic"]) $("scr-" + id).classList.toggle("active", id === screen);
+  for (const id of ["menu", "x02", "classic", "shop"]) $("scr-" + id).classList.toggle("active", id === screen);
   window.scrollTo(0, 0);
 }
 function goMenu() {
@@ -1366,6 +1531,7 @@ function startGame(mode, botId) {
   app.bot = botId ? BOTS[mode].find(b => b.id === botId) || null : null;
   app.gameId++;
   uiMode = null; flash = null;
+  $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = "";
   if (mode === "x02") {
     app.history = [newPrelude()];
     if (app.screen !== "x02") show("x02");
@@ -1402,8 +1568,20 @@ function recordResult(r) {
   app.scores[app.bot.id] = s;
   store.set("scores", app.scores);
 }
+function grantReward(r) {
+  if (!app.bot || rewarded.has(app.gameId)) return 0;
+  rewarded.add(app.gameId);
+  let n = 0;
+  if (r === app.side) n = REWARD[app.bot.id] || 0;
+  else if (r === 3 && app.bot.id === "c3") n = 5;
+  if (n) { profile.fives += n; saveProfile(); }
+  return n;
+}
 function onGameEnd(r) {
   recordResult(r);
+  const n = grantReward(r);
+  const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
+  rw.innerHTML = n ? `<span class="reward-pop">${t("reward", n)}</span>` : "";
   renderBars();
   if (r !== 3 && (!app.bot || r === app.side)) setTimeout(() => confetti(r), 650);
 }
@@ -1531,7 +1709,7 @@ function flyToMain(b, p) {
   const src = subEls[b].getBoundingClientRect(), dst = mcellEls[b].getBoundingClientRect();
   if (!src.width || !dst.width || !document.body.animate) return;
   const el = document.createElement("div");
-  el.className = "fly " + (p === 1 ? "x" : "o");
+  el.className = "fly " + (p === 1 ? "x" : "o") + skinClasses(skinOf(p));
   Object.assign(el.style, { left: src.left + "px", top: src.top + "px", width: src.width + "px", height: src.height + "px" });
   el.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true">${pathsFor(p, b + 100)}</svg>`;
   document.body.appendChild(el);
@@ -1665,7 +1843,7 @@ function renderTTTCells(cells, tt, ctx, offset, lockAll) {
   for (let i = 0; i < 9; i++) {
     const el = cells[i], v = tt.b[i];
     const fresh = ctx && tt.last === i;
-    const key = v ? String(v) : "";
+    const key = v ? `${v}.${skinRev}` : "";
     if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, offset + i, fresh ? "fresh" : "") : ""; }
     el.disabled = !!v || !!tt.result || lockAll;
     el.setAttribute("aria-label", `${t("aTCell")} ${i + 1}: ${v ? SYM[v] : t("aEmpty")}`);
@@ -1787,10 +1965,10 @@ function renderMain(g, ctx) {
     const newlyWon = !!prev && prev.owner[b] === 0 && (g.owner[b] === 1 || g.owner[b] === 2);
     sub.classList.remove("won-now", "sent");
     if (newlyWon || (chose && last && last.to === b)) { void sub.offsetWidth; sub.classList.add(newlyWon ? "won-now" : "sent"); }
-    const o = g.owner[b], ov = o === 1 || o === 2 ? String(o) : "";
+    const o = g.owner[b], ov = o === 1 || o === 2 ? `${o}.${skinRev}` : "";
     if (slotEls[b].dataset.o !== ov) {
       slotEls[b].dataset.o = ov;
-      slotEls[b].innerHTML = ov ? `<svg class="overlay ${o === 1 ? "x" : "o"}${newlyWon ? " fresh" : ""}" viewBox="0 0 100 100" aria-hidden="true">${pathsFor(o, b + 100)}</svg>` : "";
+      slotEls[b].innerHTML = ov ? `<svg class="overlay ${o === 1 ? "x" : "o"}${skinClasses(skinOf(o))}${newlyWon ? " fresh" : ""}" viewBox="0 0 100 100" aria-hidden="true">${pathsFor(o, b + 100)}</svg>` : "";
     }
     for (let c = 0; c < 9; c++) {
       const i = b * 9 + c, el = cellEls[i], v = g.cells[i];
@@ -1800,7 +1978,7 @@ function renderMain(g, ctx) {
       el.dataset.legal = ok ? "1" : "0";
       el.classList.toggle("last", isLast);
       el.classList.remove("struck");
-      const key = v ? `${v}${g.star[i]}` : "";
+      const key = v ? `${v}${g.star[i]}.${skinRev}` : "";
       if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, i + 1, fresh ? "fresh" : "", g.star[i]) : ""; }
       el.setAttribute("aria-label", g.choosing
         ? `${t("aBoard")} ${b + 1}${ok ? ": " + t("aSendHere") : ""}`
@@ -1809,7 +1987,7 @@ function renderMain(g, ctx) {
   }
   // main board
   for (let b = 0; b < 9; b++) {
-    const m = mcellEls[b], o = g.owner[b], key = o === 1 || o === 2 ? String(o) : "";
+    const m = mcellEls[b], o = g.owner[b], key = o === 1 || o === 2 ? `${o}.${skinRev}` : "";
     m.classList.toggle("neutral", o === 3);
     if (m.dataset.k !== key) {
       const arrive = !!prev && !!key && prev.owner[b] === 0;
@@ -1914,6 +2092,76 @@ function renderClassic(ctx) {
   } else banner.classList.remove("show");
 }
 
+// ---------------- shop ----------------
+function walletHTML() {
+  return `<span class="cur" title="${t("fives")}"><i class="ico-five" aria-hidden="true">${t("fiveIcon")}</i><b>${profile.fives}</b> <span class="cur-name">${t("fives")}</span></span>` +
+    `<span class="cur" title="${t("ink")}"><svg class="ico-ink" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C 8 9, 5 12, 5 16 a7 7 0 0 0 14 0 C 19 12, 16 9, 12 2 Z"/></svg><b>${profile.ink}</b> <span class="cur-name">${t("ink")}</span></span>`;
+}
+const curIcon = cur => cur === "ink"
+  ? '<svg class="ico-ink" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C 8 9, 5 12, 5 16 a7 7 0 0 0 14 0 C 19 12, 16 9, 12 2 Z"/></svg>'
+  : `<i class="ico-five" aria-hidden="true">${t("fiveIcon")}</i>`;
+let shopNote = null, justBought = null;
+function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); }
+function itemName(id) { return I18N[lang].items[id]; }
+function previewSkin(it) {
+  const e = profile.equip;
+  if (it.kind === "xShape") return { sym: 1, sk: { shape: it.id, color: it.premium ? null : e.xColor } };
+  if (it.kind === "oShape") return { sym: 2, sk: { shape: it.id, color: it.premium ? null : e.oColor } };
+  if (it.kind === "xColor") return { sym: 1, sk: { shape: e.xShape === "x_gold" ? "x_classic" : e.xShape, color: it.id } };
+  return { sym: 2, sk: { shape: e.oShape === "o_gold" ? "o_classic" : e.oShape, color: it.id } };
+}
+function itemCard(it, n) {
+  const pv = previewSkin(it), own = owns(it.id), on = profile.equip[it.kind] === it.id;
+  const btn = on ? `<button class="btn small" type="button" disabled>${t("equipped")}</button>`
+    : own ? `<button class="btn small" type="button" data-equip="${it.id}">${t("equip")}</button>`
+    : `<button class="btn small ${it.cur === "ink" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
+  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${justBought === it.id ? " just-bought" : ""}">
+    <div class="item-prev">${markSVG(pv.sym, 41 + n, justBought === it.id ? "fresh" : "", false, pv.sk)}</div>
+    <div class="item-name">${itemName(it.id)}</div>
+    <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : ""}</div>
+    ${btn}</div>`;
+}
+function renderShop() {
+  $("shopWallet").innerHTML = walletHTML();
+  const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
+  const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
+  const packs = INK_PACKS.map(n => `<div class="item pack"><div class="item-prev ink-prev">${curIcon("ink")}</div><div class="item-name">${n} ${t("ink")}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-ink="${n}">${t("getInk", n)}</button></div>`).join("");
+  $("shopBody").innerHTML =
+    `<p class="shop-hint earn">${t("earnHint")}</p>` +
+    (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
+    sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
+    sec(t("secXShape"), by("xShape", false)) +
+    sec(t("secOShape"), by("oShape", false)) +
+    sec(t("secXColor"), by("xColor", false)) +
+    sec(t("secOColor"), by("oColor", false)) +
+    `<section class="shop-sec"><h3>${t("secInk")}</h3><p class="shop-hint">${t("inkTest")}</p><div class="items">${packs}</div></section>`;
+  justBought = null;
+}
+function shopAction(ev) {
+  const b = ev.target.closest("button");
+  if (!b) return;
+  if (b.dataset.buy) {
+    const it = itemOf(b.dataset.buy);
+    if (!it || owns(it.id)) return;
+    const have = profile[it.cur];
+    if (have < it.price) { shopNote = [it.cur === "fives" ? t("notEnoughFives", it.price - have) : t("notEnoughInk", it.price - have), "warn"]; renderShop(); return; }
+    profile[it.cur] -= it.price;
+    profile.owned.push(it.id);
+    profile.equip[it.kind] = it.id;
+    skinRev++; saveProfile();
+    shopNote = [t("bought", itemName(it.id)), "ok"]; justBought = it.id;
+    renderShop();
+  } else if (b.dataset.equip) {
+    const it = itemOf(b.dataset.equip);
+    if (!it || !owns(it.id)) return;
+    profile.equip[it.kind] = it.id; skinRev++; saveProfile();
+    shopNote = null; renderShop();
+  } else if (b.dataset.ink) {
+    profile.ink += +b.dataset.ink; saveProfile();
+    shopNote = [t("inkAdded", +b.dataset.ink), "ok"]; renderShop();
+  }
+}
+
 // ---------------- rules sheet ----------------
 let lastFocus = null;
 function openRules() {
@@ -1936,6 +2184,7 @@ function bind() {
     else if (a === "rules") openRules();
     else if (a === "again") startGame(app.mode, app.bot ? app.bot.id : "");
     else if (a === "undo") undo();
+    else if (a === "shop") openShop();
   });
   document.querySelector(".modes").addEventListener("click", ev => {
     const o = ev.target.closest(".opp");
@@ -1948,6 +2197,7 @@ function bind() {
   }));
   document.querySelectorAll(".seg.lang").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("rulesClose").addEventListener("click", closeRules);
+  $("shopBody").addEventListener("click", shopAction);
   $("rulesSheet").addEventListener("click", ev => { if (ev.target === $("rulesSheet")) closeRules(); });
   document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !$("rulesSheet").hidden) closeRules(); });
 
