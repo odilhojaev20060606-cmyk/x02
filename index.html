@@ -201,7 +201,8 @@ button { font-family: inherit; }
 
 /* ---------- game bar ---------- */
 .game-bar { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; margin-bottom: 18px; }
-.bar-title { display: flex; align-items: baseline; gap: 10px; flex: 1 1 260px; min-width: 0; flex-wrap: wrap; }
+.bar-title { display: flex; align-items: center; gap: 10px; flex: 1 1 260px; min-width: 0; }
+.bt-text { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; min-width: 0; }
 .mini-logo { font-family: var(--font-hand); font-weight: 700; font-size: 36px; color: var(--pen); line-height: 1; }
 .mini-logo .x { color: var(--ink-x); } .mini-logo .o { color: var(--ink-o); }
 .vs { color: var(--pencil); font-size: 15px; }
@@ -493,7 +494,9 @@ aside.notes { display: grid; gap: 22px; }
 @media (max-width: 600px) {
   .game-bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; }
   .game-bar > [data-act="menu"] { grid-column: 1; grid-row: 1; }
-  .bar-title { grid-column: 2; grid-row: 1; flex-direction: column; gap: 0; align-items: flex-start; }
+  .bar-title { grid-column: 2; grid-row: 1; gap: 8px; }
+  .bt-text { flex-direction: column; gap: 0; align-items: flex-start; }
+  .bot-face { width: 42px; height: 42px; }
   .game-bar > [data-act="rules"] { grid-column: 3; grid-row: 1; }
   .score-chip { grid-column: 1 / -1; justify-self: start; }
   .mini-logo { font-size: 26px; }
@@ -589,6 +592,25 @@ aside.notes { display: grid; gap: 22px; }
 .rematch-note { font: 700 22px/1.15 var(--font-hand); color: var(--ink-x); }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 70; background: var(--pen); color: var(--paper); padding: 10px 16px; border-radius: 8px; font-size: 14px; max-width: 90vw; animation: fadeUp .3s both; }
 
+/* ---------- bot faces and talk ---------- */
+.on-chat { display: none; }
+.is-online .on-chat, .is-bot .on-chat { display: inline-block; }
+.bot-face[hidden] { display: none; }
+.bot-face { width: 50px; height: 50px; flex: none; display: block; }
+.bot-face svg { width: 100%; height: 100%; overflow: visible; }
+.bot-face svg .hd { fill: var(--paper); stroke: var(--pen); stroke-width: 2.6; stroke-linejoin: round; }
+.bot-face svg .ln { fill: none; stroke: var(--pen); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.bot-face svg .dot { fill: var(--pen); }
+.bot-face svg .blush { fill: var(--ink-o); opacity: .22; }
+.bot-face svg .drop { fill: #8fb8e8; stroke: var(--pen); stroke-width: 1.4; }
+.bot-face svg .ant { fill: var(--ink-x); }
+.bot-face.pop svg { animation: facePop .35s cubic-bezier(.3,1.6,.5,1); }
+.bot-face.talk svg { animation: faceTalk .5s ease-in-out 2; }
+.bot-face.think svg .ant { animation: blinkAnt .7s steps(2) infinite; }
+@keyframes facePop { 0% { transform: scale(.8) rotate(-6deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes faceTalk { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-6deg) translateY(-1px); } 70% { transform: rotate(5deg); } }
+@keyframes blinkAnt { 50% { opacity: .2; } }
+
 </style>
 </head>
 <body>
@@ -631,6 +653,9 @@ aside.notes { display: grid; gap: 22px; }
             <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
           </div>
         </div>
+        <div class="pf-row"><span data-i18n="talkPick"></span>
+          <div class="seg-group" role="group"><button class="seg lang" type="button" data-talk="1" data-i18n="talkOn"></button><button class="seg lang" type="button" data-talk="0" data-i18n="talkOff"></button></div>
+        </div>
         <div class="tg-login" id="tgLogin"></div>
       </section>
     </div>
@@ -666,8 +691,9 @@ aside.notes { display: grid; gap: 22px; }
     <header class="game-bar">
       <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
       <div class="bar-title">
-        <span class="mini-logo"><span class="x">X</span><span class="o">0</span>2.0</span>
-        <span class="vs" id="x02Vs"></span>
+        <span class="bot-face" id="x02Face" hidden></span>
+        <span class="bt-text"><span class="mini-logo"><span class="x">X</span><span class="o">0</span>2.0</span>
+        <span class="vs" id="x02Vs"></span></span>
       </div>
       <span class="score-chip" id="x02Score" hidden></span>
       <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
@@ -745,7 +771,7 @@ aside.notes { display: grid; gap: 22px; }
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="newGame"></button>
-          <button class="btn on-online" type="button" data-act="chat" data-i18n="chat"></button>
+          <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
         </div>
         <div class="phrases" hidden></div>
@@ -763,8 +789,9 @@ aside.notes { display: grid; gap: 22px; }
     <header class="game-bar">
       <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
       <div class="bar-title">
-        <span class="mini-logo" data-i18n="classicName"></span>
-        <span class="vs" id="cVs"></span>
+        <span class="bot-face" id="cFace" hidden></span>
+        <span class="bt-text"><span class="mini-logo" data-i18n="classicName"></span>
+        <span class="vs" id="cVs"></span></span>
       </div>
       <span class="score-chip" id="cScore" hidden></span>
       <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
@@ -799,7 +826,7 @@ aside.notes { display: grid; gap: 22px; }
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="classicAgain"></button>
-          <button class="btn on-online" type="button" data-act="chat" data-i18n="chat"></button>
+          <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
         </div>
         <div class="phrases" hidden></div>
@@ -1646,6 +1673,36 @@ ru: {
   waitingName: 'Друг ещё не зашёл',
   gameFull: 'В этой партии уже играют двое.', gameGone: 'Партия не найдена или уже закончилась.', gameLogin: 'Войди через Telegram, чтобы принять вызов.',
   chatPhrases: ['Хорош 👍', 'Ой…', 'Ну давай!', 'Ты уверен? 😏', 'Думай быстрее ⏱', 'Красиво!', 'GG 🤝', '😂'],
+  talkPick: 'Боты болтают', talkOn: 'Да', talkOff: 'Нет',
+  botTalk: {
+    x1: { start: ['Привет! Только не жми слишком сильно…', 'Я готов. Наверное.', 'Давай полегче, ладно?'],
+      good: ['Ой, это я сделал?', 'А так можно было?', 'Кажется, получилось!'],
+      bad: ['Ой-ой.', 'Это было больно.', 'Ты так всегда играешь?'],
+      slow: ['Я подожду… наверное.', 'Ты думаешь? Я тоже думаю. Немного.', 'Можно я пока посижу?'],
+      reply: ['Я стараюсь!', 'Не смотри так, я нервничаю.', 'Правда? Спасибо… или нет?'] },
+    x2: { start: ['Опять ты.', 'Готовься. Хотя не поможет.', 'Начнём. Быстро закончим.'],
+      good: ['Я предупреждал.', 'Ход как ход. Для меня.', 'Учись, пока бесплатно.'],
+      bad: ['Повезло.', 'Хм. Неплохо. Для тебя.', 'Это ничего не меняет.'],
+      slow: ['Думай-думай. Не поможет.', 'Я уже знаю твой ход.', 'Можно быстрее? У меня дела.'],
+      reply: ['Я — уверен.', 'Слова не помогут.', 'Ага. Ходи давай.'] },
+    x3: { start: ['Анализ начат.', 'Партия просчитана. Почти.', 'Начинаем.'],
+      good: ['Просчитано.', 'Вероятность твоей победы снижается.', 'Неизбежно.'],
+      bad: ['Неожиданно. Пересчитываю.', 'Ошибка в моей модели. Временная.', 'Интересно.'],
+      slow: ['Я перебрал тысячи вариантов. Твой ход.', 'Время — ресурс. Ты его тратишь.', 'Ожидаю ввод.'],
+      reply: ['Эмоции не влияют на исход.', 'Принято. Проигнорировано.', 'Ответ: просчитано.'] },
+    c1: { start: ['Попробуй!', 'Давай, у тебя получится. Может быть.', 'Начинай, я не кусаюсь.'],
+      good: ['Упс, кажется, я впереди.', 'Не расстраивайся, бывает!', 'Хе-хе.'],
+      bad: ['Почти!', 'Давай-давай!', 'О, вот это ход!'],
+      slow: ['Не торопись. Хотя можно и поторопиться.', 'Ну же, попробуй!', 'Я верю в тебя. Чуть-чуть.'],
+      reply: ['И тебе удачи!', 'Хе-хе, посмотрим!', 'Пробуй, пробуй!'] },
+    c2: { start: ['Зря ты сюда нажал.', 'Ну что ж. Зря.', 'Начинай. Всё равно зря.'],
+      good: ['Зря ты так.', 'Смелое решение. Зря.', 'Я бы не стал. Но ты стал.'],
+      bad: ['Ладно, это было не зря.', 'Хм. Допустим.', 'Случайность. Наверное.'],
+      slow: ['Думаешь? Зря.', 'Сколько ни думай — зря.', 'Тянешь время. Зря.'],
+      reply: ['Зря.', 'Говоришь — зря.', 'Ну-ну. Зря.'] },
+    c3: { start: ['Нет.', '…', 'Нет.'], good: ['Нет.', '…Нет.', 'Нет.'], bad: ['Нет?', '…', 'Нет.'],
+      slow: ['…', 'Нет.', '…Нет.'], reply: ['Нет.', 'Нет.', '…'], beaten: '…Да?' }
+  },
   secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secCoins: 'Монеты',
   coinsTest: 'Тестовая версия: монеты начисляются бесплатно. Настоящая оплата появится в Play Market.',
   notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов или обменяй монеты.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
@@ -1782,6 +1839,36 @@ uz: {
   waitingName: "Do'st hali kirmadi",
   gameFull: "Bu o'yinda allaqachon ikki kishi o'ynayapti.", gameGone: "O'yin topilmadi yoki tugagan.", gameLogin: 'Chaqiruvni qabul qilish uchun Telegram orqali kiring.',
   chatPhrases: ["Zo'r 👍", 'Voy…', 'Qani, kel!', 'Ishonchingiz komilmi? 😏', "Tezroq o'yla ⏱", 'Chiroyli!', 'GG 🤝', '😂'],
+  talkPick: 'Botlar gapiradi', talkOn: 'Ha', talkOff: "Yo'q",
+  botTalk: {
+    x1: { start: ['Salom! Faqat qattiq bosmang…', 'Tayyorman. Ehtimol.', 'Sekinroq, maylimi?'],
+      good: ['Voy, buni men qildimmi?', 'Shunday ham mumkinmidi?', 'Chiqdi shekilli!'],
+      bad: ['Voy-voy.', "Bu og'riqli bo'ldi.", "Doim shunday o'ynaysizmi?"],
+      slow: ['Kutaman… ehtimol.', "O'ylayapsizmi? Men ham. Ozgina.", "Hozircha o'tirib tursam maylimi?"],
+      reply: ['Harakat qilyapman!', 'Bunday qaramang, hayajonlanaman.', "Rostdanmi? Rahmat… yoki yo'q?"] },
+    x2: { start: ['Yana sizmi.', 'Tayyorlaning. Baribir foyda yo‘q.', 'Boshladik. Tez tugatamiz.'],
+      good: ['Ogohlantirgandim.', 'Oddiy yurish. Men uchun.', "O'rganing, hozircha tekin."],
+      bad: ['Omadingiz keldi.', 'Hm. Yomon emas. Siz uchun.', "Bu hech narsani o'zgartirmaydi."],
+      slow: ["O'ylayvering. Foyda yo'q.", 'Yurishingizni allaqachon bilaman.', 'Tezroq mumkinmi? Ishim bor.'],
+      reply: ['Men — ishonchim komil.', 'Gaplar yordam bermaydi.', 'Ha-ha. Yuring.'] },
+    x3: { start: ['Tahlil boshlandi.', "O'yin hisoblandi. Deyarli.", 'Boshlaymiz.'],
+      good: ['Hisoblangan.', "G'alaba ehtimolingiz kamaymoqda.", 'Muqarrar.'],
+      bad: ['Kutilmagan. Qayta hisoblayapman.', 'Modelimda xato. Vaqtincha.', 'Qiziq.'],
+      slow: ["Minglab variantni ko'rib chiqdim. Sizning navbat.", "Vaqt — resurs. Siz uni sarflayapsiz.", 'Kiritishni kutyapman.'],
+      reply: ["His-tuyg'ular natijaga ta'sir qilmaydi.", 'Qabul qilindi. E’tiborsiz qoldirildi.', 'Javob: hisoblangan.'] },
+    c1: { start: ["Urinib ko'r!", 'Qani, uddalaysan. Balki.', 'Boshla, men tishlamayman.'],
+      good: ['Voy, men oldindaman shekilli.', "Xafa bo'lma, bo'lib turadi!", 'He-he.'],
+      bad: ['Deyarli!', 'Qani-qani!', 'Mana bu yurish!'],
+      slow: ['Shoshilma. Shoshilsang ham bo‘ladi.', "Qani, urinib ko'r!", 'Senga ishonaman. Ozgina.'],
+      reply: ['Senga ham omad!', "He-he, ko'ramiz!", "Urinib ko'r, urinib ko'r!"] },
+    c2: { start: ['Buni bekorga bosding.', 'Mayli. Bekorga.', 'Boshla. Baribir bekorga.'],
+      good: ['Bekorga shunday qilding.', 'Jasur qaror. Bekorga.', 'Men qilmasdim. Sen qilding.'],
+      bad: ['Mayli, bu bekorga emas edi.', 'Hm. Faraz qilaylik.', 'Tasodif. Ehtimol.'],
+      slow: ["O'ylayapsanmi? Bekorga.", "Qancha o'ylama — bekorga.", "Vaqtni cho'zyapsan. Bekorga."],
+      reply: ['Bekorga.', 'Gapirasan — bekorga.', 'Xo‘sh-xo‘sh. Bekorga.'] },
+    c3: { start: ["Yo'q.", '…', "Yo'q."], good: ["Yo'q.", "…Yo'q.", "Yo'q."], bad: ["Yo'qmi?", '…', "Yo'q."],
+      slow: ['…', "Yo'q.", "…Yo'q."], reply: ["Yo'q.", "Yo'q.", '…'], beaten: '…Ha?' }
+  },
   secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secCoins: 'Tangalar',
   coinsTest: "Test versiyasi: tangalar bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
   notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting yoki tangalarni almashtiring.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
@@ -1918,6 +2005,36 @@ en: {
   waitingName: "Your friend hasn't joined yet",
   gameFull: 'Two players are already in this game.', gameGone: 'Game not found or already over.', gameLogin: 'Log in with Telegram to accept the challenge.',
   chatPhrases: ['Nice 👍', 'Oops…', 'Come on!', 'You sure? 😏', 'Think faster ⏱', 'Beautiful!', 'GG 🤝', '😂'],
+  talkPick: 'Bots talk', talkOn: 'On', talkOff: 'Off',
+  botTalk: {
+    x1: { start: ["Hi! Just don't press too hard…", "I'm ready. Probably.", 'Go easy on me, okay?'],
+      good: ['Oh, did I do that?', 'Wait, that was allowed?', 'I think it worked!'],
+      bad: ['Uh-oh.', 'That hurt.', 'Do you always play like this?'],
+      slow: ["I'll wait… I guess.", 'Thinking? Me too. A little.', 'Can I sit down meanwhile?'],
+      reply: ["I'm trying!", "Don't look at me like that, I'm nervous.", 'Really? Thanks… or not?'] },
+    x2: { start: ['You again.', "Get ready. Won't help, though.", "Let's start. And finish quickly."],
+      good: ['I warned you.', 'Just a move. For me.', "Learn while it's free."],
+      bad: ['Lucky.', 'Hm. Not bad. For you.', 'Changes nothing.'],
+      slow: ["Keep thinking. Won't help.", 'I already know your move.', 'Faster? I have plans.'],
+      reply: ['I am sure.', "Words won't help.", 'Sure. Just move.'] },
+    x3: { start: ['Analysis started.', 'Game calculated. Almost.', 'Commencing.'],
+      good: ['Calculated.', 'Your chance of winning is dropping.', 'Inevitable.'],
+      bad: ['Unexpected. Recalculating.', 'Error in my model. Temporary.', 'Interesting.'],
+      slow: ["I've checked thousands of lines. Your move.", "Time is a resource. You're wasting it.", 'Awaiting input.'],
+      reply: ["Emotions don't affect the outcome.", 'Received. Ignored.', 'Response: calculated.'] },
+    c1: { start: ['Try me!', 'Go on, you can do it. Maybe.', "Start, I don't bite."],
+      good: ["Oops, looks like I'm ahead.", "Don't be sad, it happens!", 'Hehe.'],
+      bad: ['Almost!', 'Come on, come on!', "Oh, now that's a move!"],
+      slow: ["Take your time. Or don't.", 'Come on, try!', 'I believe in you. A bit.'],
+      reply: ['Good luck to you too!', "Hehe, we'll see!", 'Keep trying!'] },
+    c2: { start: ['Clicking here was a mistake.', 'Well. A mistake.', 'Go ahead. Still a mistake.'],
+      good: ['Big mistake.', 'Bold move. Mistake.', "I wouldn't. But you did."],
+      bad: ["Fine, that wasn't a mistake.", "Hm. Let's say.", 'Luck. Probably.'],
+      slow: ['Thinking? Mistake.', 'Think all you want — mistake.', 'Stalling. Mistake.'],
+      reply: ['Mistake.', 'Talking — mistake.', 'Sure. Mistake.'] },
+    c3: { start: ['No.', '…', 'No.'], good: ['No.', '…No.', 'No.'], bad: ['No?', '…', 'No.'],
+      slow: ['…', 'No.', '…No.'], reply: ['No.', 'No.', '…'], beaten: '…Yes?' }
+  },
   secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secCoins: 'Coins',
   coinsTest: 'Test version: coins are added for free. Real payments will come with the Play Store release.',
   notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots or exchange coins.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
@@ -2259,6 +2376,7 @@ function renderProfile() {
   sb.setAttribute("aria-pressed", String(SND.on));
   sb.setAttribute("aria-label", SND.on ? t("soundOff") : t("soundOn"));
   sb.title = sb.getAttribute("aria-label");
+  document.querySelectorAll("[data-talk]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.talk === "1") === talkOn())));
   renderLogin();
 }
 function showLoginWidget() {
@@ -2444,7 +2562,9 @@ function tgInit() {
 }
 function goMenu() {
   cancelBot();
+  clearTimeout(slowTimer);
   if (app.online) stopOnline();
+  document.body.classList.remove("is-bot");
   uiMode = null;
   buildMenu();
   show("menu");
@@ -2479,6 +2599,10 @@ function startGame(mode, botId) {
     app.chance = profile.netCounter % 10 === 0;
   }
   document.querySelectorAll(".hand-grid").forEach(gEl => { gEl.classList.remove("drawn"); void gEl.getBoundingClientRect(); gEl.classList.add("drawn"); });
+  syncTalkClass();
+  document.querySelectorAll(".phrases").forEach(el => { el.hidden = true; });
+  for (const id of ["bubble", "cBubble"]) $(id).hidden = true;
+  if (app.bot) { talkLast = 0; const bot = app.bot, gid = app.gameId; setTimeout(() => { if (app.bot === bot && app.gameId === gid) botSay("start"); }, 700); }
   if (mode === "x02") {
     app.history = [newPrelude()];
     if (app.screen !== "x02") show("x02");
@@ -2532,6 +2656,12 @@ function grantReward(r) {
 }
 function onGameEnd(r) {
   recordResult(r);
+  clearTimeout(slowTimer);
+  if (app.bot) {
+    const botWon = r !== 3 && r !== app.side;
+    botSay(r === 3 ? "draw" : botWon ? "win" : "lose");
+    if (!botWon && r !== 3 && app.bot.id === "c3") botSay("beaten");
+  }
   SND.play(r === 3 ? "draw" : (!app.bot || r === app.side) ? "win" : "lose", 0.45);
   if (r !== 3) hapticResult(!app.bot || r === app.side);
   const g = grantReward(r);
@@ -2556,6 +2686,10 @@ async function doMain(a) {
   else if (a < 200) SND.play(a >= 100 ? "star" : g.turn === 1 ? "x" : "o");
   const b0 = ((a % 100) / 9) | 0;
   if (a < 300 && g.owner[b0] === 0 && (n.owner[b0] === 1 || n.owner[b0] === 2)) SND.play("capture", 0.25);
+  if (app.bot && !n.result && a < 300) {
+    const cap = g.owner[b0] === 0 && (n.owner[b0] === 1 || n.owner[b0] === 2);
+    if (cap || a >= 200) botSay(isBot(g.turn) ? "good" : "bad", cap ? 0.75 : 0.6);
+  }
   renderX02({ prev: g, action: a });
   if (a < 300) {
     const b = ((a % 100) / 9) | 0;
@@ -2569,6 +2703,7 @@ function doPrelude(i) {
   if (!t) return false;
   SND.play(e.t.turn === 1 ? "x" : "o");
   if (t.result) SND.play(t.result === 3 ? "draw" : "capture", 0.35);
+  if (app.bot && (t.result === 1 || t.result === 2)) botSay(isBot(t.result) ? "good" : "bad", 0.9);
   app.history.push(Object.assign({}, e, { t }));
   renderX02({ prelude: true });
   return true;
@@ -2576,7 +2711,10 @@ function doPrelude(i) {
 function doClassic(i) {
   const t = E.tttApply(cur().t, i);
   if (!t) return false;
-  SND.play(cur().t.turn === 1 ? "x" : "o");
+  const mover = cur().t.turn;
+  SND.play(mover === 1 ? "x" : "o");
+  if (app.bot && !t.result && E.LINES.some(l => { const v = l.map(k => t.b[k]); return v.filter(x => x === mover).length === 2 && v.includes(0); }))
+    botSay(isBot(mover) ? "good" : "bad", 0.5);
   app.history.push({ t });
   renderClassic({ played: true });
   if (t.result) onGameEnd(t.result);
@@ -2704,6 +2842,7 @@ async function kickBot() {
       const e = cur();
       if (!e || !isBot(actorOf(e))) break;
       render(null);
+      setFace("think", true);
       const t0 = Date.now();
       let a;
       if (app.mode === "classic") {
@@ -2717,6 +2856,7 @@ async function kickBot() {
       const left = minShow - (Date.now() - t0);
       if (left > 0) await sleep(left);
       if (job !== botJob || cur() !== e || a === null || a === undefined) break;
+      setFace(null);
       if (app.mode === "classic") doClassic(a);
       else if (e.phase === "prelude") doPrelude(a);
       else await doMain(a);
@@ -2724,6 +2864,7 @@ async function kickBot() {
   } finally {
     if (activeJob === job) activeJob = -1;
   }
+  if (job === botJob) armSlow();
 }
 
 // ---------------- animations ----------------
@@ -2845,6 +2986,7 @@ function renderBars() {
     $(c).hidden = !app.bot;
     $(c).textContent = chip;
   }
+  syncFace();
 }
 
 // ---------------- render: X02.0 ----------------
@@ -3129,6 +3271,97 @@ function renderClassic(ctx) {
   } else if (!(app.online && app.online.ended)) banner.classList.remove("show");
 }
 
+// ---------------- bots: faces and talk ----------------
+const FACE_IDLE = { x2: "smug", c2: "smug" };
+const EMO = {
+  start: { x1: "happy", x2: "smug", x3: "idle", c1: "happy", c2: "smug", c3: "idle" },
+  good: { x1: "happy", x2: "smug", x3: "smug", c1: "happy", c2: "smug", c3: "idle" },
+  bad: { x1: "sad", x2: "surprised", x3: "surprised", c1: "surprised", c2: "sad", c3: "idle" },
+  slow: { x1: "idle", x2: "smug", x3: "think", c1: "happy", c2: "smug", c3: "idle" },
+  reply: { x1: "surprised", x2: "smug", x3: "idle", c1: "happy", c2: "smug", c3: "idle" },
+  win: { x1: "happy", x2: "smug", x3: "smug", c1: "happy", c2: "smug", c3: "idle" },
+  lose: { x1: "sad", x2: "sad", x3: "surprised", c1: "surprised", c2: "sad", c3: "surprised" },
+  draw: { x1: "idle", x2: "idle", x3: "idle", c1: "happy", c2: "idle", c3: "idle" },
+  beaten: { c3: "surprised" }
+};
+function faceSVG(id, emo) {
+  if (id === "c3" && emo !== "surprised") emo = "idle";        // «Нет» keeps a stone face. Almost always.
+  const P = d => `<path class="ln" d="${d}"/>`, C = (x, y, r, cls) => `<circle class="${cls || "dot"}" cx="${x}" cy="${y}" r="${r}"/>`;
+  let head, eyes = "", mouth = "", extra = "";
+  if (id === "x3") {
+    head = '<path class="ln" d="M30 14 V7"/><circle class="ant" cx="30" cy="5.5" r="3.2"/><rect class="hd" x="11" y="14" width="38" height="36" rx="6"/>';
+    eyes = emo === "happy" || emo === "smug" ? P("M19 30 Q23 26 27 30 M33 30 Q37 26 41 30")
+      : emo === "surprised" ? '<rect class="dot" x="19" y="24" width="8" height="9" rx="1.5"/><rect class="dot" x="33" y="24" width="8" height="9" rx="1.5"/>'
+      : emo === "think" ? '<rect class="dot" x="22" y="24" width="6" height="6" rx="1"/><rect class="dot" x="36" y="24" width="6" height="6" rx="1"/>'
+      : '<rect class="dot" x="20" y="25" width="6" height="6" rx="1"/><rect class="dot" x="34" y="25" width="6" height="6" rx="1"/>';
+    mouth = emo === "happy" || emo === "smug" ? P("M22 40 Q30 45 38 40") : emo === "surprised" ? P("M23 42 h14") : P("M21 41 h18 M25 38.5 v5 M30 38.5 v5 M35 38.5 v5");
+    return `<svg viewBox="0 0 60 60" aria-hidden="true">${head}${eyes}${mouth}</svg>`;
+  }
+  head = id === "c3"
+    ? '<path class="hd" d="M13 21 Q12 12 22 11 L39 11 Q49 12 48 22 L48 43 Q48 51 39 51 L21 51 Q12 51 12 42 Z"/>'
+    : '<path class="hd" d="M30 9 C 44 9 51 19 50 31 C 49 44 41 51 30 51 C 18 51 10 43 10 30 C 10 18 17 9 30 9 Z"/>';
+  switch (emo) {
+    case "happy": eyes = P("M19 29 Q23 24 27 29 M33 29 Q37 24 41 29"); mouth = P("M20 37 Q30 49 40 37"); break;
+    case "smug": eyes = P("M19 27.5 h8 M33 27.5 h8") + C(23, 29.6, 1.8) + C(37, 29.6, 1.8); mouth = P("M23 41 Q33 44 39 36"); break;
+    case "surprised": eyes = C(23, 28, 4.2, "ln") + C(37, 28, 4.2, "ln") + C(23, 28, 1.6) + C(37, 28, 1.6); mouth = C(30, 42, 4, "ln"); break;
+    case "sad": eyes = C(23, 29, 2.6) + C(37, 29, 2.6) + P("M18 24 L26 21.5 M34 21.5 L42 24"); mouth = P("M22 45 Q30 37 38 45"); break;
+    case "think": eyes = C(25, 25.5, 2.6) + C(39, 25.5, 2.6) + P("M33 19.5 L42 18"); mouth = P("M25 42 Q30 40 35 42.5"); break;
+    default: eyes = C(23, 28, 2.8) + C(37, 28, 2.8); mouth = P("M23 40 Q30 43.5 37 40");
+  }
+  if (id === "c3") {
+    eyes = emo === "surprised" ? C(24, 28, 3.6, "ln") + C(36, 28, 3.6, "ln") + C(24, 28, 1.3) + C(36, 28, 1.3) : C(24, 28, 2) + C(36, 28, 2);
+    mouth = emo === "surprised" ? C(30, 42, 3, "ln") : P("M24 41 h12");
+  }
+  if (id === "x1") { extra += P("M28 9.5 C 25 3, 34 1.5, 32.5 6.5"); if (emo === "sad" || emo === "surprised") extra += '<path class="drop" d="M46 17 Q42 23 46 25.5 Q50 23 46 17 Z"/>'; }
+  if (id === "x2") { extra += P("M13 23 Q19 8 36 10 Q45 11 48 19"); if (emo !== "sad" && emo !== "think") extra += P("M18 21.5 L27 22.5 M33 21 L42 18.5"); }
+  if (id === "c1") extra += '<ellipse class="blush" cx="16.5" cy="36" rx="4.2" ry="2.6"/><ellipse class="blush" cx="43.5" cy="36" rx="4.2" ry="2.6"/>';
+  if (id === "c2") { extra += C(37, 28, 6.6, "ln") + P("M43.4 30.5 Q48 40 44 48"); if (emo !== "sad") extra += P("M32 19.5 L42.5 16.5"); }
+  return `<svg viewBox="0 0 60 60" aria-hidden="true">${head}${extra}${eyes}${mouth}</svg>`;
+}
+let faceTimer = null, talkLast = 0, slowTimer = null;
+const talkOn = () => store.get("botTalk", true) !== false;
+const faceEl = () => $(app.mode === "classic" ? "cFace" : "x02Face");
+function setFace(emo, hold) {
+  if (!app.bot) return;
+  const id = app.bot.id, el = faceEl(), e = emo || FACE_IDLE[id] || "idle";
+  el.classList.toggle("think", e === "think");
+  if (el.dataset.k !== id + e) {
+    el.dataset.k = id + e;
+    el.innerHTML = faceSVG(id, e);
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+  }
+  clearTimeout(faceTimer);
+  if (emo && !hold) faceTimer = setTimeout(() => { if (app.bot && app.bot.id === id) setFace(null); }, 2600);
+}
+function syncFace() {
+  for (const id of ["x02Face", "cFace"]) $(id).hidden = !app.bot;
+  if (app.bot && !(faceEl().dataset.k || "").startsWith(app.bot.id)) setFace(null);
+}
+function botSay(ev, prob) {
+  if (!app.bot) return;
+  const id = app.bot.id;
+  if (EMO[ev] && EMO[ev][id]) setFace(EMO[ev][id], ev === "win" || ev === "lose" || ev === "draw" || ev === "beaten");
+  if (!talkOn()) return;
+  const now = Date.now(), forced = ev === "start" || ev === "reply" || ev === "beaten";
+  if (!forced && (now - talkLast < 6000 || Math.random() > (prob == null ? 1 : prob))) return;
+  const pack = (t("botTalk") || {})[id] || {};
+  let line = ev === "beaten" ? pack.beaten : "";
+  if (!line) { const arr = pack[ev] || []; if (!arr.length) return; line = arr[(Math.random() * arr.length) | 0]; }
+  talkLast = now;
+  showBubbleText(line, t("q", bt(id, "name")), false);
+  const el = faceEl();
+  el.classList.remove("talk"); void el.offsetWidth; el.classList.add("talk");
+}
+function armSlow() {
+  clearTimeout(slowTimer);
+  if (!app.bot || app.online) return;
+  const e = cur();
+  slowTimer = setTimeout(() => {
+    if (app.bot && cur() === e && app.screen !== "menu" && actorOf(e) === app.side) botSay("slow", 1);
+  }, 22000);
+}
+function syncTalkClass() { document.body.classList.toggle("is-bot", !!app.bot && !app.online && talkOn()); }
+
 // ---------------- online: play a friend by link ----------------
 const ICON_LINK = '<svg class="ico-link" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4L12 5.6M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4L12 18.4"/></svg>';
 let onlineMinutes = [2, 3, 5].includes(store.get("minutes", 3)) ? store.get("minutes", 3) : 3;
@@ -3222,6 +3455,7 @@ function enterOnline(v) {
   app.online = { id: v.id, mode: v.mode, minutes: v.minutes, ver: 0, status: v.status, state: null, players: v.players || {}, deadline: 0, offset: 0,
     chatSeen: Math.max(0, ...(v.chat || []).map(c => c.t)), key: "", ended: false, next: "", link: v.link, reward: 0 };
   app.bot = null; app.mode = v.mode; app.side = v.me || 1; app.gameId++;
+  clearTimeout(slowTimer); syncTalkClass();
   uiMode = null; flash = null;
   document.body.classList.add("is-online");
   for (const id of ["bannerReward", "cBannerReward"]) $(id).innerHTML = "";
@@ -3432,21 +3666,23 @@ function togglePhrases() {
 }
 async function sayPhrase(k) {
   const o = app.online;
-  if (!o || Date.now() < phraseLock) return;
+  if ((!o && !app.bot) || Date.now() < phraseLock) return;
   phraseLock = Date.now() + 2600;
   document.querySelectorAll(".phrase").forEach(b => { b.disabled = true; });
   setTimeout(() => document.querySelectorAll(".phrase").forEach(b => { b.disabled = false; }), 2600);
   showBubble(k, true);
+  if (!o) { const bot = app.bot; setTimeout(() => { if (app.bot === bot) botSay("reply"); }, 1100 + Math.random() * 700); return; }
   try { const v = await apiCall("/api/g/say", { id: o.id, k }); if (v.chat) o.chatSeen = Math.max(o.chatSeen, ...v.chat.map(c => c.t)); } catch (e) {}
 }
-function showBubble(k, mine) {
-  const el = $(app.mode === "classic" ? "cBubble" : "bubble"), text = (t("chatPhrases") || [])[k];
+function showBubble(k, mine) { showBubbleText((t("chatPhrases") || [])[k], mine ? "" : oppName(), mine); }
+function showBubbleText(text, name, mine) {
+  const el = $(app.mode === "classic" ? "cBubble" : "bubble");
   if (!el || !text) return;
   el.className = "bubble" + (mine ? " mine" : "");
-  el.innerHTML = (mine ? "" : `<small>${esc(oppName())}</small>`) + esc(text);
+  el.innerHTML = (name ? `<small>${esc(name)}</small>` : "") + esc(text);
   el.hidden = true; void el.offsetWidth; el.hidden = false;
-  clearTimeout(bubbleTimer);
-  bubbleTimer = setTimeout(() => { el.hidden = true; }, 3200);
+  clearTimeout(el._hide);
+  el._hide = setTimeout(() => { el.hidden = true; }, 3200);
 }
 // menu: games with friends that are still going
 function renderOnlineList() {
@@ -3661,6 +3897,8 @@ function bind() {
     if (m) { onlineMinutes = +m.dataset.min; store.set("minutes", onlineMinutes); renderOnlineSheet(); }
   });
   document.addEventListener("click", ev => {
+    const tk = ev.target.closest("[data-talk]");
+    if (tk) { store.set("botTalk", tk.dataset.talk === "1"); renderProfile(); }
     const ph = ev.target.closest("[data-phrase]");
     if (ph) sayPhrase(+ph.dataset.phrase);
     const og = ev.target.closest("[data-og]");
