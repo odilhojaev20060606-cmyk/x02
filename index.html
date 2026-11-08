@@ -378,6 +378,20 @@ aside.notes { display: grid; gap: 22px; }
 .cur { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px 4px 6px; border: 1.5px solid var(--pen); border-radius: 20px; background: var(--paper); font-variant-numeric: tabular-nums; }
 .cur b { color: var(--pen); }
 .cur-name { color: var(--pencil-soft); font-size: 13px; }
+.ico-clip { width: 18px; height: 18px; fill: none; stroke: #5b6b86; stroke-width: 2; stroke-linecap: round; transform: rotate(35deg); }
+.ico-coin { width: 18px; height: 18px; }
+.ico-coin circle { fill: #e8d59a; stroke: #a9853a; stroke-width: 2; }
+.ico-coin path { stroke: #1f3fa8; stroke-width: 2.2; stroke-linecap: round; fill: none; }
+.coin-prev { display: grid; place-items: center; }
+.coin-prev .ico-coin { width: 46px; height: 46px; }
+.item .btn .ico-clip, .item .btn .ico-coin { width: 15px; height: 15px; }
+.btn.gold-btn .ico-coin circle { fill: #fff3cf; }
+.btn.primary .ico-clip { stroke: #fff; }
+.reward-pop .ico-clip { width: 22px; height: 22px; vertical-align: -3px; }
+.gold-pop { color: #a87800; }
+.banner-reward { display: grid; gap: 4px; justify-items: center; }
+.quote { font-family: var(--font-hand); font-size: 22px; color: var(--pen); max-width: 30ch; animation: fadeUp .5s 1.5s both; }
+.shop-note.quote { color: #a87800; font-size: 28px; }
 .ico-five { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 3px; border: 2px solid var(--ink-o); border-radius: 50%; color: var(--ink-o); font: 700 15px/1 var(--font-hand); font-style: normal; transform: rotate(-8deg); }
 .ico-ink { width: 18px; height: 18px; fill: #2f3fb0; }
 .shop-body { display: grid; gap: 22px; }
@@ -981,8 +995,15 @@ function ENGINE() {
     return best();
   }
 
+  // A deliberate mistake: a move after which the opponent can force a win (used once, for the "chance" game).
+  function tttBlunder(t) {
+    const b = t.b.slice(), me = t.turn, em = empties(b);
+    const losing = em.filter(i => !winsAt(b, i, me) && moveValue(b, i, me) < 0);
+    return losing.length ? pick(losing) : -1;
+  }
+
   return {
-    LINES, newMain, cloneLite, cloneFull, allowed, legal, isLegal, apply, applyMut, count, noRowPossible,
+    LINES, newMain, tttBlunder, cloneLite, cloneFull, allowed, legal, isLegal, apply, applyMut, count, noRowPossible,
     createSearch, think, rolloutMove,
     newTTT, tttApply, tttBot, tttRes
   };
@@ -1061,16 +1082,18 @@ ru: {
   xStarts: 'X начинает.', goodLuck: 'Удачи. Она понадобится.', threeWins: 'Три в ряд — победа',
   logBoard: b => `· поле ${b}`, logDraw: '· ничья', logStrike: 'удар', noMoves: 'Пока ходов нет',
   aBoard: 'Поле', aCell: 'клетка', aEmpty: 'свободно', aPlayable: 'свободно, можно ходить', aStar: 'звезда', aSendHere: 'отправить соперника сюда', aTCell: 'Клетка',
-  shop: 'Магазин', fives: 'пятёрки', ink: 'чернила', fiveIcon: '5',
+  shop: 'Магазин', clips: 'скрепки', coins: 'монеты',
   equip: 'Надеть', equipped: 'Надето', buy: 'Купить', free: 'бесплатно', owned: 'куплено', testPrice: 'тест, бесплатно',
-  getInk: n => `+${n} (тест)`,
-  earnHint: 'Пятёрки дают за победы над ботами: «Лёгкий?» +10, «Уже нет» +20, «Конец» +40, в Ностальгии +3 и +5, ничья с «Нет» +5.',
-  secPremium: 'Премиум', premiumHint: 'Золотые скины покупаются только за чернила.',
-  secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secInk: 'Чернила',
-  inkTest: 'Тестовая версия: чернила начисляются бесплатно. Настоящая оплата появится в Play Market.',
-  notEnoughFives: n => `Не хватает пятёрок: нужно ещё ${n}. Побеждай ботов.`, notEnoughInk: n => `Не хватает чернил: нужно ещё ${n}.`,
-  bought: n => `Куплено и надето: ${n}.`, inkAdded: n => `+${n} чернил.`, reward: n => `+${n} пятёрок`,
-  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_gold: 'Золотой X',
+  getCoins: n => `+${n} (тест)`,
+  earnHint: 'Скрепки дают только за победы над ботами: «Лёгкий?» +10, «Уже нет» +30, «Конец» +50, «Попробуй» +1, «Зря» +3. За победу над «Нет» — сразу оба золотых знака.',
+  secPremium: 'Премиум', premiumHint: 'Золотые X и 0 открывает победа над «Нет». Или монета.', beatNet: 'Победи «Нет»',
+  secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secCoins: 'Монеты',
+  coinsTest: 'Тестовая версия: монеты начисляются бесплатно. Настоящая оплата появится в Play Market.',
+  notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
+  bought: n => `Куплено и надето: ${n}.`, coinsAdded: n => `+${n} монет.`, reward: n => `+${n} ${n % 10 === 1 && n % 100 !== 11 ? 'скрепка' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'скрепки' : 'скрепок'}`,
+  buyQuote: '«Даже невозможное станет возможным за деньги.»',
+  goldWon: 'Золотые X и 0 теперь твои!', winQuote: '«Ты не сдался. Это и был твой лучший ход.»',
+  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X',
     o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0',
     xc_blue: 'Синяя ручка', xc_purple: 'Фиолетовая ручка', xc_graphite: 'Карандаш', oc_red: 'Красная ручка', oc_green: 'Зелёная ручка', oc_orange: 'Оранжевый маркер' },
   bots: {
@@ -1163,16 +1186,18 @@ uz: {
   xStarts: 'X boshlaydi.', goodLuck: "Omad. U sizga kerak bo'ladi.", threeWins: "Uchtasi bir qatorda — g'alaba",
   logBoard: b => `· ${b}-maydon`, logDraw: '· durang', logStrike: 'zarba', noMoves: "Hozircha yurish yo'q",
   aBoard: 'Maydon', aCell: 'katak', aEmpty: "bo'sh", aPlayable: "bo'sh, yurish mumkin", aStar: 'yulduz', aSendHere: 'raqibni shu yerga yuborish', aTCell: 'Katak',
-  shop: "Do'kon", fives: 'beshlar', ink: 'siyoh', fiveIcon: '5',
+  shop: "Do'kon", clips: 'skrepkalar', coins: 'tangalar',
   equip: 'Kiyish', equipped: 'Kiyilgan', buy: 'Sotib olish', free: 'bepul', owned: 'sotib olingan', testPrice: 'test, bepul',
-  getInk: n => `+${n} (test)`,
-  earnHint: "Beshlar botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +20, «Tamom» +40, Nostalgiyada +3 va +5, «Yo'q» bilan durang +5.",
-  secPremium: 'Premium', premiumHint: 'Oltin skinlar faqat siyohga sotib olinadi.',
-  secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secInk: 'Siyoh',
-  inkTest: "Test versiyasi: siyoh bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
-  notEnoughFives: n => `Beshlar yetarli emas: yana ${n} kerak. Botlarni yuting.`, notEnoughInk: n => `Siyoh yetarli emas: yana ${n} kerak.`,
-  bought: n => `Sotib olindi va kiyildi: ${n}.`, inkAdded: n => `+${n} siyoh.`, reward: n => `+${n} besh`,
-  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_gold: 'Oltin X',
+  getCoins: n => `+${n} (test)`,
+  earnHint: "Skrepkalar faqat botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +30, «Tamom» +50, «Urinib ko'r» +1, «Bekorga» +3. «Yo'q»ni yutsangiz — darhol ikkala oltin belgi.",
+  secPremium: 'Premium', premiumHint: "Oltin X va 0 ni «Yo'q» ustidan g'alaba ochadi. Yoki bitta tanga.", beatNet: "«Yo'q»ni yuting",
+  secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secCoins: 'Tangalar',
+  coinsTest: "Test versiyasi: tangalar bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
+  notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
+  bought: n => `Sotib olindi va kiyildi: ${n}.`, coinsAdded: n => `+${n} tanga.`, reward: n => `+${n} skrepka`,
+  buyQuote: "«Hatto imkonsiz narsa ham pul evaziga imkonli bo'ladi.»",
+  goldWon: 'Oltin X va 0 endi sizniki!', winQuote: "«Taslim bo'lmadingiz. Bu sizning eng yaxshi yurishingiz edi.»",
+  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X',
     o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0',
     xc_blue: "Ko'k ruchka", xc_purple: 'Binafsha ruchka', xc_graphite: 'Qalam', oc_red: 'Qizil ruchka', oc_green: 'Yashil ruchka', oc_orange: "To'q sariq marker" },
   bots: {
@@ -1265,16 +1290,18 @@ en: {
   xStarts: 'X starts.', goodLuck: "Good luck. You'll need it.", threeWins: 'Three in a row wins',
   logBoard: b => `· board ${b}`, logDraw: '· draw', logStrike: 'strike', noMoves: 'No moves yet',
   aBoard: 'Board', aCell: 'cell', aEmpty: 'empty', aPlayable: 'empty, playable', aStar: 'star', aSendHere: 'send your opponent here', aTCell: 'Cell',
-  shop: 'Shop', fives: 'A+ grades', ink: 'ink', fiveIcon: 'A+',
+  shop: 'Shop', clips: 'paperclips', coins: 'coins',
   equip: 'Equip', equipped: 'Equipped', buy: 'Buy', free: 'free', owned: 'owned', testPrice: 'test, free',
-  getInk: n => `+${n} (test)`,
-  earnHint: 'You earn A+ grades by beating bots: “Easy?” +10, “Not Anymore” +20, “The End” +40, in Nostalgia +3 and +5, a draw with “No” +5.',
-  secPremium: 'Premium', premiumHint: 'Golden skins can only be bought with ink.',
-  secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secInk: 'Ink',
-  inkTest: 'Test version: ink is added for free. Real payments will come with the Play Store release.',
-  notEnoughFives: n => `Not enough A+ grades: you need ${n} more. Beat some bots.`, notEnoughInk: n => `Not enough ink: you need ${n} more.`,
-  bought: n => `Bought and equipped: ${n}.`, inkAdded: n => `+${n} ink.`, reward: n => `+${n} A+`,
-  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_gold: 'Golden X',
+  getCoins: n => `+${n} (test)`,
+  earnHint: 'Paperclips come only from beating bots: “Easy?” +10, “Not Anymore” +30, “The End” +50, “Try Me” +1, “Big Mistake” +3. Beating “No” gives both golden marks at once.',
+  secPremium: 'Premium', premiumHint: 'Golden X and 0 unlock by beating “No”. Or for a coin.', beatNet: 'Beat “No”',
+  secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secCoins: 'Coins',
+  coinsTest: 'Test version: coins are added for free. Real payments will come with the Play Store release.',
+  notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
+  bought: n => `Bought and equipped: ${n}.`, coinsAdded: n => `+${n} coins.`, reward: n => `+${n} paperclip${n === 1 ? '' : 's'}`,
+  buyQuote: '“Even the impossible becomes possible for money.”',
+  goldWon: 'The golden X and 0 are yours!', winQuote: '“You never gave up. That was your best move.”',
+  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X',
     o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0',
     xc_blue: 'Blue pen', xc_purple: 'Purple pen', xc_graphite: 'Pencil', oc_red: 'Red pen', oc_green: 'Green pen', oc_orange: 'Orange marker' },
   bots: {
@@ -1386,29 +1413,34 @@ function starPath(k) {
 // ---------------- skins & wallet ----------------
 const SHOP = [
   { id: "x_classic", kind: "xShape", price: 0 },
-  { id: "x_plus", kind: "xShape", price: 100, cur: "fives" },
-  { id: "x_star", kind: "xShape", price: 150, cur: "fives" },
-  { id: "x_hash", kind: "xShape", price: 150, cur: "fives" },
+  { id: "x_plus", kind: "xShape", price: 100, cur: "clips" },
+  { id: "x_star", kind: "xShape", price: 150, cur: "clips" },
+  { id: "x_hash", kind: "xShape", price: 150, cur: "clips" },
+  { id: "x_skew", kind: "xShape", price: 200, cur: "clips" },
   { id: "o_classic", kind: "oShape", price: 0 },
-  { id: "o_square", kind: "oShape", price: 100, cur: "fives" },
-  { id: "o_diamond", kind: "oShape", price: 120, cur: "fives" },
-  { id: "o_pent", kind: "oShape", price: 150, cur: "fives" },
-  { id: "o_hex", kind: "oShape", price: 150, cur: "fives" },
+  { id: "o_square", kind: "oShape", price: 100, cur: "clips" },
+  { id: "o_diamond", kind: "oShape", price: 120, cur: "clips" },
+  { id: "o_pent", kind: "oShape", price: 150, cur: "clips" },
+  { id: "o_hex", kind: "oShape", price: 150, cur: "clips" },
   { id: "xc_blue", kind: "xColor", price: 0 },
-  { id: "xc_purple", kind: "xColor", price: 150, cur: "fives" },
-  { id: "xc_graphite", kind: "xColor", price: 150, cur: "fives" },
+  { id: "xc_purple", kind: "xColor", price: 150, cur: "clips" },
+  { id: "xc_graphite", kind: "xColor", price: 150, cur: "clips" },
   { id: "oc_red", kind: "oColor", price: 0 },
-  { id: "oc_green", kind: "oColor", price: 150, cur: "fives" },
-  { id: "oc_orange", kind: "oColor", price: 150, cur: "fives" },
-  { id: "x_gold", kind: "xShape", price: 100, cur: "ink", premium: true },
-  { id: "o_gold", kind: "oShape", price: 100, cur: "ink", premium: true }
+  { id: "oc_green", kind: "oColor", price: 150, cur: "clips" },
+  { id: "oc_orange", kind: "oColor", price: 150, cur: "clips" },
+  { id: "x_gold", kind: "xShape", price: 1, cur: "coins", premium: true },
+  { id: "o_gold", kind: "oShape", price: 1, cur: "coins", premium: true }
 ];
-const INK_PACKS = [100, 500];
-const REWARD = { x1: 10, x2: 20, x3: 40, c1: 3, c2: 5, c3: 0 };
+const COIN_PACKS = [10, 100];
+const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };   // paperclips, wins only; beating "Нет" gives both golden marks instead
 const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
 function loadProfile() {
   const p = store.get("profile", null) || {};
-  return { fives: p.fives | 0, ink: p.ink | 0, owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}) };
+  return {
+    clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
+    owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
+    netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten
+  };
 }
 let profile = loadProfile(), skinRev = 0;
 const saveProfile = () => store.set("profile", profile);
@@ -1444,6 +1476,7 @@ function shapePaths(p, k, shape) {
     });
     case "x_hash": return [`M${(40 + jit(k, 1, 3)).toFixed(1)} 12 L${(32 + jit(k, 2, 3)).toFixed(1)} 88`, `M${(70 + jit(k, 3, 3)).toFixed(1)} 12 L${(62 + jit(k, 4, 3)).toFixed(1)} 88`,
       `M12 ${(38 + jit(k, 5, 3)).toFixed(1)} L88 ${(35 + jit(k, 6, 3)).toFixed(1)}`, `M12 ${(66 + jit(k, 7, 3)).toFixed(1)} L88 ${(63 + jit(k, 8, 3)).toFixed(1)}`];
+    case "x_skew": return [`M${(30 + jit(k, 1, 4)).toFixed(1)} 88 L${(70 + jit(k, 2, 4)).toFixed(1)} 12`, `M16 ${(52 + jit(k, 3, 4)).toFixed(1)} L84 ${(47 + jit(k, 4, 4)).toFixed(1)}`];
     case "o_square": return [polyPath(k, 4, 45, Math.PI / 4)];
     case "o_diamond": return [polyPath(k, 4, 42, -Math.PI / 2)];
     case "o_pent": return [polyPath(k, 5, 42, -Math.PI / 2)];
@@ -1532,6 +1565,12 @@ function startGame(mode, botId) {
   app.gameId++;
   uiMode = null; flash = null;
   $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = "";
+  app.undoUsed = false; app.chance = false; app.chanceUsed = false;
+  // "Нет" gives one chance every 10 games after 1000 losses, until it is beaten once
+  if (app.bot && app.bot.id === "c3" && profile.netLosses >= 1000 && !profile.netBeaten && !(owns("x_gold") && owns("o_gold"))) {
+    profile.netCounter++; saveProfile();
+    app.chance = profile.netCounter % 10 === 0;
+  }
   if (mode === "x02") {
     app.history = [newPrelude()];
     if (app.screen !== "x02") show("x02");
@@ -1553,6 +1592,7 @@ function render(ctx) { if (app.screen === "x02") renderX02(ctx); else if (app.sc
 
 function undo() {
   if (app.history.length <= 1 || flipping || inputBusy) return;
+  if (app.bot) app.undoUsed = true;   // no reward for a game against a bot after an undo
   cancelBot();
   uiMode = null;
   app.history.pop();
@@ -1569,19 +1609,26 @@ function recordResult(r) {
   store.set("scores", app.scores);
 }
 function grantReward(r) {
-  if (!app.bot || rewarded.has(app.gameId)) return 0;
+  if (!app.bot || rewarded.has(app.gameId)) return null;
   rewarded.add(app.gameId);
-  let n = 0;
-  if (r === app.side) n = REWARD[app.bot.id] || 0;
-  else if (r === 3 && app.bot.id === "c3") n = 5;
-  if (n) { profile.fives += n; saveProfile(); }
-  return n;
+  if (app.bot.id === "c3" && r !== app.side && r !== 3) { profile.netLosses++; saveProfile(); }
+  if (app.undoUsed || r !== app.side) return null;
+  if (app.bot.id === "c3") {
+    for (const id of ["x_gold", "o_gold"]) if (!profile.owned.includes(id)) profile.owned.push(id);
+    profile.netBeaten = true; skinRev++; saveProfile();
+    return { gold: true };
+  }
+  const n = REWARD[app.bot.id] || 0;
+  if (n) { profile.clips += n; saveProfile(); }
+  return n ? { clips: n } : null;
 }
 function onGameEnd(r) {
   recordResult(r);
-  const n = grantReward(r);
+  const g = grantReward(r);
   const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
-  rw.innerHTML = n ? `<span class="reward-pop">${t("reward", n)}</span>` : "";
+  rw.innerHTML = !g ? "" : g.gold
+    ? `<span class="reward-pop gold-pop">${t("goldWon")}</span><span class="quote">${t("winQuote")}</span>`
+    : `<span class="reward-pop">${t("reward", g.clips)} ${curIcon("clips")}</span>`;
   renderBars();
   if (r !== 3 && (!app.bot || r === app.side)) setTimeout(() => confetti(r), 650);
 }
@@ -1680,7 +1727,11 @@ async function kickBot() {
       render(null);
       const t0 = Date.now();
       let a;
-      if (app.mode === "classic") a = E.tttBot(e.t, app.bot.level, "win");
+      if (app.mode === "classic") {
+        a = -1;
+        if (app.chance && !app.chanceUsed) { a = E.tttBlunder(e.t); if (a >= 0) app.chanceUsed = true; }
+        if (a < 0) a = E.tttBot(e.t, app.bot.level, "win");
+      }
       else if (e.phase === "prelude") a = E.tttBot(e.t, app.bot.level, e.goal);
       else a = await searchMain(e.g, e.g.choosing ? Math.max(350, app.bot.ms * 0.4) : app.bot.ms, job);
       const minShow = app.mode === "classic" || e.phase === "prelude" ? 520 : 650;
@@ -2093,13 +2144,13 @@ function renderClassic(ctx) {
 }
 
 // ---------------- shop ----------------
+const ICON_CLIP = '<svg class="ico-clip" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5 V16 a3 3 0 0 0 6 0 V6 a4.5 4.5 0 0 0 -9 0 V16.5 a6 6 0 0 0 12 0 V8"/></svg>';
+const ICON_COIN = '<svg class="ico-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5 L15.5 15.5 M15.5 8.5 L8.5 15.5"/></svg>';
+const curIcon = cur => (cur === "coins" ? ICON_COIN : ICON_CLIP);
 function walletHTML() {
-  return `<span class="cur" title="${t("fives")}"><i class="ico-five" aria-hidden="true">${t("fiveIcon")}</i><b>${profile.fives}</b> <span class="cur-name">${t("fives")}</span></span>` +
-    `<span class="cur" title="${t("ink")}"><svg class="ico-ink" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C 8 9, 5 12, 5 16 a7 7 0 0 0 14 0 C 19 12, 16 9, 12 2 Z"/></svg><b>${profile.ink}</b> <span class="cur-name">${t("ink")}</span></span>`;
+  return `<span class="cur" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b> <span class="cur-name">${t("clips")}</span></span>` +
+    `<span class="cur" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b> <span class="cur-name">${t("coins")}</span></span>`;
 }
-const curIcon = cur => cur === "ink"
-  ? '<svg class="ico-ink" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C 8 9, 5 12, 5 16 a7 7 0 0 0 14 0 C 19 12, 16 9, 12 2 Z"/></svg>'
-  : `<i class="ico-five" aria-hidden="true">${t("fiveIcon")}</i>`;
 let shopNote = null, justBought = null;
 function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); }
 function itemName(id) { return I18N[lang].items[id]; }
@@ -2114,18 +2165,18 @@ function itemCard(it, n) {
   const pv = previewSkin(it), own = owns(it.id), on = profile.equip[it.kind] === it.id;
   const btn = on ? `<button class="btn small" type="button" disabled>${t("equipped")}</button>`
     : own ? `<button class="btn small" type="button" data-equip="${it.id}">${t("equip")}</button>`
-    : `<button class="btn small ${it.cur === "ink" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
+    : `<button class="btn small ${it.cur === "coins" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
   return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${justBought === it.id ? " just-bought" : ""}">
     <div class="item-prev">${markSVG(pv.sym, 41 + n, justBought === it.id ? "fresh" : "", false, pv.sk)}</div>
     <div class="item-name">${itemName(it.id)}</div>
-    <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : ""}</div>
+    <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : it.premium ? t("beatNet") : ""}</div>
     ${btn}</div>`;
 }
 function renderShop() {
   $("shopWallet").innerHTML = walletHTML();
   const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
   const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
-  const packs = INK_PACKS.map(n => `<div class="item pack"><div class="item-prev ink-prev">${curIcon("ink")}</div><div class="item-name">${n} ${t("ink")}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-ink="${n}">${t("getInk", n)}</button></div>`).join("");
+  const packs = COIN_PACKS.map(n => `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${n} ${t("coins")}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-coins="${n}">${t("getCoins", n)}</button></div>`).join("");
   $("shopBody").innerHTML =
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
@@ -2134,7 +2185,7 @@ function renderShop() {
     sec(t("secOShape"), by("oShape", false)) +
     sec(t("secXColor"), by("xColor", false)) +
     sec(t("secOColor"), by("oColor", false)) +
-    `<section class="shop-sec"><h3>${t("secInk")}</h3><p class="shop-hint">${t("inkTest")}</p><div class="items">${packs}</div></section>`;
+    `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsTest")}</p><div class="items">${packs}</div></section>`;
   justBought = null;
 }
 function shopAction(ev) {
@@ -2144,21 +2195,21 @@ function shopAction(ev) {
     const it = itemOf(b.dataset.buy);
     if (!it || owns(it.id)) return;
     const have = profile[it.cur];
-    if (have < it.price) { shopNote = [it.cur === "fives" ? t("notEnoughFives", it.price - have) : t("notEnoughInk", it.price - have), "warn"]; renderShop(); return; }
+    if (have < it.price) { shopNote = [it.cur === "clips" ? t("notEnoughClips", it.price - have) : t("notEnoughCoins", it.price - have), "warn"]; renderShop(); return; }
     profile[it.cur] -= it.price;
     profile.owned.push(it.id);
     profile.equip[it.kind] = it.id;
     skinRev++; saveProfile();
-    shopNote = [t("bought", itemName(it.id)), "ok"]; justBought = it.id;
+    shopNote = it.premium ? [t("buyQuote"), "quote"] : [t("bought", itemName(it.id)), "ok"]; justBought = it.id;
     renderShop();
   } else if (b.dataset.equip) {
     const it = itemOf(b.dataset.equip);
     if (!it || !owns(it.id)) return;
     profile.equip[it.kind] = it.id; skinRev++; saveProfile();
     shopNote = null; renderShop();
-  } else if (b.dataset.ink) {
-    profile.ink += +b.dataset.ink; saveProfile();
-    shopNote = [t("inkAdded", +b.dataset.ink), "ok"]; renderShop();
+  } else if (b.dataset.coins) {
+    profile.coins += +b.dataset.coins; saveProfile();
+    shopNote = [t("coinsAdded", +b.dataset.coins), "ok"]; renderShop();
   }
 }
 
