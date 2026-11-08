@@ -110,14 +110,53 @@ button { font-family: inherit; }
 .tagline { font-size: 17px; color: var(--pencil); margin: 0; max-width: 48ch; animation: fadeUp .5s .7s both; }
 .tagline em { font-style: normal; color: var(--pencil-soft); }
 
-.side-pick { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; animation: fadeUp .5s .55s both; }
-.side-pick span { color: var(--pencil); }
+.menu-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(290px, 360px); gap: 22px 32px; align-items: center; }
+.profile {
+  background: var(--paper); border: 2px solid var(--pen); border-radius: 8px 14px 6px 16px; box-shadow: 4px 5px 0 var(--pen);
+  padding: 14px 16px; display: grid; gap: 10px; animation: fadeUp .5s .45s both; transform: rotate(.4deg);
+}
+.pf-top { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.pf-ava {
+  width: 56px; height: 56px; border-radius: 50%; overflow: hidden; display: grid; place-items: center;
+  border: 2px solid var(--pen); background: #e9eef8; box-shadow: 2px 2px 0 var(--pen);
+}
+.pf-ava img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pf-initial { font: 700 34px/1 var(--font-hand); color: var(--ink-x); transform: translateY(-1px); }
+.pf-ava.guest { background: var(--paper); }
+.pf-ava svg { width: 78%; height: 78%; fill: none; stroke: var(--pencil-soft); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.pf-name { font: 700 28px/1 var(--font-hand); color: var(--pen); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-sub { font-size: 13px; line-height: 1.3; color: var(--pencil-soft); overflow-wrap: anywhere; }
+.icon-btn {
+  appearance: none; width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer;
+  border: 1.5px solid var(--pen); border-radius: 50% 46% 52% 48%; background: var(--paper); color: var(--pen);
+  box-shadow: 2px 2px 0 var(--pen); transition: transform .08s, box-shadow .08s;
+}
+.icon-btn:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--pen); }
+.icon-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--pen); }
+.icon-btn:focus-visible { outline: 2px solid var(--ink-x); outline-offset: 2px; }
+.icon-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.icon-btn svg .spk { fill: currentColor; fill-opacity: .12; }
+.icon-btn[aria-pressed="false"] { color: var(--pencil-soft); }
+.pf-wallet { gap: 8px; }
+.pf-stats { font-size: 13.5px; color: var(--pencil); font-variant-numeric: tabular-nums; }
+.pf-stats b { color: var(--pen); }
+.pf-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pf-row > span { color: var(--pencil); font-size: 14px; }
+.profile .seg { font-size: 21px; padding: 4px 16px 6px; }
+.profile .seg.lang { font-size: 13px; padding: 8px 11px; }
+.tg-login { display: grid; gap: 8px; justify-items: start; }
+.tg-login:empty { display: none; }
+.tg-btn { display: inline-flex; align-items: center; gap: 7px; }
+.ico-tg { width: 17px; height: 17px; fill: #229ed9; }
+.btn.primary .ico-tg { fill: #fff; }
+.link-btn { appearance: none; border: 0; background: none; padding: 0; font: inherit; font-size: 13px; color: var(--pencil-soft); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tg-widget { display: grid; gap: 6px; }
+.tg-widget:empty { display: none; }
 .seg-group { display: inline-flex; border: 1.5px solid var(--pen); border-radius: 4px 9px 5px 10px; overflow: hidden; box-shadow: 2px 2px 0 var(--pen); }
 .seg { appearance: none; border: 0; background: var(--paper); font: 700 24px/1 var(--font-hand); padding: 5px 18px 7px; cursor: pointer; color: var(--pencil-soft); transition: background .2s, color .2s; }
 .seg + .seg { border-left: 1.5px solid var(--pen); }
 .seg.lang { font: 600 14px/1 var(--font-body); padding: 9px 12px; letter-spacing: .04em; }
 .seg.lang[aria-pressed="true"] { background: var(--pen); color: var(--paper); }
-.lang-label { margin-left: 10px; }
 .seg[aria-pressed="true"][data-side="1"] { background: var(--ink-x); color: #fff; }
 .seg[aria-pressed="true"][data-side="2"] { background: var(--ink-o); color: #fff; }
 
@@ -177,11 +216,16 @@ button { font-family: inherit; }
 
 /* ---------- 9x9 board ---------- */
 .board {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;
-  background: var(--pen); padding: 5px; border-radius: 3px;
-  box-shadow: 0 1px 0 rgba(0,0,0,.05), 0 8px 24px -14px rgba(43,58,85,.45);
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  background: transparent; padding: 0; position: relative;
   aspect-ratio: 1; width: 100%;
 }
+.hand-grid { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 3; }
+.hand-grid path { fill: none; stroke: var(--pen); stroke-linecap: round; }
+.hand-grid.drawn path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .32s ease-out forwards; }
+.hand-grid.g9 path { stroke-width: .95; }
+.hand-grid.g3 path { stroke-width: 1.35; }
+.hand-grid.gm path { stroke-width: 1.6; }
 .in-prelude .board, .in-prelude .main-only { display: none !important; }
 .sub { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); background: var(--paper); isolation: isolate; }
 .sub::before {
@@ -207,7 +251,12 @@ button { font-family: inherit; }
 .cell[data-legal="0"] { cursor: default; }
 .cell:focus-visible { outline: 2px solid var(--ink-x); outline-offset: -2px; z-index: 3; }
 .cell > svg.mark { position: absolute; inset: 14%; width: 72%; height: 72%; overflow: visible; transition: opacity .2s .3s; }
-.cell.last::after { content: ""; position: absolute; right: 3px; bottom: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--pen); opacity: .7; }
+.cell.last { background: rgba(255,232,120,.55); }
+.cell.last::after { content: ""; position: absolute; right: 3px; bottom: 3px; width: 5px; height: 5px; border-radius: 50%; background: var(--pen); opacity: .55; }
+.cell > svg.mark.fresh { animation: stamp .32s cubic-bezier(.3,1.5,.5,1); }
+@keyframes stamp { 0% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.sub.only::before { animation: markerBreath 1.9s ease-in-out .4s infinite; }
+@keyframes markerBreath { 0%, 100% { opacity: .92; } 50% { opacity: .55; } }
 .board.locked .cell { cursor: progress; }
 .board.strike-mode .cell[data-legal="1"] { cursor: crosshair; }
 .board.strike-mode .cell[data-legal="1"]:hover { background: rgba(196,54,47,.12); }
@@ -244,6 +293,10 @@ button { font-family: inherit; }
 .overlay.x path { stroke: var(--ink-x); } .overlay.o path { stroke: var(--ink-o); }
 .overlay.fresh path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .45s ease-out forwards; }
 .overlay.fresh path:nth-child(2) { animation-delay: .2s; }
+.ring { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; overflow: visible; }
+.ring path { fill: none; stroke-width: 2.4; stroke-linecap: round; opacity: .7; }
+.ring.x path { stroke: var(--ink-x); } .ring.o path { stroke: var(--ink-o); }
+.ring.fresh path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .55s .15s ease-out forwards; }
 .sub.neutral { background-image: repeating-linear-gradient(-45deg, transparent 0 7px, rgba(107,112,122,.18) 7px 8px); }
 
 .fly { position: fixed; z-index: 50; pointer-events: none; }
@@ -287,10 +340,8 @@ aside.notes { display: grid; gap: 22px; }
 .stars-count .st { color: var(--gold); display: inline-block; }
 .stars-count .st.pop { animation: popStar .65s cubic-bezier(.3,1.6,.5,1); }
 @keyframes popStar { 0% { transform: scale(.2) rotate(-50deg); } 60% { transform: scale(1.7) rotate(12deg); } 100% { transform: scale(1) rotate(0); } }
-.main-board { display: grid; grid-template-columns: repeat(3, 1fr); width: 168px; aspect-ratio: 1; border: 2px solid var(--pen); background: var(--paper); position: relative; }
-.mcell { border-right: 2px solid var(--pen); border-bottom: 2px solid var(--pen); position: relative; }
-.mcell:nth-of-type(3n) { border-right: 0; }
-.mcell:nth-of-type(n+7) { border-bottom: 0; }
+.main-board { display: grid; grid-template-columns: repeat(3, 1fr); width: 168px; aspect-ratio: 1; position: relative; }
+.mcell { position: relative; }
 .mcell .n { position: absolute; left: 4px; top: 0; font-family: var(--font-hand); font-size: 14px; color: var(--grid-strong); }
 .mcell svg { position: absolute; inset: 16%; width: 68%; height: 68%; overflow: visible; }
 .mcell.neutral { background-image: repeating-linear-gradient(-45deg, transparent 0 6px, rgba(107,112,122,.3) 6px 7px); }
@@ -298,7 +349,9 @@ aside.notes { display: grid; gap: 22px; }
 .mcell.arrive .mark.fresh path:nth-child(2) { animation-delay: .76s; }
 .mcell.arrive { animation: thump .45s .7s ease-out; }
 .strike-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.strike-line line { stroke: var(--pen); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .45s .35s ease-out forwards; }
+.strike-line path { fill: none; stroke: var(--pen); stroke-width: 3.2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .45s .35s ease-out forwards; }
+.strike-line.x path, .ttt-line.x path { stroke: var(--ink-x); }
+.strike-line.o path, .ttt-line.o path { stroke: var(--ink-o); }
 .buttons { display: flex; flex-wrap: wrap; gap: 10px; }
 .log { margin: 0; padding: 0; list-style: none; max-height: 210px; overflow-y: auto; font-variant-numeric: tabular-nums; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; font-size: 14px; }
 .log li { padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -309,15 +362,14 @@ aside.notes { display: grid; gap: 22px; }
 
 /* ---------- 3x3 boards (warm-up and Ностальгия) ---------- */
 .ttt { display: grid; grid-template-columns: repeat(3, 1fr); aspect-ratio: 1; width: 100%; position: relative; background: transparent; }
-.tcell { appearance: none; border: 0; background: transparent; position: relative; cursor: pointer; padding: 0; border-right: 4px solid var(--pen); border-bottom: 4px solid var(--pen); }
-.tcell:nth-of-type(3n) { border-right: 0; }
-.tcell:nth-of-type(n+7) { border-bottom: 0; }
+.tcell { appearance: none; border: 0; background: transparent; position: relative; cursor: pointer; padding: 0; }
 .tcell:hover:not(:disabled) { background: rgba(31,63,168,.07); }
 .tcell:disabled { cursor: default; }
 .tcell:focus-visible { outline: 2px solid var(--ink-x); outline-offset: -4px; }
 .tcell svg { position: absolute; inset: 15%; width: 70%; height: 70%; overflow: visible; }
 .ttt-line { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
-.ttt-line line { stroke: var(--pen); stroke-width: 7; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .4s .3s ease-out forwards; }
+.ttt-line { z-index: 4; }
+.ttt-line path { fill: none; stroke: var(--pen); stroke-width: 9; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .42s .3s ease-out forwards; opacity: .9; }
 .classic-wrap { position: relative; }
 .classic-wrap .ttt { box-shadow: none; }
 
@@ -430,6 +482,8 @@ aside.notes { display: grid; gap: 22px; }
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
   .app { padding-left: 16px; }
+  .menu-top { grid-template-columns: 1fr; }
+  .profile { transform: none; }
   body { background-size: 0 0, 22px 22px, 22px 22px; }
   .modes, .game-grid, .classic-grid { grid-template-columns: 1fr; }
   .game-grid, .classic-grid { gap: 22px; }
@@ -442,11 +496,15 @@ aside.notes { display: grid; gap: 22px; }
   .bar-title { grid-column: 2; grid-row: 1; flex-direction: column; gap: 0; align-items: flex-start; }
   .game-bar > [data-act="rules"] { grid-column: 3; grid-row: 1; }
   .score-chip { grid-column: 1 / -1; justify-self: start; }
-  .mini-logo { font-size: 30px; }
+  .mini-logo { font-size: 26px; }
+  .vs { font-size: 13px; line-height: 1.25; }
+  .vs b { font-size: 19px; }
+  .game-bar .btn.small { padding: 7px 9px; }
   .status { min-height: 2.4em; font-size: 21px; }
 }
 @media (max-width: 420px) {
-  .board { gap: 3px; padding: 3px; }
+  .board { gap: 4px; }
+  .hand-grid.g9 path { stroke-width: 1.05; }
   .mark path { stroke-width: 11; }
   .mode-card h2 { font-size: 36px; }
   .coin-stage { min-height: 380px; }
@@ -456,11 +514,6 @@ aside.notes { display: grid; gap: 22px; }
   .coin.golden { animation: none; }
 }
 
-.tg-login { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-.tg-login .login-as { font-size: 14px; color: var(--pencil); }
-.tg-widget { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.tg-widget:empty { display: none; }
-
 </style>
 </head>
 <body>
@@ -468,32 +521,43 @@ aside.notes { display: grid; gap: 22px; }
 
   <!-- ================= MENU ================= -->
   <section class="screen menu active" id="scr-menu" aria-labelledby="logoTitle">
-    <div class="menu-hero">
-      <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
-        <title id="logoTitle">X02.0</title>
-        <path class="stroke lx s1" pathLength="1" d="M22 28 Q 60 72 104 122"/>
-        <path class="stroke lx s2" pathLength="1" d="M102 26 Q 66 74 20 122"/>
-        <path class="stroke lo s3" pathLength="1" d="M168 24 C 196 24 205 62 203 86 C 201 112 186 127 164 125 C 141 123 130 99 132 72 C 134 45 147 25 170 27"/>
-        <path class="stroke lv s4" pathLength="1" d="M234 52 C 237 27 279 22 285 47 C 291 71 254 93 231 121 L 293 119"/>
-        <circle class="dot" cx="315" cy="116" r="7.5"/>
-        <path class="stroke lv s6" pathLength="1" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
-        <path class="underline" pathLength="1" d="M18 142 C 140 133 300 147 424 137"/>
-      </svg>
-      <p class="tagline" data-i18n-html="tagline"></p>
-    </div>
-
-    <div class="side-pick">
-      <span data-i18n="sidePick"></span>
-      <div class="seg-group" role="group" aria-label="За кого играть с ботом">
-        <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
-        <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
+    <div class="menu-top">
+      <div class="menu-hero">
+        <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
+          <title id="logoTitle">X02.0</title>
+          <path class="stroke lx s1" pathLength="1" d="M22 28 Q 60 72 104 122"/>
+          <path class="stroke lx s2" pathLength="1" d="M102 26 Q 66 74 20 122"/>
+          <path class="stroke lo s3" pathLength="1" d="M168 24 C 196 24 205 62 203 86 C 201 112 186 127 164 125 C 141 123 130 99 132 72 C 134 45 147 25 170 27"/>
+          <path class="stroke lv s4" pathLength="1" d="M234 52 C 237 27 279 22 285 47 C 291 71 254 93 231 121 L 293 119"/>
+          <circle class="dot" cx="315" cy="116" r="7.5"/>
+          <path class="stroke lv s6" pathLength="1" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
+          <path class="underline" pathLength="1" d="M18 142 C 140 133 300 147 424 137"/>
+        </svg>
+        <p class="tagline" data-i18n-html="tagline"></p>
       </div>
-      <span class="lang-label" data-i18n="langPick"></span>
-      <div class="seg-group lang-group" role="group" aria-label="Language">
-        <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
-        <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
-        <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
-      </div>
+      <section class="profile" aria-labelledby="pfName">
+        <div class="pf-top">
+          <div class="pf-ava" id="pfAva"></div>
+          <div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div>
+          <button class="icon-btn" type="button" id="soundBtn" data-act="sound"></button>
+        </div>
+        <div class="wallet pf-wallet" id="menuWallet"></div>
+        <div class="pf-stats" id="pfStats"></div>
+        <div class="pf-row"><span data-i18n="sidePick"></span>
+          <div class="seg-group" role="group" aria-label="За кого играть с ботом">
+            <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
+            <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
+          </div>
+        </div>
+        <div class="pf-row"><span data-i18n="langPick"></span>
+          <div class="seg-group lang-group" role="group" aria-label="Language">
+            <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
+            <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
+            <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
+        <div class="tg-login" id="tgLogin"></div>
+      </section>
     </div>
 
     <div class="modes">
@@ -515,9 +579,7 @@ aside.notes { display: grid; gap: 22px; }
 
     <div class="menu-foot">
       <button class="btn primary" type="button" data-act="shop" data-i18n="shop"></button>
-      <span class="wallet" id="menuWallet"></span>
       <button class="btn" type="button" data-act="rules" data-i18n="rules"></button>
-      <div class="tg-login" id="tgLogin"></div>
       <small data-i18n="footNote"></small>
     </div>
   </section>
@@ -1369,7 +1431,7 @@ ru: {
   classicName: 'Ностальгия', classicDesc: 'Обычные крестики-нолики 3×3. Как на последней парте.',
   rules: 'Правила', footNote: 'Тестовая версия. Онлайн-игра появится позже.',
   menuBtn: '← Меню', preludeTitle: 'Разминка',
-  preludeDesc: 'Обычные крестики-нолики, начинает X. Победитель получает ★ на старт, проигравший ходит первым в партии. Ничья — бросаете монету.',
+  preludeDesc: 'Обычные крестики-нолики, начинает X. Ничья — бросаете монету.',
   startMatch: 'Начать партию', skipPrelude: 'Пропустить разминку',
   coinTitle: 'Ничья. Бросаем монету', coinToss: 'Бросить монету',
   again: 'Ещё партия', toMenu: 'В меню', labelStars: 'Звёзды',
@@ -1380,12 +1442,12 @@ ru: {
   scoreMenu: (m, b, d) => `ты ${m} : ${b}${d ? ` · ничьих ${d}` : ''}`,
   playVs: (n, l) => `Играть против бота ${n}. ${l}`,
   vsBot: (sym, n) => `Ты (${sym}) против <b>${n}</b>`,
-  vsFriend: (x, o) => `${x} против ${o} · за одним экраном`,
+  vsFriend: (x, o) => `${x} против ${o}`,
   chip: (m, b, n, d) => `ты ${m} : ${b} ${n}${d ? ` · ничьих ${d}` : ''}`,
   you: 'Ты', youAcc: 'тебя', opponentAcc: 'соперника',
   yourTurn: 'Твой ход', thinks: n => `${n} думает`, turnOf: s => `Ход ${s}`,
   gameOver: 'Партия окончена', warmupOver: 'Разминка окончена',
-  warmupSub: 'Разминка: обычные крестики-нолики', needCoin: 'Ничья, нужна монета',
+  warmupSub: 'Три в ряд — и разминка твоя', needCoin: 'Ничья, нужна монета',
   warmupHint: 'Победитель получает ★, проигравший ходит первым. Решай, что тебе нужнее.',
   starOwner: (you, n) => you ? 'звезда твоя' : `звезда у ${n}`,
   starOwnerSym: s => `★ получает ${s}`,
@@ -1444,6 +1506,9 @@ ru: {
   loginHint: 'Прогресс сохранится на твоём Telegram-аккаунте и будет общим с игрой в боте.',
   capped: 'Лимит скрепок на сегодня исчерпан — завтра снова.',
   coinsBot: 'Монеты покупаются в боте за Telegram Stars — после покупки они появятся и здесь.',
+  guest: 'Гость', guestSub: 'Прогресс только на этом устройстве',
+  pfStats: (w, l, d) => `Побед <b>${w}</b> · Поражений <b>${l}</b> · Ничьих <b>${d}</b>`, pfNoGames: 'Сыграй первую партию',
+  soundOn: 'Включить звук', soundOff: 'Выключить звук',
   secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secCoins: 'Монеты',
   coinsTest: 'Тестовая версия: монеты начисляются бесплатно. Настоящая оплата появится в Play Market.',
   notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов или обменяй монеты.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
@@ -1484,7 +1549,7 @@ uz: {
   classicName: 'Nostalgiya', classicDesc: "Oddiy 3×3 iks-nol. Xuddi oxirgi partada o'ynagandek.",
   rules: 'Qoidalar', footNote: "Test versiyasi. Onlayn o'yin keyinroq qo'shiladi.",
   menuBtn: '← Menyu', preludeTitle: 'Razminka',
-  preludeDesc: "Oddiy iks-nol, X boshlaydi. G'olib boshlanishiga ★ oladi, yutqazgan esa o'yinda birinchi yuradi. Durang bo'lsa — tanga tashlaysiz.",
+  preludeDesc: "Oddiy iks-nol, X boshlaydi. Durang bo'lsa — tanga tashlaysiz.",
   startMatch: "O'yinni boshlash", skipPrelude: "Razminkani o'tkazib yuborish",
   coinTitle: 'Durang. Tanga tashlaymiz', coinToss: 'Tanga tashlash',
   again: "Yana o'ynash", toMenu: 'Menyuga', labelStars: 'Yulduzlar',
@@ -1495,12 +1560,12 @@ uz: {
   scoreMenu: (m, b, d) => `siz ${m} : ${b}${d ? ` · durang ${d}` : ''}`,
   playVs: (n, l) => `${n} botiga qarshi o'ynash. ${l}`,
   vsBot: (sym, n) => `Siz (${sym}) va <b>${n}</b>`,
-  vsFriend: (x, o) => `${x} va ${o} · bitta ekranda`,
+  vsFriend: (x, o) => `${x} va ${o}`,
   chip: (m, b, n, d) => `siz ${m} : ${b} ${n}${d ? ` · durang ${d}` : ''}`,
   you: 'Siz', youAcc: 'sizni', opponentAcc: 'raqibni',
   yourTurn: 'Sizning navbatingiz', thinks: n => `${n} o'ylayapti`, turnOf: s => `${s} navbati`,
   gameOver: "O'yin tugadi", warmupOver: 'Razminka tugadi',
-  warmupSub: 'Razminka: oddiy iks-nol', needCoin: 'Durang, tanga hal qiladi',
+  warmupSub: "Uchtasi bir qatorda — razminka seniki", needCoin: 'Durang, tanga hal qiladi',
   warmupHint: "G'olib ★ oladi, yutqazgan birinchi yuradi. Sizga qaysi biri kerakroq — o'zingiz hal qiling.",
   starOwner: (you, n) => you ? 'yulduz sizniki' : `yulduz ${n}da`,
   starOwnerSym: s => `★ ni ${s} oladi`,
@@ -1559,6 +1624,9 @@ uz: {
   loginHint: "Progress Telegram akkauntingizda saqlanadi va botdagi o'yin bilan umumiy bo'ladi.",
   capped: 'Bugungi skrepka limiti tugadi — ertaga yana.',
   coinsBot: "Tangalar botda Telegram Stars evaziga sotib olinadi — keyin bu yerda ham paydo bo'ladi.",
+  guest: 'Mehmon', guestSub: 'Progress faqat shu qurilmada',
+  pfStats: (w, l, d) => `G'alaba <b>${w}</b> · Mag'lubiyat <b>${l}</b> · Durang <b>${d}</b>`, pfNoGames: "Birinchi o'yinni o'ynang",
+  soundOn: 'Ovozni yoqish', soundOff: "Ovozni o'chirish",
   secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secCoins: 'Tangalar',
   coinsTest: "Test versiyasi: tangalar bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
   notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting yoki tangalarni almashtiring.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
@@ -1599,7 +1667,7 @@ en: {
   classicName: 'Nostalgia', classicDesc: 'Classic 3×3 tic-tac-toe. Like in the back row at school.',
   rules: 'Rules', footNote: 'Test version. Online play is coming later.',
   menuBtn: '← Menu', preludeTitle: 'Warm-up',
-  preludeDesc: 'Classic tic-tac-toe, X starts. The winner gets a ★ to start with, the loser moves first in the match. A draw: you toss a coin.',
+  preludeDesc: 'Classic tic-tac-toe, X starts. A draw: you toss a coin.',
   startMatch: 'Start the match', skipPrelude: 'Skip the warm-up',
   coinTitle: 'Draw. Tossing a coin', coinToss: 'Toss the coin',
   again: 'Play again', toMenu: 'Menu', labelStars: 'Stars',
@@ -1610,12 +1678,12 @@ en: {
   scoreMenu: (m, b, d) => `you ${m} : ${b}${d ? ` · draws ${d}` : ''}`,
   playVs: (n, l) => `Play against the bot ${n}. ${l}`,
   vsBot: (sym, n) => `You (${sym}) vs <b>${n}</b>`,
-  vsFriend: (x, o) => `${x} vs ${o} · one screen`,
+  vsFriend: (x, o) => `${x} vs ${o}`,
   chip: (m, b, n, d) => `you ${m} : ${b} ${n}${d ? ` · draws ${d}` : ''}`,
   you: 'You', youAcc: 'you', opponentAcc: 'your opponent',
   yourTurn: 'Your move', thinks: n => `${n} is thinking`, turnOf: s => `${s} to move`,
   gameOver: 'Game over', warmupOver: 'Warm-up over',
-  warmupSub: 'Warm-up: classic tic-tac-toe', needCoin: 'Draw, the coin decides',
+  warmupSub: 'Three in a row wins the warm-up', needCoin: 'Draw, the coin decides',
   warmupHint: 'The winner gets a ★, the loser moves first. Decide what you need more.',
   starOwner: (you, n) => you ? 'the star is yours' : `the star goes to ${n}`,
   starOwnerSym: s => `${s} gets the ★`,
@@ -1674,6 +1742,9 @@ en: {
   loginHint: 'Your progress is saved to your Telegram account and shared with the game in the bot.',
   capped: 'Daily paperclip limit reached — more tomorrow.',
   coinsBot: "Coins are bought in the bot with Telegram Stars — they'll show up here too.",
+  guest: 'Guest', guestSub: 'Progress is saved on this device only',
+  pfStats: (w, l, d) => `Wins <b>${w}</b> · Losses <b>${l}</b> · Draws <b>${d}</b>`, pfNoGames: 'Play your first game',
+  soundOn: 'Sound on', soundOff: 'Sound off',
   secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secCoins: 'Coins',
   coinsTest: 'Test version: coins are added for free. Real payments will come with the Play Store release.',
   notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots or exchange coins.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
@@ -1732,6 +1803,64 @@ const store = {
 };
 
 // signed-in session for the web/PWA version ("Log in with Telegram"); inside Telegram initData is used instead
+// ---------------- sound: everything is synthesized, no audio files ----------------
+const SND = (() => {
+  let ctx = null, master = null, on = store.get("sound", true) !== false, noiseBuf = null;
+  function ac() {
+    if (!ctx) {
+      const C = window.AudioContext || window.webkitAudioContext;
+      if (!C) return null;
+      ctx = new C(); master = ctx.createGain(); master.gain.value = 0.55; master.connect(ctx.destination);
+    }
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function noise() {
+    if (noiseBuf) return noiseBuf;
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return noiseBuf;
+  }
+  // a pen stroke on paper: band-passed noise with a frequency sweep
+  function scratch(t0, dur, f0, f1, gain, q) {
+    const src = ctx.createBufferSource(); src.buffer = noise();
+    const bp = ctx.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = q || 1.2;
+    bp.frequency.setValueAtTime(f0, t0); bp.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + dur * 0.25); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0, Math.random() * 0.5); src.stop(t0 + dur + 0.02);
+  }
+  function tone(freq, t0, dur, gain, type, f1) {
+    const o = ctx.createOscillator(); o.type = type || "sine";
+    o.frequency.setValueAtTime(freq, t0);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.02);
+  }
+  const FX = {
+    x: n => { scratch(n, 0.09, 3200, 1900, 0.5); scratch(n + 0.12, 0.09, 3000, 1800, 0.5); },
+    o: n => { scratch(n, 0.2, 2200, 3400, 0.42, 0.9); },
+    star: n => { scratch(n, 0.16, 2600, 2000, 0.4); [1568, 2093, 2637].forEach((f, i) => tone(f, n + 0.05 + i * 0.06, 0.25, 0.05)); },
+    strike: n => { scratch(n, 0.32, 1400, 380, 0.85, 0.7); scratch(n + 0.1, 0.22, 900, 300, 0.6, 0.7); },
+    capture: n => { [523.25, 659.25, 783.99].forEach((f, i) => tone(f, n + i * 0.07, 0.42, 0.09, "triangle")); },
+    choose: n => { tone(880, n, 0.12, 0.08, "triangle"); tone(1175, n + 0.07, 0.16, 0.07, "triangle"); },
+    coin: n => { tone(1318.5, n, 0.18, 0.12); tone(1975.5, n + 0.07, 0.35, 0.1); },
+    flip: n => { for (let i = 0; i < 9; i++) tone(2400 + i * 60, n + i * 0.16, 0.03, 0.04, "square"); },
+    win: n => { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, n + i * 0.11, 0.5, 0.1, "triangle")); },
+    lose: n => { tone(392, n, 0.32, 0.1, "triangle"); tone(311.1, n + 0.22, 0.32, 0.1, "triangle"); tone(261.6, n + 0.44, 0.6, 0.1, "triangle", 196); },
+    draw: n => { tone(440, n, 0.3, 0.08, "triangle"); tone(440, n + 0.2, 0.4, 0.07, "triangle"); },
+    click: n => { tone(1600, n, 0.04, 0.05, "square"); }
+  };
+  return {
+    get on() { return on; },
+    toggle() { on = !on; store.set("sound", on); if (on) this.play("click"); return on; },
+    unlock() { if (on) ac(); },
+    play(k, delay) { if (!on || !FX[k]) return; try { if (!ac()) return; FX[k](ctx.currentTime + 0.01 + (delay || 0)); } catch (e) {} }
+  };
+})();
 let session = store.get("session", null);
 const authBody = () => TG ? { initData: TG.initData } : (session && session.token ? { session: session.token } : null);
 const serverOn = () => API_OK && !!authBody();
@@ -1913,8 +2042,48 @@ function renderLogin() {
   if (!box) return;
   if (TG || !API_OK) { box.innerHTML = ""; return; }
   box.innerHTML = session && session.token
-    ? `<span class="login-as">${t("loggedAs", esc(session.name || ""))}</span><button class="btn small" type="button" data-act="logout">${t("logout")}</button>`
-    : `<button class="btn small" type="button" data-act="login">${t("login")}</button><div id="tgWidget" class="tg-widget"></div>`;
+    ? `<button class="link-btn" type="button" data-act="logout">${t("logout")}</button>`
+    : `<button class="btn small tg-btn" type="button" data-act="login">${ICON_TG}${t("login")}</button><div id="tgWidget" class="tg-widget"></div>`;
+}
+// ---- player profile card (menu)
+const ICON_TG = '<svg class="ico-tg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 4.2 2.9 11.4c-1 .4-1 1.8.1 2.1l4.6 1.4 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.4 4.6 3.4c.7.5 1.7.1 1.9-.7l3.2-15.1c.2-1.2-.9-2.1-2.1-1.9Z"/></svg>';
+const ICON_SOUND = on => `<svg viewBox="0 0 24 24" aria-hidden="true"><path class="spk" d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/>${on ? '<path d="M15.5 9c1.2 1.6 1.2 4.4 0 6M18 6.5c2.6 3 2.6 8 0 11"/>' : '<path d="M16 9.5l5 5M21 9.5l-5 5"/>'}</svg>`;
+const SILHOUETTE = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 18 C 64 18 70 30 69 41 C 68 54 60 62 50 62 C 40 62 32 54 31 41 C 30 30 36 18 50 18 Z M 18 92 C 20 74 33 66 50 66 C 67 66 80 74 82 92"/></svg>';
+function playerInfo() {
+  if (TG) {
+    const u = (TG.initDataUnsafe && TG.initDataUnsafe.user) || {};
+    return { name: [u.first_name, u.last_name].filter(Boolean).join(" ") || "Telegram", user: u.username ? "@" + u.username : "", photo: u.photo_url || "", logged: true };
+  }
+  if (session && session.token) {
+    const nm = session.name || "";
+    return { name: session.first || nm || "Telegram", user: session.user ? "@" + session.user : (nm[0] === "@" ? nm : ""), photo: session.photo || "", logged: true };
+  }
+  return { name: t("guest"), user: t("guestSub"), photo: "", logged: false };
+}
+function renderProfile() {
+  const info = playerInfo(), ava = $("pfAva");
+  if (!ava) return;
+  const initial = (info.name || "?").trim().charAt(0).toUpperCase() || "?";
+  const key = `${info.logged}|${info.photo}|${initial}`;
+  if (ava.dataset.k !== key) {
+    ava.dataset.k = key;
+    ava.classList.toggle("guest", !info.logged);
+    ava.innerHTML = info.photo ? `<img src="${esc(info.photo)}" alt="" referrerpolicy="no-referrer">` : info.logged ? `<span class="pf-initial">${esc(initial)}</span>` : SILHOUETTE;
+    const img = ava.querySelector("img");
+    if (img) img.addEventListener("error", () => { ava.innerHTML = `<span class="pf-initial">${esc(initial)}</span>`; }, { once: true });
+  }
+  $("pfName").textContent = info.name;
+  $("pfSub").textContent = info.user;
+  let w = 0, l = 0, d = 0;
+  for (const b of [...BOTS.x02, ...BOTS.classic]) { const s = scoreOf(b.id); w += s.me; l += s.bot; d += s.draw; }
+  $("pfStats").innerHTML = w + l + d ? t("pfStats", w, l, d) : t("pfNoGames");
+  $("menuWallet").innerHTML = walletHTML();
+  const sb = $("soundBtn");
+  sb.innerHTML = ICON_SOUND(SND.on);
+  sb.setAttribute("aria-pressed", String(SND.on));
+  sb.setAttribute("aria-label", SND.on ? t("soundOff") : t("soundOn"));
+  sb.title = sb.getAttribute("aria-label");
+  renderLogin();
 }
 function showLoginWidget() {
   const w = $("tgWidget");
@@ -1937,7 +2106,7 @@ async function handleLoginReturn() {
   try {
     const r = await fetch(API_BASE + "/api/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tg }) });
     const j = await r.json();
-    if (j.session) { session = { token: j.session, name: j.name }; store.set("session", session); refreshWalletViews(); }
+    if (j.session) { session = { token: j.session, name: j.name, first: [tg.first_name, tg.last_name].filter(Boolean).join(" "), user: tg.username || "", photo: tg.photo_url || "" }; store.set("session", session); refreshWalletViews(); }
   } catch (e) {}
 }
 function logout() {
@@ -1959,6 +2128,36 @@ function skinClasses(sk) {
   return c;
 }
 const jit = (k, i, a) => (seeded(k * 17 + i) - .5) * a;
+// hand-drawn "#" grid: 2 vertical + 2 horizontal slightly wobbly pen lines, in a 0..100 box
+function gridPaths(k, at, from, to, wob) {
+  const out = [];
+  [[at[0], 0], [at[1], 1], [at[0], 2], [at[1], 3]].forEach(([p, n], idx) => {
+    const v = idx < 2, j = i => jit(k + n, i, wob);
+    const a = from + j(1), z = to + j(2), m1 = from + (to - from) * 0.36, m2 = from + (to - from) * 0.7;
+    out.push(v ? `M${(p + j(3)).toFixed(1)} ${a.toFixed(1)} C${(p + j(4)).toFixed(1)} ${m1.toFixed(1)} ${(p + j(5)).toFixed(1)} ${m2.toFixed(1)} ${(p + j(6)).toFixed(1)} ${z.toFixed(1)}`
+               : `M${a.toFixed(1)} ${(p + j(3)).toFixed(1)} C${m1.toFixed(1)} ${(p + j(4)).toFixed(1)} ${m2.toFixed(1)} ${(p + j(5)).toFixed(1)} ${z.toFixed(1)} ${(p + j(6)).toFixed(1)}`);
+  });
+  return out;
+}
+function gridSVG(cls, k, at, from, to, wob) {
+  return `<svg class="hand-grid ${cls}" viewBox="0 0 100 100" aria-hidden="true">` +
+    gridPaths(k, at, from, to, wob).map((d, i) => `<path pathLength="1" style="animation-delay:${i * 0.09}s" d="${d}"/>`).join("") + `</svg>`;
+}
+// a pen stroke through a winning line (slight curve and overshoot), in a 0..size box
+function penStroke(A, Z, k, size) {
+  const dx = Z[0] - A[0], dy = Z[1] - A[1], len = Math.hypot(dx, dy) || 1, ux = dx / len, uy = dy / len;
+  const over = size * 0.07, a = [A[0] - ux * over, A[1] - uy * over], z = [Z[0] + ux * over, Z[1] + uy * over];
+  const bend = (seeded(k) - .5) * size * 0.06, mx = (a[0] + z[0]) / 2 - uy * bend, my = (a[1] + z[1]) / 2 + ux * bend;
+  return `M${a[0].toFixed(1)} ${a[1].toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${z[0].toFixed(1)} ${z[1].toFixed(1)}`;
+}
+// rough loop around a captured small board, in a 0..100 box
+function roughRing(k) {
+  const pts = [[5, 7], [50, 3], [95, 6], [97, 50], [94, 95], [50, 97], [6, 94], [3, 50], [7, 9]];
+  const p = pts.map(([x, y], i) => [x + jit(k, i, 3), y + jit(k, i + 20, 3)]);
+  let d = `M${p[0][0].toFixed(1)} ${p[0][1].toFixed(1)}`;
+  for (let i = 1; i < p.length; i += 2) d += ` Q${p[i][0].toFixed(1)} ${p[i][1].toFixed(1)} ${p[i + 1][0].toFixed(1)} ${p[i + 1][1].toFixed(1)}`;
+  return d;
+}
 function polyPath(k, n, r, rot) {
   let d = "";
   for (let i = 0; i < n; i++) {
@@ -2013,8 +2212,10 @@ function buildDOM() {
   mainEl.innerHTML = Array.from({ length: 9 }, (_, i) => `<div class="mcell" data-i="${i}"><span class="n">${i + 1}</span></div>`).join("");
   mainEl.querySelectorAll(".mcell").forEach((m, i) => { mcellEls[i] = m; });
   const ttt = pre => Array.from({ length: 9 }, (_, i) => `<button class="tcell" type="button" data-i="${i}" id="${pre}-${i}"></button>`).join("");
-  $("preludeGrid").innerHTML = ttt("pc");
-  $("tttBoard").innerHTML = ttt("tc");
+  $("preludeGrid").innerHTML = ttt("pc") + gridSVG("g3", 31, [33.3, 66.7], 3, 97, 1.6);
+  $("tttBoard").innerHTML = ttt("tc") + gridSVG("g3", 47, [33.3, 66.7], 3, 97, 1.6);
+  boardEl.insertAdjacentHTML("beforeend", gridSVG("g9", 63, [33.2, 66.8], 0.6, 99.4, 0.9));
+  mainEl.insertAdjacentHTML("beforeend", gridSVG("gm", 71, [33.3, 66.7], 4, 96, 2));
   for (let i = 0; i < 9; i++) { pCells[i] = $("pc-" + i); cCells[i] = $("tc-" + i); }
   $("faceX").innerHTML = markSVG(1, 777, "", false, DEF_SKIN);
   $("faceO").innerHTML = markSVG(2, 778, "", false, DEF_SKIN);
@@ -2039,8 +2240,7 @@ function buildMenu() {
     box.innerHTML = h;
   }
   document.querySelectorAll(".seg[data-side]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
-  $("menuWallet").innerHTML = walletHTML();
-  renderLogin();
+  renderProfile();
 }
 function show(screen) {
   app.screen = screen;
@@ -2096,6 +2296,7 @@ function startGame(mode, botId) {
     profile.netCounter++; saveProfile();
     app.chance = profile.netCounter % 10 === 0;
   }
+  document.querySelectorAll(".hand-grid").forEach(gEl => { gEl.classList.remove("drawn"); void gEl.getBoundingClientRect(); gEl.classList.add("drawn"); });
   if (mode === "x02") {
     app.history = [newPrelude()];
     if (app.screen !== "x02") show("x02");
@@ -2149,6 +2350,7 @@ function grantReward(r) {
 }
 function onGameEnd(r) {
   recordResult(r);
+  SND.play(r === 3 ? "draw" : (!app.bot || r === app.side) ? "win" : "lose", 0.45);
   if (r !== 3) hapticResult(!app.bot || r === app.side);
   const g = grantReward(r);
   reportResult(r);
@@ -2164,10 +2366,14 @@ function onGameEnd(r) {
 async function doMain(a) {
   const e = cur(), g = e.g;
   if (!E.isLegal(g, a)) return false;
-  if (a >= 200 && a < 300) await animateStrike(a - 200);
+  if (a >= 200 && a < 300) { SND.play("strike"); await animateStrike(a - 200); }
   const n = E.apply(g, a);
   uiMode = null;
   app.history.push({ phase: "main", g: n });
+  if (a >= 300) SND.play("choose");
+  else if (a < 200) SND.play(a >= 100 ? "star" : g.turn === 1 ? "x" : "o");
+  const b0 = ((a % 100) / 9) | 0;
+  if (a < 300 && g.owner[b0] === 0 && (n.owner[b0] === 1 || n.owner[b0] === 2)) SND.play("capture", 0.25);
   renderX02({ prev: g, action: a });
   if (a < 300) {
     const b = ((a % 100) / 9) | 0;
@@ -2179,6 +2385,8 @@ async function doMain(a) {
 function doPrelude(i) {
   const e = cur(), t = E.tttApply(e.t, i);
   if (!t) return false;
+  SND.play(e.t.turn === 1 ? "x" : "o");
+  if (t.result) SND.play(t.result === 3 ? "draw" : "capture", 0.35);
   app.history.push(Object.assign({}, e, { t }));
   renderX02({ prelude: true });
   return true;
@@ -2186,6 +2394,7 @@ function doPrelude(i) {
 function doClassic(i) {
   const t = E.tttApply(cur().t, i);
   if (!t) return false;
+  SND.play(cur().t.turn === 1 ? "x" : "o");
   app.history.push({ t });
   renderClassic({ played: true });
   if (t.result) onGameEnd(t.result);
@@ -2416,11 +2625,13 @@ function flipCoin(cb) {
   const end = 360 * 7 + (r === 2 ? 180 : 0);
   const done = () => {
     flipping = false;
+    SND.play(golden ? "win" : "coin");
     if (c.getAnimations) c.getAnimations().forEach(an => an.cancel());
     c.style.transform = `rotateX(${end % 360}deg)`;
     cb(r, golden);
   };
   if (reduce() || !c.animate) { done(); return; }
+  SND.play("flip");
   if (c.getAnimations) c.getAnimations().forEach(an => an.cancel());
   const an = c.animate([
     { transform: "translateY(0) rotateX(0deg) rotateZ(0deg) scale(1)", easing: "cubic-bezier(.2,.7,.4,1)" },
@@ -2466,7 +2677,7 @@ function renderX02(ctx) {
   document.querySelectorAll('#scr-x02 [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
 }
 
-function drawLine(container, line) {
+function drawLine(container, line, winner) {
   const k = line ? line.join(",") : "";
   if (container.dataset.line === k) return;
   container.dataset.line = k;
@@ -2474,9 +2685,8 @@ function drawLine(container, line) {
   if (old) old.remove();
   if (!line) return;
   const pt = i => [(i % 3) * 100 + 50, Math.floor(i / 3) * 100 + 50];
-  const A = pt(line[0]), Z = pt(line[2]);
-  const dx = (Z[0] - A[0]) * 0.18, dy = (Z[1] - A[1]) * 0.18;
-  container.insertAdjacentHTML("beforeend", `<svg class="ttt-line" viewBox="0 0 300 300" aria-hidden="true"><line pathLength="1" x1="${A[0] - dx}" y1="${A[1] - dy}" x2="${Z[0] + dx}" y2="${Z[1] + dy}"/></svg>`);
+  const d = penStroke(pt(line[0]), pt(line[2]), line[0] * 7 + line[2], 300);
+  container.insertAdjacentHTML("beforeend", `<svg class="ttt-line ${winner === 2 ? "o" : "x"}" viewBox="0 0 300 300" aria-hidden="true"><path pathLength="1" d="${d}"/></svg>`);
 }
 function renderTTTCells(cells, tt, ctx, offset, lockAll) {
   for (let i = 0; i < 9; i++) {
@@ -2504,7 +2714,7 @@ function renderPrelude(e, ctx) {
   pr.classList.toggle("in-coin", coinMode);
   $("coinStage").hidden = !coinMode;
   renderTTTCells(pCells, tt, ctx, 500, botTurn);
-  drawLine($("preludeGrid"), tt.line);
+  drawLine($("preludeGrid"), tt.line, tt.result);
   // coin
   if (!flipping) showCoinFace(e.coin || 1);
   $("coinBtn").hidden = !(coinMode && !e.coin);
@@ -2600,6 +2810,7 @@ function renderMain(g, ctx) {
     const sub = subEls[b], isAllowed = allowed.includes(b);
     sub.classList.toggle("allowed", isAllowed);
     sub.classList.toggle("target", !!g.choosing && isAllowed);
+    sub.classList.toggle("only", isAllowed && allowed.length === 1 && !g.choosing && !g.result);
     sub.classList.toggle("neutral", g.owner[b] === 3);
     const newlyWon = !!prev && prev.owner[b] === 0 && (g.owner[b] === 1 || g.owner[b] === 2);
     sub.classList.remove("won-now", "sent");
@@ -2607,7 +2818,8 @@ function renderMain(g, ctx) {
     const o = g.owner[b], ov = o === 1 || o === 2 ? `${o}.${skinRev}` : "";
     if (slotEls[b].dataset.o !== ov) {
       slotEls[b].dataset.o = ov;
-      slotEls[b].innerHTML = ov ? `<svg class="overlay ${o === 1 ? "x" : "o"}${skinClasses(skinOf(o))}${newlyWon ? " fresh" : ""}" viewBox="0 0 100 100" aria-hidden="true">${pathsFor(o, b + 100)}</svg>` : "";
+      slotEls[b].innerHTML = ov ? `<svg class="overlay ${o === 1 ? "x" : "o"}${skinClasses(skinOf(o))}${newlyWon ? " fresh" : ""}" viewBox="0 0 100 100" aria-hidden="true">${pathsFor(o, b + 100)}</svg>`
+        + `<svg class="ring ${o === 1 ? "x" : "o"}${newlyWon ? " fresh" : ""}" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="${roughRing(b * 13 + o)}"/></svg>` : "";
     }
     for (let c = 0; c < 9; c++) {
       const i = b * 9 + c, el = cellEls[i], v = g.cells[i];
@@ -2643,8 +2855,8 @@ function renderMain(g, ctx) {
     if (old) old.remove();
     if (g.winLine) {
       const pt = i => [(i % 3) * 33.33 + 16.67, Math.floor(i / 3) * 33.33 + 16.67];
-      const A = pt(g.winLine[0]), Z = pt(g.winLine[2]);
-      mainEl.insertAdjacentHTML("beforeend", `<svg class="strike-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><line pathLength="1" x1="${A[0]}" y1="${A[1]}" x2="${Z[0]}" y2="${Z[1]}"/></svg>`);
+      const d = penStroke(pt(g.winLine[0]), pt(g.winLine[2]), g.winLine[0] * 7 + g.winLine[2], 100);
+      mainEl.insertAdjacentHTML("beforeend", `<svg class="strike-line ${g.result === 2 ? "o" : "x"}" viewBox="0 0 100 100" aria-hidden="true"><path pathLength="1" d="${d}"/></svg>`);
     }
   }
   // turn
@@ -2709,7 +2921,7 @@ function renderClassic(ctx) {
   const tt = e.t, botTurn = !tt.result && isBot(tt.turn);
   renderBars();
   renderTTTCells(cCells, tt, ctx, 600, botTurn);
-  drawLine($("tttBoard"), tt.line);
+  drawLine($("tttBoard"), tt.line, tt.result);
   setTurnMark($("cTurnMark"), tt.result ? 0 : tt.turn, false);
   $("cTurnWho").innerHTML = tt.result ? t("gameOver")
     : app.bot ? (tt.turn === app.side ? t("yourTurn") : t("thinks", botQ()) + dots) : t("turnOf", SYM[tt.turn]);
@@ -2799,7 +3011,7 @@ async function serverSpend(item) {
 }
 function waitForCoins(before, added, tries) {
   syncProfile().then(() => {
-    if (profile.coins >= before + added) { hapticResult(true); shopNoteSet(t("paid", added), "ok"); }
+    if (profile.coins >= before + added) { hapticResult(true); SND.play("win"); shopNoteSet(t("paid", added), "ok"); }
     else if (tries > 0) setTimeout(() => waitForCoins(before, added, tries - 1), 1500);
     else shopNoteSet(t("paidLater"), "warn");
   });
@@ -2840,6 +3052,7 @@ async function shopAction(ev) {
     profile.equip[it.kind] = it.id;
     skinRev++; saveProfile();
     shopNote = it.premium ? [t("buyQuote"), "quote"] : [t("bought", itemName(it.id)), "ok"]; justBought = it.id;
+    SND.play("coin");
     renderShop();
   } else if (b.dataset.equip) {
     const it = itemOf(b.dataset.equip);
@@ -2856,6 +3069,7 @@ async function shopAction(ev) {
       applyProfile(w);
       if (!w.ok) { shopNoteSet(t("notEnoughCoins", c - profile.coins), "warn"); return; }
     } else { profile.coins -= c; profile.clips += n; saveProfile(); }
+    SND.play("coin");
     shopNoteSet(t("exchanged", c, n), "ok");
   } else if (b.dataset.pack) {
     if (TG && serverOn()) buyPack(+b.dataset.pack);
@@ -2880,6 +3094,7 @@ function closeRules() {
 
 // ---------------- events ----------------
 function bind() {
+  document.addEventListener("pointerdown", () => SND.unlock(), { once: true, capture: true });
   document.addEventListener("click", ev => {
     const act = ev.target.closest("[data-act]");
     if (!act) return;
@@ -2891,6 +3106,7 @@ function bind() {
     else if (a === "shop") openShop();
     else if (a === "login") showLoginWidget();
     else if (a === "logout") logout();
+    else if (a === "sound") { SND.toggle(); renderProfile(); }
   });
   document.querySelector(".modes").addEventListener("click", ev => {
     const o = ev.target.closest(".opp");
