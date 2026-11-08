@@ -456,6 +456,11 @@ aside.notes { display: grid; gap: 22px; }
   .coin.golden { animation: none; }
 }
 
+.tg-login { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+.tg-login .login-as { font-size: 14px; color: var(--pencil); }
+.tg-widget { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tg-widget:empty { display: none; }
+
 </style>
 </head>
 <body>
@@ -512,6 +517,7 @@ aside.notes { display: grid; gap: 22px; }
       <button class="btn primary" type="button" data-act="shop" data-i18n="shop"></button>
       <span class="wallet" id="menuWallet"></span>
       <button class="btn" type="button" data-act="rules" data-i18n="rules"></button>
+      <div class="tg-login" id="tgLogin"></div>
       <small data-i18n="footNote"></small>
     </div>
   </section>
@@ -1430,6 +1436,14 @@ ru: {
   getCoins: n => `+${n} (тест)`,
   earnHint: 'Скрепки дают только за победы над ботами: «Лёгкий?» +10, «Уже нет» +30, «Конец» +50, «Попробуй» +1, «Зря» +3. За победу над «Нет» — сразу оба золотых знака.',
   secPremium: 'Премиум', premiumHint: 'Золотые X и 0 открывает победа над «Нет». Или монета.', beatNet: 'Победи «Нет»',
+  coinsStars: 'Монеты покупаются за Telegram Stars и хранятся на твоём аккаунте — не пропадут при смене телефона.',
+  coinsTg: 'Монеты покупаются в Telegram-версии игры за Telegram Stars.', openTg: 'Открыть в Telegram',
+  paid: n => `Оплата прошла: +${n} ${ruPl(n, 'монета', 'монеты', 'монет')}.`, paidLater: 'Оплата прошла, монеты появятся через минуту. Загляни в магазин чуть позже.',
+  payFailed: 'Оплата не прошла. Звёзды не списаны.', netError: 'Нет связи с сервером. Попробуй ещё раз.', wait: 'Секунду…',
+  login: 'Войти через Telegram', loggedAs: n => `Вход: ${n}`, logout: 'Выйти',
+  loginHint: 'Прогресс сохранится на твоём Telegram-аккаунте и будет общим с игрой в боте.',
+  capped: 'Лимит скрепок на сегодня исчерпан — завтра снова.',
+  coinsBot: 'Монеты покупаются в боте за Telegram Stars — после покупки они появятся и здесь.',
   secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secCoins: 'Монеты',
   coinsTest: 'Тестовая версия: монеты начисляются бесплатно. Настоящая оплата появится в Play Market.',
   notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов или обменяй монеты.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
@@ -1537,6 +1551,14 @@ uz: {
   getCoins: n => `+${n} (test)`,
   earnHint: "Skrepkalar faqat botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +30, «Tamom» +50, «Urinib ko'r» +1, «Bekorga» +3. «Yo'q»ni yutsangiz — darhol ikkala oltin belgi.",
   secPremium: 'Premium', premiumHint: "Oltin X va 0 ni «Yo'q» ustidan g'alaba ochadi. Yoki bitta tanga.", beatNet: "«Yo'q»ni yuting",
+  coinsStars: "Tangalar Telegram Stars evaziga sotib olinadi va akkauntingizda saqlanadi — telefon almashsa ham yo'qolmaydi.",
+  coinsTg: "Tangalarni o'yinning Telegram versiyasida Telegram Stars evaziga sotib olish mumkin.", openTg: 'Telegramda ochish',
+  paid: n => `To'lov o'tdi: +${n} tanga.`, paidLater: "To'lov o'tdi, tangalar bir daqiqada paydo bo'ladi. Do'konga keyinroq qarang.",
+  payFailed: "To'lov o'tmadi. Yulduzlar yechilmadi.", netError: "Server bilan aloqa yo'q. Qayta urinib ko'ring.", wait: 'Bir soniya…',
+  login: 'Telegram orqali kirish', loggedAs: n => `Kirildi: ${n}`, logout: 'Chiqish',
+  loginHint: "Progress Telegram akkauntingizda saqlanadi va botdagi o'yin bilan umumiy bo'ladi.",
+  capped: 'Bugungi skrepka limiti tugadi — ertaga yana.',
+  coinsBot: "Tangalar botda Telegram Stars evaziga sotib olinadi — keyin bu yerda ham paydo bo'ladi.",
   secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secCoins: 'Tangalar',
   coinsTest: "Test versiyasi: tangalar bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
   notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting yoki tangalarni almashtiring.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
@@ -1644,6 +1666,14 @@ en: {
   getCoins: n => `+${n} (test)`,
   earnHint: 'Paperclips come only from beating bots: “Easy?” +10, “Not Anymore” +30, “The End” +50, “Try Me” +1, “Big Mistake” +3. Beating “No” gives both golden marks at once.',
   secPremium: 'Premium', premiumHint: 'Golden X and 0 unlock by beating “No”. Or for a coin.', beatNet: 'Beat “No”',
+  coinsStars: 'Coins are bought with Telegram Stars and saved to your account — they survive a phone change.',
+  coinsTg: 'Coins can be bought with Telegram Stars in the Telegram version of the game.', openTg: 'Open in Telegram',
+  paid: n => `Payment received: +${n} coins.`, paidLater: "Payment received — coins will appear within a minute. Check the shop again shortly.",
+  payFailed: 'Payment failed. No Stars were charged.', netError: "Can't reach the server. Try again.", wait: 'One moment…',
+  login: 'Log in with Telegram', loggedAs: n => `Logged in: ${n}`, logout: 'Log out',
+  loginHint: 'Your progress is saved to your Telegram account and shared with the game in the bot.',
+  capped: 'Daily paperclip limit reached — more tomorrow.',
+  coinsBot: "Coins are bought in the bot with Telegram Stars — they'll show up here too.",
   secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secCoins: 'Coins',
   coinsTest: 'Test version: coins are added for free. Real payments will come with the Play Store release.',
   notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots or exchange coins.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
@@ -1688,6 +1718,12 @@ const reduce = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced
 const sleep = ms => new Promise(r => setTimeout(r, reduce() ? Math.min(ms, 40) : ms));
 // Telegram Mini App (present only when the game is opened inside Telegram)
 const TG = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) ? window.Telegram.WebApp : null;
+// Coin wallet server (Cloudflare Worker). Empty = coins can't be bought (shop shows "buy in Telegram").
+const API_BASE = "https://x0-wallet.odilhojaev20060606.workers.dev";
+const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
+const BOT_NAME = "xo_version2bot";
+const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
+const GAME_URL = location.origin + location.pathname;
 const haptic = kind => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
 const store = {
@@ -1695,6 +1731,11 @@ const store = {
   set(k, v) { try { localStorage.setItem("x02." + k, JSON.stringify(v)); } catch (e) {} }
 };
 
+// signed-in session for the web/PWA version ("Log in with Telegram"); inside Telegram initData is used instead
+let session = store.get("session", null);
+const authBody = () => TG ? { initData: TG.initData } : (session && session.token ? { session: session.token } : null);
+const serverOn = () => API_OK && !!authBody();
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 // ---------------- bots ----------------
 const BOTS = {
   x02: [ { id: "x1", level: 1, ms: 700 }, { id: "x2", level: 2, ms: 1700 }, { id: "x3", level: 3, ms: 7000, deep: true } ],
@@ -1790,7 +1831,7 @@ const SHOP = [
   { id: "x_gold", kind: "xShape", price: 1, cur: "coins", premium: true },
   { id: "o_gold", kind: "oShape", price: 1, cur: "coins", premium: true }
 ];
-const COIN_PACKS = [10, 100];
+const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }];   // must match worker.js
 const EXCHANGE = [[5, 100], [10, 250], [20, 600]];   // coins -> paperclips; bigger packs give more (base 20 per coin)
 const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };   // paperclips, wins only; beating "Нет" gives both golden marks instead
 const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
@@ -1805,6 +1846,104 @@ function loadProfile() {
 }
 let profile = loadProfile(), skinRev = 0;
 const saveProfile = () => store.set("profile", profile);
+async function apiCall(path, body) {
+  const r = await fetch(API_BASE + path, { method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify(Object.assign({}, authBody(), body || {})) });
+  const j = await r.json().catch(() => ({}));
+  return Object.assign({ status: r.status }, j);
+}
+function refreshWalletViews() {
+  if (app.screen === "menu") buildMenu();
+  else if (app.screen === "shop") renderShop();
+}
+// server profile is the source of truth when signed in
+function applyProfile(p) {
+  if (!p || typeof p.coins !== "number") return false;
+  profile.coins = p.coins;
+  if (typeof p.clips === "number") profile.clips = p.clips;
+  if (Array.isArray(p.owned)) profile.owned = [...new Set([...p.owned, ...(p.gold || [])])];
+  if (p.equip) profile.equip = Object.assign({}, DEFAULT_EQUIP, p.equip);
+  if (typeof p.netLosses === "number") profile.netLosses = p.netLosses;
+  if (typeof p.netBeaten === "boolean") profile.netBeaten = p.netBeaten;
+  if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
+  skinRev++; saveProfile(); refreshWalletViews();
+  return true;
+}
+const accountId = () => TG ? "tg:" + ((TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.id) || "") : (session && session.token ? "s:" + session.token.split(".")[0] : "");
+async function syncProfile() {
+  if (!serverOn()) return false;
+  const uid = accountId(), linked = store.get("linked", "") === uid;
+  try {
+    await flushPending();
+    const p = await apiCall("/api/profile", linked ? {} : { local: {
+      clips: profile.clips, owned: profile.owned, equip: profile.equip, scores: app.scores, netLosses: profile.netLosses, netBeaten: profile.netBeaten } });
+    if (p.status === 401 && !TG) { session = null; store.set("session", null); refreshWalletViews(); return false; }
+    if (applyProfile(p)) { store.set("linked", uid); return true; }
+  } catch (e) {}
+  return false;
+}
+// game results go to the server, which counts scores and pays paperclips (with its own limits)
+async function sendResult(item, live) {
+  try {
+    const p = await apiCall("/api/result", item);
+    if (p.status === 401 || p.status === 400) return;
+    if (!applyProfile(p)) throw new Error("bad");
+    if (live && p.capped) {
+      const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
+      rw.innerHTML = `<span class="quote">${t("capped")}</span>`;
+    }
+  } catch (e) {
+    const q = store.get("pending", []); q.push(item); store.set("pending", q.slice(-50));
+  }
+}
+async function flushPending() {
+  const q = store.get("pending", []);
+  if (!q.length) return;
+  store.set("pending", []);
+  for (const it of q) await sendResult(it, false);
+}
+function reportResult(r) {
+  if (!serverOn() || !app.bot) return;
+  sendResult({ bot: app.bot.id, r: r === 3 ? "draw" : r === app.side ? "win" : "lose", undo: !!app.undoUsed,
+    ms: app.t0 ? Date.now() - app.t0 : 0, key: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) }, true);
+}
+// ---- "Log in with Telegram" (web/PWA version)
+function renderLogin() {
+  const box = $("tgLogin");
+  if (!box) return;
+  if (TG || !API_OK) { box.innerHTML = ""; return; }
+  box.innerHTML = session && session.token
+    ? `<span class="login-as">${t("loggedAs", esc(session.name || ""))}</span><button class="btn small" type="button" data-act="logout">${t("logout")}</button>`
+    : `<button class="btn small" type="button" data-act="login">${t("login")}</button><div id="tgWidget" class="tg-widget"></div>`;
+}
+function showLoginWidget() {
+  const w = $("tgWidget");
+  if (!w || w.childElementCount) return;
+  const sc = document.createElement("script");
+  sc.async = true; sc.src = "https://telegram.org/js/telegram-widget.js?22";
+  sc.setAttribute("data-telegram-login", BOT_NAME);
+  sc.setAttribute("data-size", "large");
+  sc.setAttribute("data-auth-url", GAME_URL);
+  w.appendChild(sc);
+  w.insertAdjacentHTML("beforeend", `<p class="shop-hint">${t("loginHint")}</p>`);
+}
+async function handleLoginReturn() {
+  const q = new URLSearchParams(location.search);
+  if (!q.get("hash") || !q.get("id") || !q.get("auth_date")) return;
+  const tg = {};
+  for (const k of ["id", "first_name", "last_name", "username", "photo_url", "auth_date", "hash"]) if (q.get(k) != null) tg[k] = q.get(k);
+  try { history.replaceState(null, "", GAME_URL); } catch (e) {}
+  if (!API_OK || TG) return;
+  try {
+    const r = await fetch(API_BASE + "/api/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tg }) });
+    const j = await r.json();
+    if (j.session) { session = { token: j.session, name: j.name }; store.set("session", session); refreshWalletViews(); }
+  } catch (e) {}
+}
+function logout() {
+  session = null; store.set("session", null); store.set("linked", "");
+  refreshWalletViews();
+}
 const itemOf = id => SHOP.find(s => s.id === id);
 const owns = id => { const it = itemOf(id); return !!it && (it.price === 0 || profile.owned.includes(id)); };
 const DEF_SKIN = { shape: null, color: null };
@@ -1901,6 +2040,7 @@ function buildMenu() {
   }
   document.querySelectorAll(".seg[data-side]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
   $("menuWallet").innerHTML = walletHTML();
+  renderLogin();
 }
 function show(screen) {
   app.screen = screen;
@@ -1941,7 +2081,7 @@ function startGame(mode, botId) {
   app.gameId++;
   uiMode = null; flash = null;
   $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = "";
-  app.undoUsed = false; app.chance = false; app.chanceUsed = false;
+  app.undoUsed = false; app.chance = false; app.chanceUsed = false; app.t0 = Date.now();
   // "Нет" gives one chance every 10 games after 1000 losses, until it is beaten once
   // "Попробуй" makes one real mistake every 2–3 games, "Зря" every 5–7
   if (app.bot && (app.bot.id === "c1" || app.bot.id === "c2")) {
@@ -2011,6 +2151,7 @@ function onGameEnd(r) {
   recordResult(r);
   if (r !== 3) hapticResult(!app.bot || r === app.side);
   const g = grantReward(r);
+  reportResult(r);
   const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
   rw.innerHTML = !g ? "" : g.gold
     ? `<span class="reward-pop gold-pop">${t("goldWon")}</span><span class="quote">${t("winQuote")}</span>`
@@ -2598,8 +2739,8 @@ function walletHTML() {
   return `<span class="cur" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b> <span class="cur-name">${t("clipsWord", profile.clips)}</span></span>` +
     `<span class="cur" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b> <span class="cur-name">${t("coinsWord", profile.coins)}</span></span>`;
 }
-let shopNote = null, justBought = null;
-function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); }
+let shopNote = null, justBought = null, shopBusy = false;
+function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); syncProfile(); }
 function itemName(id) { return I18N[lang].items[id]; }
 function previewSkin(it) {
   const e = profile.equip;
@@ -2623,7 +2764,14 @@ function renderShop() {
   $("shopWallet").innerHTML = walletHTML();
   const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
   const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
-  const packs = COIN_PACKS.map(n => `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${n} ${t("coinsWord", n)}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-coins="${n}">${t("getCoins", n)}</button></div>`).join("");
+  const base = PACKS[0].coins / PACKS[0].stars;
+  const packs = TG && serverOn() ? PACKS.map((p, k) => {
+    const bonus = Math.round((p.coins / p.stars / base - 1) * 100);
+    return `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${p.coins} ${t("coinsWord", p.coins)}</div><div class="item-price">${bonus > 0 ? t("bonusLabel", bonus) : ""}</div><button class="btn small gold-btn" type="button" data-pack="${k}"${shopBusy ? " disabled" : ""}>${p.stars} ⭐</button></div>`;
+  }).join("") : "";
+  const coinSec = TG && serverOn()
+    ? `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsStars")}</p><div class="items">${packs}</div></section>`
+    : `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${serverOn() ? t("coinsBot") : t("coinsTg")}</p>${TG ? "" : `<button class="btn small gold-btn" type="button" data-open-tg="1">${t("openTg")}</button>`}</section>`;
   const exch = EXCHANGE.map(([c, n], k) => {
     const bonus = Math.round((n / (c * 20) - 1) * 100);
     return `<div class="item pack"><div class="item-prev ex-prev">${ICON_COIN}<span class="ex-arrow">→</span>${ICON_CLIP}</div>
@@ -2639,19 +2787,56 @@ function renderShop() {
     sec(t("secXColor"), by("xColor", false)) +
     sec(t("secOColor"), by("oColor", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
-    `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsTest")}</p><div class="items">${packs}</div></section>`;
+    coinSec;
   justBought = null;
 }
-function shopAction(ev) {
+function shopNoteSet(text, kind) { shopNote = [text, kind]; renderShop(); }
+async function serverSpend(item) {
+  shopBusy = true;
+  try { return await apiCall("/api/spend", { item }); }
+  catch (e) { return { error: "net" }; }
+  finally { shopBusy = false; }
+}
+function waitForCoins(before, added, tries) {
+  syncProfile().then(() => {
+    if (profile.coins >= before + added) { hapticResult(true); shopNoteSet(t("paid", added), "ok"); }
+    else if (tries > 0) setTimeout(() => waitForCoins(before, added, tries - 1), 1500);
+    else shopNoteSet(t("paidLater"), "warn");
+  });
+}
+async function buyPack(k) {
+  const p = PACKS[k];
+  if (!p || shopBusy) return;
+  shopBusy = true; shopNoteSet(t("wait"), "ok");
+  let res;
+  try { res = await apiCall("/api/invoice", { pack: k }); } catch (e) { res = { error: "net" }; }
+  shopBusy = false;
+  if (!res.link) { shopNoteSet(t("netError"), "warn"); return; }
+  shopNote = null; renderShop();
+  const before = profile.coins;
+  try {
+    TG.openInvoice(res.link, status => {
+      if (status === "paid") { shopNoteSet(t("wait"), "ok"); waitForCoins(before, p.coins, 8); }
+      else if (status === "failed") shopNoteSet(t("payFailed"), "warn");
+    });
+  } catch (e) { shopNoteSet(t("payFailed"), "warn"); }
+}
+async function shopAction(ev) {
   const b = ev.target.closest("button");
-  if (!b) return;
+  if (!b || shopBusy) return;
   if (b.dataset.buy) {
     const it = itemOf(b.dataset.buy);
     if (!it || owns(it.id)) return;
     const have = profile[it.cur];
-    if (have < it.price) { shopNote = [it.cur === "clips" ? t("notEnoughClips", it.price - have) : t("notEnoughCoins", it.price - have), "warn"]; renderShop(); return; }
-    profile[it.cur] -= it.price;
-    profile.owned.push(it.id);
+    if (have < it.price) { shopNoteSet(it.cur === "clips" ? t("notEnoughClips", it.price - have) : t("notEnoughCoins", it.price - have), "warn"); return; }
+    if (serverOn()) {
+      const w = await serverSpend(it.id);
+      const short = w.error === "coins" || w.error === "clips";
+      if (w.error === "net" || (!w.ok && !short)) { shopNoteSet(t("netError"), "warn"); return; }
+      applyProfile(w);
+      if (!w.ok) { const h = profile[it.cur]; shopNoteSet(it.cur === "clips" ? t("notEnoughClips", it.price - h) : t("notEnoughCoins", it.price - h), "warn"); return; }
+    } else profile[it.cur] -= it.price;
+    if (!profile.owned.includes(it.id)) profile.owned.push(it.id);
     profile.equip[it.kind] = it.id;
     skinRev++; saveProfile();
     shopNote = it.premium ? [t("buyQuote"), "quote"] : [t("bought", itemName(it.id)), "ok"]; justBought = it.id;
@@ -2660,15 +2845,22 @@ function shopAction(ev) {
     const it = itemOf(b.dataset.equip);
     if (!it || !owns(it.id)) return;
     profile.equip[it.kind] = it.id; skinRev++; saveProfile();
+    if (serverOn()) apiCall("/api/equip", { id: it.id }).then(applyProfile).catch(() => {});
     shopNote = null; renderShop();
   } else if (b.dataset.exchange) {
-    const [c, n] = EXCHANGE[+b.dataset.exchange];
-    if (profile.coins < c) { shopNote = [t("notEnoughCoins", c - profile.coins), "warn"]; renderShop(); return; }
-    profile.coins -= c; profile.clips += n; saveProfile();
-    shopNote = [t("exchanged", c, n), "ok"]; renderShop();
-  } else if (b.dataset.coins) {
-    profile.coins += +b.dataset.coins; saveProfile();
-    shopNote = [t("coinsAdded", +b.dataset.coins), "ok"]; renderShop();
+    const k = +b.dataset.exchange, [c, n] = EXCHANGE[k];
+    if (profile.coins < c) { shopNoteSet(t("notEnoughCoins", c - profile.coins), "warn"); return; }
+    if (serverOn()) {
+      const w = await serverSpend("ex" + k);
+      if (w.error === "net" || (!w.ok && w.error !== "coins")) { shopNoteSet(t("netError"), "warn"); return; }
+      applyProfile(w);
+      if (!w.ok) { shopNoteSet(t("notEnoughCoins", c - profile.coins), "warn"); return; }
+    } else { profile.coins -= c; profile.clips += n; saveProfile(); }
+    shopNoteSet(t("exchanged", c, n), "ok");
+  } else if (b.dataset.pack) {
+    if (TG && serverOn()) buyPack(+b.dataset.pack);
+  } else if (b.dataset.openTg) {
+    try { window.open(BOT_LINK, "_blank"); } catch (e) {}
   }
 }
 
@@ -2697,6 +2889,8 @@ function bind() {
     else if (a === "again") startGame(app.mode, app.bot ? app.bot.id : "");
     else if (a === "undo") undo();
     else if (a === "shop") openShop();
+    else if (a === "login") showLoginWidget();
+    else if (a === "logout") logout();
   });
   document.querySelector(".modes").addEventListener("click", ev => {
     const o = ev.target.closest(".opp");
@@ -2779,6 +2973,7 @@ function snapshot() {
 }
 function boot(data) {
   tgInit();
+  handleLoginReturn().then(syncProfile);
   buildDOM();
   applyStatic();
   buildMenu();
