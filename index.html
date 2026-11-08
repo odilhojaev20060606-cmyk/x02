@@ -383,6 +383,11 @@ aside.notes { display: grid; gap: 22px; }
 .ico-coin circle { fill: #e8d59a; stroke: #a9853a; stroke-width: 2; }
 .ico-coin path { stroke: #1f3fa8; stroke-width: 2.2; stroke-linecap: round; fill: none; }
 .coin-prev { display: grid; place-items: center; }
+.item-prev.ex-prev { display: flex; align-items: center; justify-content: center; gap: 4px; width: auto; }
+.ex-prev svg { flex: none; }
+.ex-prev .ico-coin { width: 30px; height: 30px; }
+.ex-prev .ico-clip { width: 30px; height: 30px; }
+.ex-arrow { font: 700 22px/1 var(--font-hand); color: var(--pencil-soft); }
 .coin-prev .ico-coin { width: 46px; height: 46px; }
 .item .btn .ico-clip, .item .btn .ico-coin { width: 15px; height: 15px; }
 .btn.gold-btn .ico-coin circle { fill: #fff3cf; }
@@ -412,7 +417,7 @@ aside.notes { display: grid; gap: 22px; }
 .ink-prev .ico-ink { width: 44px; height: 44px; }
 .item-name { font-family: var(--font-hand); font-size: 22px; font-weight: 700; color: var(--pen); line-height: 1.05; }
 .item-price { font-size: 12.5px; color: var(--pencil-soft); min-height: 1.2em; }
-.item .btn { display: inline-flex; align-items: center; gap: 5px; }
+.item .btn { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-size: 12.5px; padding: 7px 9px; }
 .item .btn .ico-five { min-width: 18px; height: 18px; font-size: 12px; border-width: 1.5px; }
 .item .btn .ico-ink { width: 14px; height: 14px; }
 .btn.gold-btn { background: #c99700; color: #fff; border-color: #7a5a00; box-shadow: 2px 2px 0 #7a5a00; }
@@ -1347,6 +1352,7 @@ function ENGINE() {
 </script>
 <script>
 // X02.0 translations: ru, uz (Latin), en.
+const ruPl = (n, one, few, many) => { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; };
 const I18N = {
 ru: {
   q: s => `«${s}»`,
@@ -1418,15 +1424,18 @@ ru: {
   logBoard: b => `· поле ${b}`, logDraw: '· ничья', logStrike: 'удар', noMoves: 'Пока ходов нет',
   aBoard: 'Поле', aCell: 'клетка', aEmpty: 'свободно', aPlayable: 'свободно, можно ходить', aStar: 'звезда', aSendHere: 'отправить соперника сюда', aTCell: 'Клетка',
   shop: 'Магазин', clips: 'скрепки', coins: 'монеты',
+  clipsWord: n => ruPl(n, 'скрепка', 'скрепки', 'скрепок'), coinsWord: n => ruPl(n, 'монета', 'монеты', 'монет'),
   equip: 'Надеть', equipped: 'Надето', buy: 'Купить', free: 'бесплатно', owned: 'куплено', testPrice: 'тест, бесплатно',
   getCoins: n => `+${n} (тест)`,
   earnHint: 'Скрепки дают только за победы над ботами: «Лёгкий?» +10, «Уже нет» +30, «Конец» +50, «Попробуй» +1, «Зря» +3. За победу над «Нет» — сразу оба золотых знака.',
   secPremium: 'Премиум', premiumHint: 'Золотые X и 0 открывает победа над «Нет». Или монета.', beatNet: 'Победи «Нет»',
   secXShape: 'Форма X', secOShape: 'Форма O', secXColor: 'Цвет X', secOColor: 'Цвет O', secCoins: 'Монеты',
   coinsTest: 'Тестовая версия: монеты начисляются бесплатно. Настоящая оплата появится в Play Market.',
-  notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
-  bought: n => `Куплено и надето: ${n}.`, coinsAdded: n => `+${n} монет.`, reward: n => `+${n} ${n % 10 === 1 && n % 100 !== 11 ? 'скрепка' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'скрепки' : 'скрепок'}`,
+  notEnoughClips: n => `Не хватает скрепок: нужно ещё ${n}. Побеждай ботов или обменяй монеты.`, notEnoughCoins: n => `Не хватает монет: нужно ещё ${n}.`,
+  bought: n => `Куплено и надето: ${n}.`, coinsAdded: n => `+${n} ${ruPl(n, 'монета', 'монеты', 'монет')}.`, reward: n => `+${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}`,
   buyQuote: '«Даже невозможное станет возможным за деньги.»',
+  secExchange: 'Обмен', exchangeHint: 'Монеты можно обменять на скрепки. Чем больше пакет, тем выгоднее.', exchangeBtn: 'Обменять',
+  exchanged: (c, n) => `Обменяно: ${c} ${ruPl(c, 'монета', 'монеты', 'монет')} → ${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}.`, bonusLabel: n => `выгода +${n}%`,
   goldWon: 'Золотые X и 0 теперь твои!', winQuote: '«Ты не сдался. Это и был твой лучший ход.»',
   items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X',
     o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0',
@@ -1522,15 +1531,18 @@ uz: {
   logBoard: b => `· ${b}-maydon`, logDraw: '· durang', logStrike: 'zarba', noMoves: "Hozircha yurish yo'q",
   aBoard: 'Maydon', aCell: 'katak', aEmpty: "bo'sh", aPlayable: "bo'sh, yurish mumkin", aStar: 'yulduz', aSendHere: 'raqibni shu yerga yuborish', aTCell: 'Katak',
   shop: "Do'kon", clips: 'skrepkalar', coins: 'tangalar',
+  clipsWord: n => 'skrepka', coinsWord: n => 'tanga',
   equip: 'Kiyish', equipped: 'Kiyilgan', buy: 'Sotib olish', free: 'bepul', owned: 'sotib olingan', testPrice: 'test, bepul',
   getCoins: n => `+${n} (test)`,
   earnHint: "Skrepkalar faqat botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +30, «Tamom» +50, «Urinib ko'r» +1, «Bekorga» +3. «Yo'q»ni yutsangiz — darhol ikkala oltin belgi.",
   secPremium: 'Premium', premiumHint: "Oltin X va 0 ni «Yo'q» ustidan g'alaba ochadi. Yoki bitta tanga.", beatNet: "«Yo'q»ni yuting",
   secXShape: 'X shakli', secOShape: 'O shakli', secXColor: 'X rangi', secOColor: 'O rangi', secCoins: 'Tangalar',
   coinsTest: "Test versiyasi: tangalar bepul beriladi. Haqiqiy to'lov Play Marketda paydo bo'ladi.",
-  notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
+  notEnoughClips: n => `Skrepkalar yetarli emas: yana ${n} kerak. Botlarni yuting yoki tangalarni almashtiring.`, notEnoughCoins: n => `Tangalar yetarli emas: yana ${n} kerak.`,
   bought: n => `Sotib olindi va kiyildi: ${n}.`, coinsAdded: n => `+${n} tanga.`, reward: n => `+${n} skrepka`,
   buyQuote: "«Hatto imkonsiz narsa ham pul evaziga imkonli bo'ladi.»",
+  secExchange: 'Almashtirish', exchangeHint: "Tangalarni skrepkalarga almashtirish mumkin. Paket qancha katta bo'lsa, shuncha foydali.", exchangeBtn: 'Almashtirish',
+  exchanged: (c, n) => `Almashtirildi: ${c} tanga → ${n} skrepka.`, bonusLabel: n => `+${n}% foyda`,
   goldWon: 'Oltin X va 0 endi sizniki!', winQuote: "«Taslim bo'lmadingiz. Bu sizning eng yaxshi yurishingiz edi.»",
   items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X',
     o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0',
@@ -1626,15 +1638,18 @@ en: {
   logBoard: b => `· board ${b}`, logDraw: '· draw', logStrike: 'strike', noMoves: 'No moves yet',
   aBoard: 'Board', aCell: 'cell', aEmpty: 'empty', aPlayable: 'empty, playable', aStar: 'star', aSendHere: 'send your opponent here', aTCell: 'Cell',
   shop: 'Shop', clips: 'paperclips', coins: 'coins',
+  clipsWord: n => n === 1 ? 'paperclip' : 'paperclips', coinsWord: n => n === 1 ? 'coin' : 'coins',
   equip: 'Equip', equipped: 'Equipped', buy: 'Buy', free: 'free', owned: 'owned', testPrice: 'test, free',
   getCoins: n => `+${n} (test)`,
   earnHint: 'Paperclips come only from beating bots: “Easy?” +10, “Not Anymore” +30, “The End” +50, “Try Me” +1, “Big Mistake” +3. Beating “No” gives both golden marks at once.',
   secPremium: 'Premium', premiumHint: 'Golden X and 0 unlock by beating “No”. Or for a coin.', beatNet: 'Beat “No”',
   secXShape: 'X shape', secOShape: 'O shape', secXColor: 'X color', secOColor: 'O color', secCoins: 'Coins',
   coinsTest: 'Test version: coins are added for free. Real payments will come with the Play Store release.',
-  notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
+  notEnoughClips: n => `Not enough paperclips: you need ${n} more. Beat some bots or exchange coins.`, notEnoughCoins: n => `Not enough coins: you need ${n} more.`,
   bought: n => `Bought and equipped: ${n}.`, coinsAdded: n => `+${n} coins.`, reward: n => `+${n} paperclip${n === 1 ? '' : 's'}`,
   buyQuote: '“Even the impossible becomes possible for money.”',
+  secExchange: 'Exchange', exchangeHint: 'Coins can be exchanged for paperclips. Bigger packs give more.', exchangeBtn: 'Exchange',
+  exchanged: (c, n) => `Exchanged: ${c} coins → ${n} paperclips.`, bonusLabel: n => `+${n}% bonus`,
   goldWon: 'The golden X and 0 are yours!', winQuote: '“You never gave up. That was your best move.”',
   items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X',
     o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0',
@@ -1767,6 +1782,7 @@ const SHOP = [
   { id: "o_gold", kind: "oShape", price: 1, cur: "coins", premium: true }
 ];
 const COIN_PACKS = [10, 100];
+const EXCHANGE = [[5, 100], [10, 250], [20, 600]];   // coins -> paperclips; bigger packs give more (base 20 per coin)
 const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };   // paperclips, wins only; beating "Нет" gives both golden marks instead
 const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
 function loadProfile() {
@@ -2554,8 +2570,8 @@ const ICON_CLIP = '<svg class="ico-clip" viewBox="0 0 24 24" aria-hidden="true">
 const ICON_COIN = '<svg class="ico-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5 L15.5 15.5 M15.5 8.5 L8.5 15.5"/></svg>';
 const curIcon = cur => (cur === "coins" ? ICON_COIN : ICON_CLIP);
 function walletHTML() {
-  return `<span class="cur" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b> <span class="cur-name">${t("clips")}</span></span>` +
-    `<span class="cur" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b> <span class="cur-name">${t("coins")}</span></span>`;
+  return `<span class="cur" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b> <span class="cur-name">${t("clipsWord", profile.clips)}</span></span>` +
+    `<span class="cur" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b> <span class="cur-name">${t("coinsWord", profile.coins)}</span></span>`;
 }
 let shopNote = null, justBought = null;
 function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); }
@@ -2582,7 +2598,13 @@ function renderShop() {
   $("shopWallet").innerHTML = walletHTML();
   const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
   const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
-  const packs = COIN_PACKS.map(n => `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${n} ${t("coins")}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-coins="${n}">${t("getCoins", n)}</button></div>`).join("");
+  const packs = COIN_PACKS.map(n => `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${n} ${t("coinsWord", n)}</div><div class="item-price">${t("testPrice")}</div><button class="btn small gold-btn" type="button" data-coins="${n}">${t("getCoins", n)}</button></div>`).join("");
+  const exch = EXCHANGE.map(([c, n], k) => {
+    const bonus = Math.round((n / (c * 20) - 1) * 100);
+    return `<div class="item pack"><div class="item-prev ex-prev">${ICON_COIN}<span class="ex-arrow">→</span>${ICON_CLIP}</div>
+      <div class="item-name">${n} ${t("clipsWord", n)}</div><div class="item-price">${bonus > 0 ? t("bonusLabel", bonus) : ""}</div>
+      <button class="btn small gold-btn" type="button" data-exchange="${k}">${t("exchangeBtn")} · ${c} ${ICON_COIN}</button></div>`;
+  }).join("");
   $("shopBody").innerHTML =
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
@@ -2591,6 +2613,7 @@ function renderShop() {
     sec(t("secOShape"), by("oShape", false)) +
     sec(t("secXColor"), by("xColor", false)) +
     sec(t("secOColor"), by("oColor", false)) +
+    `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsTest")}</p><div class="items">${packs}</div></section>`;
   justBought = null;
 }
@@ -2613,6 +2636,11 @@ function shopAction(ev) {
     if (!it || !owns(it.id)) return;
     profile.equip[it.kind] = it.id; skinRev++; saveProfile();
     shopNote = null; renderShop();
+  } else if (b.dataset.exchange) {
+    const [c, n] = EXCHANGE[+b.dataset.exchange];
+    if (profile.coins < c) { shopNote = [t("notEnoughCoins", c - profile.coins), "warn"]; renderShop(); return; }
+    profile.coins -= c; profile.clips += n; saveProfile();
+    shopNote = [t("exchanged", c, n), "ok"]; renderShop();
   } else if (b.dataset.coins) {
     profile.coins += +b.dataset.coins; saveProfile();
     shopNote = [t("coinsAdded", +b.dataset.coins), "ok"]; renderShop();
