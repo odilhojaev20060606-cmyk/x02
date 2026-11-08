@@ -6,6 +6,7 @@
 <title>X02.0</title>
 <meta name="description" content="Крестики-нолики, версия 2.0: 81 клетка, звёзды, удары, разминка и боты.">
 <meta name="theme-color" content="#2b3a55">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -1685,6 +1686,10 @@ const SYM = ["", "X", "O"];
 const $ = id => document.getElementById(id);
 const reduce = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 const sleep = ms => new Promise(r => setTimeout(r, reduce() ? Math.min(ms, 40) : ms));
+// Telegram Mini App (present only when the game is opened inside Telegram)
+const TG = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) ? window.Telegram.WebApp : null;
+const haptic = kind => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
+const hapticResult = ok => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
 const store = {
   get(k, d) { try { const v = localStorage.getItem("x02." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem("x02." + k, JSON.stringify(v)); } catch (e) {} }
@@ -1700,6 +1705,10 @@ const LANGS = ["ru", "uz", "en"];
 function detectLang() {
   const saved = store.get("lang", "");
   if (LANGS.includes(saved)) return saved;
+  try {
+    const tl = TG && TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.language_code;
+    if (tl) return tl.startsWith("uz") ? "uz" : tl.startsWith("ru") ? "ru" : "en";
+  } catch (e) {}
   const n = (navigator.language || "ru").toLowerCase();
   return n.startsWith("uz") ? "uz" : n.startsWith("en") ? "en" : "ru";
 }
@@ -1897,6 +1906,21 @@ function show(screen) {
   app.screen = screen;
   for (const id of ["menu", "x02", "classic", "shop"]) $("scr-" + id).classList.toggle("active", id === screen);
   window.scrollTo(0, 0);
+  tgBack();
+}
+function tgBack() {
+  if (!TG || !TG.BackButton) return;
+  try { if (app.screen === "menu" && $("rulesSheet").hidden) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
+}
+function tgInit() {
+  if (!TG) return;
+  document.documentElement.classList.add("in-tg");
+  try { TG.ready(); } catch (e) {}
+  try { TG.expand(); } catch (e) {}
+  try { if (TG.disableVerticalSwipes) TG.disableVerticalSwipes(); } catch (e) {}   // a swipe down must not close the game mid-move
+  try { if (TG.setHeaderColor) TG.setHeaderColor("#f6f7f2"); if (TG.setBackgroundColor) TG.setBackgroundColor("#f6f7f2"); } catch (e) {}
+  try { TG.BackButton.onClick(() => { if (!$("rulesSheet").hidden) closeRules(); else if (app.screen !== "menu") goMenu(); }); } catch (e) {}
+  tgBack();
 }
 function goMenu() {
   cancelBot();
@@ -1985,6 +2009,7 @@ function grantReward(r) {
 }
 function onGameEnd(r) {
   recordResult(r);
+  if (r !== 3) hapticResult(!app.bot || r === app.side);
   const g = grantReward(r);
   const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
   rw.innerHTML = !g ? "" : g.gold
@@ -2652,10 +2677,12 @@ let lastFocus = null;
 function openRules() {
   lastFocus = document.activeElement;
   $("rulesSheet").hidden = false;
+  tgBack();
   setTimeout(() => { try { $("rulesClose").focus(); } catch (e) {} }, 30);
 }
 function closeRules() {
   $("rulesSheet").hidden = true;
+  tgBack();
   if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
 }
 
@@ -2706,6 +2733,7 @@ function bind() {
       return;
     }
     inputBusy = true;
+    haptic("light");
     try { await doMain(a); } finally { inputBusy = false; }
     kickBot();
   });
@@ -2713,13 +2741,13 @@ function bind() {
     const btn = ev.target.closest(".tcell");
     const e = cur();
     if (!btn || !e || e.phase !== "prelude" || e.t.result || isBot(e.t.turn)) return;
-    if (doPrelude(+btn.dataset.i)) kickBot();
+    if (doPrelude(+btn.dataset.i)) { haptic("light"); kickBot(); }
   });
   $("tttBoard").addEventListener("click", ev => {
     const btn = ev.target.closest(".tcell");
     const e = cur();
     if (!btn || !e || e.t.result || isBot(e.t.turn)) return;
-    if (doClassic(+btn.dataset.i)) kickBot();
+    if (doClassic(+btn.dataset.i)) { haptic("light"); kickBot(); }
   });
   $("starBtn").addEventListener("click", () => { uiMode = uiMode === "star" ? null : "star"; renderX02(null); });
   $("strikeBtn").addEventListener("click", () => { uiMode = uiMode === "strike" ? null : "strike"; renderX02(null); });
@@ -2750,6 +2778,7 @@ function snapshot() {
   return { screen: app.screen, mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: app.history, gameId: app.gameId };
 }
 function boot(data) {
+  tgInit();
   buildDOM();
   applyStatic();
   buildMenu();
