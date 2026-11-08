@@ -114,6 +114,9 @@ button { font-family: inherit; }
 .seg-group { display: inline-flex; border: 1.5px solid var(--pen); border-radius: 4px 9px 5px 10px; overflow: hidden; box-shadow: 2px 2px 0 var(--pen); }
 .seg { appearance: none; border: 0; background: var(--paper); font: 700 24px/1 var(--font-hand); padding: 5px 18px 7px; cursor: pointer; color: var(--pencil-soft); transition: background .2s, color .2s; }
 .seg + .seg { border-left: 1.5px solid var(--pen); }
+.seg.lang { font: 600 14px/1 var(--font-body); padding: 9px 12px; letter-spacing: .04em; }
+.seg.lang[aria-pressed="true"] { background: var(--pen); color: var(--paper); }
+.lang-label { margin-left: 10px; }
 .seg[aria-pressed="true"][data-side="1"] { background: var(--ink-x); color: #fff; }
 .seg[aria-pressed="true"][data-side="2"] { background: var(--ink-o); color: #fff; }
 
@@ -406,14 +409,20 @@ aside.notes { display: grid; gap: 22px; }
         <path class="stroke lv s6" pathLength="1" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
         <path class="underline" pathLength="1" d="M18 142 C 140 133 300 147 424 137"/>
       </svg>
-      <p class="tagline">Крестики-нолики, версия 2.0. <em>Обновление, о котором никто не просил.</em></p>
+      <p class="tagline" data-i18n-html="tagline"></p>
     </div>
 
     <div class="side-pick">
-      <span>С ботом играю за</span>
+      <span data-i18n="sidePick"></span>
       <div class="seg-group" role="group" aria-label="За кого играть с ботом">
         <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
         <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
+      </div>
+      <span class="lang-label" data-i18n="langPick"></span>
+      <div class="seg-group lang-group" role="group" aria-label="Language">
+        <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
+        <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
+        <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
       </div>
     </div>
 
@@ -421,59 +430,59 @@ aside.notes { display: grid; gap: 22px; }
       <article class="mode-card">
         <header>
           <h2><span class="x">X</span><span class="o">0</span>2.0</h2>
-          <p>81 клетка, звёзды, удары и разминка. Основная игра.</p>
+          <p data-i18n="modeX02Desc"></p>
         </header>
         <div class="opponents" data-mode="x02"></div>
       </article>
       <article class="mode-card">
         <header>
-          <h2>Ностальгия</h2>
-          <p>Обычные крестики-нолики 3×3. Как на последней парте.</p>
+          <h2 data-i18n="classicName"></h2>
+          <p data-i18n="classicDesc"></p>
         </header>
         <div class="opponents" data-mode="classic"></div>
       </article>
     </div>
 
     <div class="menu-foot">
-      <button class="btn" type="button" data-act="rules">Правила</button>
-      <small>Тестовая версия. Онлайн-игра появится позже.</small>
+      <button class="btn" type="button" data-act="rules" data-i18n="rules"></button>
+      <small data-i18n="footNote"></small>
     </div>
   </section>
 
   <!-- ================= X02.0 ================= -->
   <section class="screen" id="scr-x02" aria-label="Партия X02.0">
     <header class="game-bar">
-      <button class="btn small" type="button" data-act="menu">← Меню</button>
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
       <div class="bar-title">
         <span class="mini-logo"><span class="x">X</span><span class="o">0</span>2.0</span>
         <span class="vs" id="x02Vs"></span>
       </div>
       <span class="score-chip" id="x02Score" hidden></span>
-      <button class="btn small" type="button" data-act="rules">Правила</button>
+      <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
     </header>
 
     <div class="game-grid">
       <div class="board-wrap">
         <div class="prelude" id="prelude" hidden>
           <div class="prelude-head">
-            <h2 class="prelude-title">Разминка</h2>
-            <p>Обычные крестики-нолики, начинает X. Победитель получает ★ на старт, проигравший ходит первым в партии. Ничья — бросаете монету.</p>
+            <h2 class="prelude-title" data-i18n="preludeTitle"></h2>
+            <p data-i18n="preludeDesc"></p>
           </div>
           <div class="ttt" id="preludeGrid" role="grid" aria-label="Разминка"></div>
           <div class="prelude-actions">
-            <button class="btn primary" id="preludeStart" type="button" hidden>Начать партию</button>
-            <button class="btn" id="preludeSkip" type="button">Пропустить разминку</button>
+            <button class="btn primary" id="preludeStart" type="button" hidden data-i18n="startMatch"></button>
+            <button class="btn" id="preludeSkip" type="button" data-i18n="skipPrelude"></button>
           </div>
           <div class="coin-stage" id="coinStage" hidden aria-live="polite">
-            <h2 class="coin-title">Ничья. Бросаем монету</h2>
+            <h2 class="coin-title" data-i18n="coinTitle"></h2>
             <div class="coin-zone">
               <div class="coin-shadow" id="coinShadow"></div>
               <div class="coin" id="coin" aria-hidden="true"><div class="face fx" id="faceX"></div><div class="face fo" id="faceO"></div></div>
             </div>
             <p class="coin-result" id="coinText">Кто выпадет, тот ходит первым</p>
             <div class="coin-actions">
-              <button class="btn primary" id="coinBtn" type="button">Бросить монету</button>
-              <button class="btn primary" id="coinStart" type="button" hidden>Начать партию</button>
+              <button class="btn primary" id="coinBtn" type="button" data-i18n="coinToss"></button>
+              <button class="btn primary" id="coinStart" type="button" hidden data-i18n="startMatch"></button>
             </div>
           </div>
         </div>
@@ -486,8 +495,8 @@ aside.notes { display: grid; gap: 22px; }
             <div class="taunt" id="bannerTaunt"></div>
             <div class="banner-text" id="bannerText"></div>
             <div class="banner-actions">
-              <button class="btn primary" type="button" data-act="again">Ещё партия</button>
-              <button class="btn" type="button" data-act="menu">В меню</button>
+              <button class="btn primary" type="button" data-act="again" data-i18n="again"></button>
+              <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
             </div>
           </div>
         </div>
@@ -504,26 +513,26 @@ aside.notes { display: grid; gap: 22px; }
         <div class="status" id="status" aria-live="polite"></div>
 
         <div class="main-only">
-          <p class="label">Звёзды</p>
+          <p class="label" data-i18n="labelStars"></p>
           <div class="stars">
-            <button class="btn star-btn" id="starBtn" type="button" aria-pressed="false">★ Навигатор · 1★</button>
-            <button class="btn strike-btn" id="strikeBtn" type="button" aria-pressed="false">✕ Удар · 2★</button>
+            <button class="btn star-btn" id="starBtn" type="button" aria-pressed="false" data-i18n="starBtn"></button>
+            <button class="btn strike-btn" id="strikeBtn" type="button" aria-pressed="false" data-i18n="strikeBtn"></button>
             <span class="stars-count" id="starsCount"></span>
           </div>
         </div>
 
         <div class="main-only">
-          <p class="label">Главное поле</p>
+          <p class="label" data-i18n="labelMain"></p>
           <div class="main-board" id="mainBoard" aria-label="Главное поле"></div>
         </div>
 
         <div class="buttons">
-          <button class="btn" type="button" data-act="undo">Отменить ход</button>
-          <button class="btn" type="button" data-act="again">Новая партия</button>
+          <button class="btn" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn" type="button" data-act="again" data-i18n="newGame"></button>
         </div>
 
         <div class="main-only">
-          <p class="label">Ходы (поле-клетка)</p>
+          <p class="label" data-i18n="labelLog"></p>
           <ol class="log" id="log"></ol>
         </div>
       </aside>
@@ -533,13 +542,13 @@ aside.notes { display: grid; gap: 22px; }
   <!-- ================= НОСТАЛЬГИЯ ================= -->
   <section class="screen" id="scr-classic" aria-label="Ностальгия">
     <header class="game-bar">
-      <button class="btn small" type="button" data-act="menu">← Меню</button>
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
       <div class="bar-title">
-        <span class="mini-logo">Ностальгия</span>
+        <span class="mini-logo" data-i18n="classicName"></span>
         <span class="vs" id="cVs"></span>
       </div>
       <span class="score-chip" id="cScore" hidden></span>
-      <button class="btn small" type="button" data-act="rules">Правила</button>
+      <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
     </header>
     <div class="classic-grid">
       <div class="classic-wrap">
@@ -549,8 +558,8 @@ aside.notes { display: grid; gap: 22px; }
             <div class="banner-title" id="cBannerTitle"></div>
             <div class="taunt" id="cBannerTaunt"></div>
             <div class="banner-actions">
-              <button class="btn primary" type="button" data-act="again">Ещё раз</button>
-              <button class="btn" type="button" data-act="menu">В меню</button>
+              <button class="btn primary" type="button" data-act="again" data-i18n="classicAgain"></button>
+              <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
             </div>
           </div>
         </div>
@@ -565,8 +574,8 @@ aside.notes { display: grid; gap: 22px; }
         </div>
         <div class="status" id="cStatus" aria-live="polite"></div>
         <div class="buttons">
-          <button class="btn" type="button" data-act="undo">Отменить ход</button>
-          <button class="btn" type="button" data-act="again">Ещё раз</button>
+          <button class="btn" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn" type="button" data-act="again" data-i18n="classicAgain"></button>
         </div>
       </aside>
     </div>
@@ -577,25 +586,11 @@ aside.notes { display: grid; gap: 22px; }
 <div class="sheet" id="rulesSheet" role="dialog" aria-modal="true" aria-labelledby="rulesTitle" hidden>
   <div class="sheet-card">
     <div class="sheet-head">
-      <h2 id="rulesTitle">Правила</h2>
-      <button class="btn small" type="button" id="rulesClose">Закрыть</button>
+      <h2 id="rulesTitle" data-i18n="rules"></h2>
+      <button class="btn small" type="button" id="rulesClose" data-i18n="close"></button>
     </div>
     <h3><span style="color: var(--ink-x)">X</span><span style="color: var(--ink-o)">0</span>2.0</h3>
-    <p>Ставь знаки по очереди, выигрывай маленькие поля и собери три в ряд на главном поле. Но выбирать, где ходить, ты не можешь: твой ход решает, куда пойдёт соперник.</p>
-    <ol>
-      <li><b>Разминка.</b> Сначала обычные крестики-нолики 3×3, начинает X. Победитель получает ★ на старт, проигравший ходит первым в партии. При ничьей звёзд нет, а первый ход решает монета.</li>
-      <li><b>Куда ходить.</b> Ход в клетку <b>N</b> отправляет соперника в поле <b>N</b> (оно подсвечено маркером). Первый ход, свободный ход и ход, когда тебя отправили в заполненное поле, можно делать в любое поле.</li>
-      <li><b>Маленькие поля.</b> Три в ряд — поле твоё навсегда, твой знак встаёт на главное поле, а проигравший получает свободный ход. Ставить в выигранное поле можно и дальше. Ничья делает клетку главного поля нейтральной.</li>
-      <li><b>Звёзды.</b> За каждое выигранное поле ты получаешь ★.
-        <br><b>Навигатор, 1★:</b> вместо знака ставишь звезду (она считается твоим знаком) и сам выбираешь, в какое поле отправить соперника.
-        <br><b>Удар, 2★:</b> вместо хода снимаешь чужой знак в поле, куда тебя отправили, если оно ещё не выиграно. Соперник идёт в поле с номером снятой клетки.</li>
-      <li><b>Победа.</b> Три в ряд на главном поле. Если ряд уже невозможен, доигрываете, и побеждает тот, у кого больше знаков на главном поле. Поровну — ничья.</li>
-      <li class="mystery"><b>???</b> Неизвестно. Найди сам. Есть способ выиграть, даже когда главное поле уже проиграно.</li>
-    </ol>
-    <h3>Ностальгия</h3>
-    <p>Обычные крестики-нолики: три в ряд по горизонтали, вертикали или диагонали. Начинает X.</p>
-    <h3>Боты</h3>
-    <p>Все боты сильные. Названия честные.</p>
+    <div id="rulesBody"></div>
   </div>
 </div>
 
@@ -937,6 +932,281 @@ function ENGINE() {
 
 </script>
 <script>
+// X02.0 translations: ru, uz (Latin), en.
+const I18N = {
+ru: {
+  q: s => `«${s}»`,
+  tagline: 'Крестики-нолики, версия 2.0. <em>Обновление, о котором никто не просил.</em>',
+  sidePick: 'С ботом играю за', langPick: 'Язык',
+  modeX02Desc: '81 клетка, звёзды, удары и разминка. Основная игра.',
+  classicName: 'Ностальгия', classicDesc: 'Обычные крестики-нолики 3×3. Как на последней парте.',
+  rules: 'Правила', footNote: 'Тестовая версия. Онлайн-игра появится позже.',
+  menuBtn: '← Меню', preludeTitle: 'Разминка',
+  preludeDesc: 'Обычные крестики-нолики, начинает X. Победитель получает ★ на старт, проигравший ходит первым в партии. Ничья — бросаете монету.',
+  startMatch: 'Начать партию', skipPrelude: 'Пропустить разминку',
+  coinTitle: 'Ничья. Бросаем монету', coinToss: 'Бросить монету',
+  again: 'Ещё партия', toMenu: 'В меню', labelStars: 'Звёзды',
+  starBtn: '★ Навигатор · 1★', strikeBtn: '✕ Удар · 2★', labelMain: 'Главное поле',
+  undo: 'Отменить ход', newGame: 'Новая партия', labelLog: 'Ходы (поле-клетка)',
+  classicAgain: 'Ещё раз', close: 'Закрыть',
+  friend: 'Друг рядом', friendLine: 'Вдвоём за одним экраном', xVsO: 'X против O', notPlayed: 'ещё не играли',
+  scoreMenu: (m, b, d) => `ты ${m} : ${b}${d ? ` · ничьих ${d}` : ''}`,
+  playVs: (n, l) => `Играть против бота ${n}. ${l}`,
+  vsBot: (sym, n) => `Ты (${sym}) против <b>${n}</b>`,
+  vsFriend: (x, o) => `${x} против ${o} · за одним экраном`,
+  chip: (m, b, n, d) => `ты ${m} : ${b} ${n}${d ? ` · ничьих ${d}` : ''}`,
+  you: 'Ты', youAcc: 'тебя', opponentAcc: 'соперника',
+  yourTurn: 'Твой ход', thinks: n => `${n} думает`, turnOf: s => `Ход ${s}`,
+  gameOver: 'Партия окончена', warmupOver: 'Разминка окончена',
+  warmupSub: 'Разминка: обычные крестики-нолики', needCoin: 'Ничья, нужна монета',
+  warmupHint: 'Победитель получает ★, проигравший ходит первым. Решай, что тебе нужнее.',
+  starOwner: (you, n) => you ? 'звезда твоя' : `звезда у ${n}`,
+  starOwnerSym: s => `★ получает ${s}`,
+  firstMover: (you, n) => you ? 'первым ходишь ты' : `первым ходит ${n}`,
+  noStarsToss: 'Звёзд нет. Бросай монету.', golden: 'Золотая монета!',
+  coinWho: 'Кто выпадет, тот ходит первым',
+  coinResult: (s, f) => `Выпал ${s}: ${f}`,
+  coinGolden: (s, f) => `Золотая монета! Выпал ${s}: ${f}, плюс ★`,
+  taunt: (n, t) => `${n}: «${t}»`,
+  tBotWin: 'Звезда моя.', tBotWinLose: 'Хотел поддаться, но ты не дал.',
+  tHumanWinLose: 'Я поддался. Первый ход мой.', tHumanWin: 'Бери звезду. Первый ход всё равно мой.',
+  tDraw: 'Ничья. Пусть решит монета.',
+  whereBotChoosing: 'Выбирает, куда тебя отправить', whereYouChoose: 'Выбери поле для соперника',
+  whereFirst: 'Первый ход: любое поле', whereFree: 'Свободный ход: любое поле',
+  whereBoard: n => `Ход в поле ${n}`, whereAny: 'Можно в любое поле',
+  resSecret: (you, n, b) => `${n} заполнил всё поле ${b} своими знаками. Секретная победа.`,
+  resDraw: (x, o) => `Ничья: ряда нет, знаков поровну (X ${x} : ${o} O).`,
+  resCount: (you, n, x, o) => `${n} ${you ? 'побеждаешь' : 'побеждает'} по количеству знаков: X ${x} : ${o} O.`,
+  resRow: (you, n) => `${n} собрал три в ряд на главном поле.`,
+  botStarChoosing: n => `${n} поставил звезду и выбирает, куда тебя отправить.`,
+  youStarChoose: t => `Звезда стоит. Нажми на поле, куда отправить ${t}.`,
+  starMode: 'Навигатор: следующий знак будет звездой. После хода выберешь поле для соперника.',
+  strikeMode: 'Удар: нажми на чужой знак в подсвеченном поле, которое ещё никто не выиграл.',
+  strikeNone: 'Удар сейчас некуда: в доступном поле нет чужих знаков или оно уже выиграно.',
+  youStart: 'Ты начинаешь. Ставь в любую клетку.', botStart: n => `${n} начинает.`,
+  symStart: s => `${s} начинает. Ставь в любую клетку.`, startStar: s => ` Звезда на старте: ${s}.`,
+  strikeDone: (you, n, c) => `Удар! ${n} снял знак в клетке ${c}.`,
+  starSent: (you, n, oYou, o, b) => `Звезда: ${you ? 'ты' : n} отправил ${o} в поле ${b}.`,
+  wonBoard: (you, n, b, oYou, o) => `${n} выиграл поле ${b} и получил ★. ${o} ${oYou ? 'ходишь куда хочешь' : 'ходит куда хочет'}.`,
+  boardDraw: b => `Поле ${b}: ничья, клетка стала нейтральной.`,
+  moved: (you, n, c) => `${n} сходил ${c}.`,
+  countMode: (x, o) => ` Ряд уже невозможен, играем на количество (X ${x} : ${o} O).`,
+  fNoFree: 'В этом поле нет свободных клеток, выбери другое.',
+  fStrikeOnly: 'Удар — только по чужому знаку в подсвеченном поле, которое ещё никто не выиграл.',
+  fOccupied: 'Эта клетка уже занята.', fOnlyBoard: b => `Сейчас можно ходить только в поле ${b}.`, fCannot: 'Сюда ходить нельзя.',
+  secretTitle: 'Секретная победа!', drawTitle: 'Ничья', youWon: 'Ты победил!', botWon: n => `${n} победил`, symWon: s => `Победа ${s}!`,
+  secretText: (b, s) => `Всё поле ${b} заполнено только знаками ${s}. Это сильнее любых правил.`,
+  countDrawText: (x, o) => `Ряда нет, знаков поровну: X ${x} : ${o} O.`,
+  countWinText: (x, o) => `Ряда нет, но знаков на главном поле больше: X ${x} : ${o} O.`,
+  rowText: m => `Три в ряд на главном поле за ${m} ходов.`,
+  threeRow: (you, n) => `${n} собрал три в ряд.`, classicDraw: 'Ничья.', youStartShort: 'Ты начинаешь.',
+  xStarts: 'X начинает.', goodLuck: 'Удачи. Она понадобится.', threeWins: 'Три в ряд — победа',
+  logBoard: b => `· поле ${b}`, logDraw: '· ничья', logStrike: 'удар', noMoves: 'Пока ходов нет',
+  aBoard: 'Поле', aCell: 'клетка', aEmpty: 'свободно', aPlayable: 'свободно, можно ходить', aStar: 'звезда', aSendHere: 'отправить соперника сюда', aTCell: 'Клетка',
+  bots: {
+    x1: { name: 'Лёгкий?', line: 'Самый слабый. Наверное.', win: 'Ну вот. А говорили, лёгкий.', lose: 'Ладно. Это была разминка.', draw: 'Ничья. Для начала неплохо.' },
+    x2: { name: 'Уже нет', line: 'Думает дольше. Ошибается реже.', win: 'Я же говорил: уже нет.', lose: 'Хм. Повезло. Ещё одну?', draw: 'Ничья. Ты стал опаснее.' },
+    x3: { name: 'Конец', line: 'Просчитывает тысячи партий за один ход.', win: 'Конец.', lose: 'Этого не должно было случиться.', draw: 'Достойно. Почти.' },
+    c1: { name: 'Попробуй', line: 'Попробуй. Может, получится.', win: 'Ну как, попробовал?', lose: 'Получилось. Не привыкай.', draw: 'Ничья. Пробуй дальше.' },
+    c2: { name: 'Зря', line: 'Зря ты сюда нажал.', win: 'Зря.', lose: '…не зря.', draw: 'Ничья. Всё ещё зря.' },
+    c3: { name: 'Нет', line: 'Не проигрывает. Вообще.', win: 'Нет.', lose: 'Это баг. Напиши автору.', draw: 'Ничья — это потолок. Поздравляю.' }
+  },
+  rulesHTML: `<p>Ставь знаки по очереди, выигрывай маленькие поля и собери три в ряд на главном поле. Но выбирать, где ходить, ты не можешь: твой ход решает, куда пойдёт соперник.</p>
+<ol>
+<li><b>Разминка.</b> Сначала обычные крестики-нолики 3×3, начинает X. Победитель получает ★ на старт, проигравший ходит первым в партии. При ничьей звёзд нет, а первый ход решает монета.</li>
+<li><b>Куда ходить.</b> Ход в клетку <b>N</b> отправляет соперника в поле <b>N</b> (оно подсвечено маркером). Первый ход, свободный ход и ход, когда тебя отправили в заполненное поле, можно делать в любое поле.</li>
+<li><b>Маленькие поля.</b> Три в ряд — поле твоё навсегда, твой знак встаёт на главное поле, а проигравший получает свободный ход. Ставить в выигранное поле можно и дальше. Ничья делает клетку главного поля нейтральной.</li>
+<li><b>Звёзды.</b> За каждое выигранное поле ты получаешь ★.<br><b>Навигатор, 1★:</b> вместо знака ставишь звезду (она считается твоим знаком) и сам выбираешь, в какое поле отправить соперника.<br><b>Удар, 2★:</b> вместо хода снимаешь чужой знак в поле, куда тебя отправили, если оно ещё не выиграно. Соперник идёт в поле с номером снятой клетки.</li>
+<li><b>Победа.</b> Три в ряд на главном поле. Если ряд уже невозможен, доигрываете, и побеждает тот, у кого больше знаков на главном поле. Поровну — ничья.</li>
+<li class="mystery"><b>???</b> Неизвестно. Найди сам. Есть способ выиграть, даже когда главное поле уже проиграно.</li>
+</ol>
+<h3>Ностальгия</h3><p>Обычные крестики-нолики: три в ряд по горизонтали, вертикали или диагонали. Начинает X.</p>
+<h3>Боты</h3><p>Все боты сильные. Названия честные.</p>`
+},
+
+uz: {
+  q: s => `«${s}»`,
+  tagline: "Iks-nol, 2.0 versiya. <em>Hech kim so'ramagan yangilanish.</em>",
+  sidePick: "Bot bilan o'ynaganda men:", langPick: 'Til',
+  modeX02Desc: "81 katak, yulduzlar, zarbalar va razminka. Asosiy o'yin.",
+  classicName: 'Nostalgiya', classicDesc: "Oddiy 3×3 iks-nol. Xuddi oxirgi partada o'ynagandek.",
+  rules: 'Qoidalar', footNote: "Test versiyasi. Onlayn o'yin keyinroq qo'shiladi.",
+  menuBtn: '← Menyu', preludeTitle: 'Razminka',
+  preludeDesc: "Oddiy iks-nol, X boshlaydi. G'olib boshlanishiga ★ oladi, yutqazgan esa o'yinda birinchi yuradi. Durang bo'lsa — tanga tashlaysiz.",
+  startMatch: "O'yinni boshlash", skipPrelude: "Razminkani o'tkazib yuborish",
+  coinTitle: 'Durang. Tanga tashlaymiz', coinToss: 'Tanga tashlash',
+  again: "Yana o'ynash", toMenu: 'Menyuga', labelStars: 'Yulduzlar',
+  starBtn: '★ Navigator · 1★', strikeBtn: '✕ Zarba · 2★', labelMain: 'Asosiy maydon',
+  undo: 'Yurishni bekor qilish', newGame: "Yangi o'yin", labelLog: 'Yurishlar (maydon-katak)',
+  classicAgain: 'Yana', close: 'Yopish',
+  friend: "Yonimdagi do'st", friendLine: 'Bitta ekranda ikki kishi', xVsO: 'X va O', notPlayed: "hali o'ynalmagan",
+  scoreMenu: (m, b, d) => `siz ${m} : ${b}${d ? ` · durang ${d}` : ''}`,
+  playVs: (n, l) => `${n} botiga qarshi o'ynash. ${l}`,
+  vsBot: (sym, n) => `Siz (${sym}) va <b>${n}</b>`,
+  vsFriend: (x, o) => `${x} va ${o} · bitta ekranda`,
+  chip: (m, b, n, d) => `siz ${m} : ${b} ${n}${d ? ` · durang ${d}` : ''}`,
+  you: 'Siz', youAcc: 'sizni', opponentAcc: 'raqibni',
+  yourTurn: 'Sizning navbatingiz', thinks: n => `${n} o'ylayapti`, turnOf: s => `${s} navbati`,
+  gameOver: "O'yin tugadi", warmupOver: 'Razminka tugadi',
+  warmupSub: 'Razminka: oddiy iks-nol', needCoin: 'Durang, tanga hal qiladi',
+  warmupHint: "G'olib ★ oladi, yutqazgan birinchi yuradi. Sizga qaysi biri kerakroq — o'zingiz hal qiling.",
+  starOwner: (you, n) => you ? 'yulduz sizniki' : `yulduz ${n}da`,
+  starOwnerSym: s => `★ ni ${s} oladi`,
+  firstMover: (you, n) => you ? 'birinchi siz yurasiz' : `birinchi ${n} yuradi`,
+  noStarsToss: "Yulduz yo'q. Tanga tashlang.", golden: 'Oltin tanga!',
+  coinWho: "Qaysi tomoni tushsa, o'sha birinchi yuradi",
+  coinResult: (s, f) => `${s} tushdi: ${f}`,
+  coinGolden: (s, f) => `Oltin tanga! ${s} tushdi: ${f}, ustiga ★`,
+  taunt: (n, t) => `${n}: «${t}»`,
+  tBotWin: 'Yulduz meniki.', tBotWinLose: "Yutqazmoqchi edim, lekin qo'ymading.",
+  tHumanWinLose: 'Ataylab yutqazdim. Birinchi yurish meniki.', tHumanWin: 'Yulduzni ol. Birinchi yurish baribir meniki.',
+  tDraw: 'Durang. Tanga hal qilsin.',
+  whereBotChoosing: 'Sizni qayerga yuborishni tanlayapti', whereYouChoose: 'Raqib uchun maydon tanlang',
+  whereFirst: 'Birinchi yurish: istalgan maydon', whereFree: 'Erkin yurish: istalgan maydon',
+  whereBoard: n => `${n}-maydonga yuring`, whereAny: 'Istalgan maydonga',
+  resSecret: (you, n, b) => you ? `Siz ${b}-maydonni to'liq o'z belgilaringiz bilan to'ldirdingiz. Maxfiy g'alaba.` : `${n} ${b}-maydonni to'liq o'z belgilari bilan to'ldirdi. Maxfiy g'alaba.`,
+  resDraw: (x, o) => `Durang: qator yo'q, belgilar teng (X ${x} : ${o} O).`,
+  resCount: (you, n, x, o) => `${n} belgilar soni bo'yicha ${you ? "g'alaba qozonasiz" : "g'alaba qozonadi"}: X ${x} : ${o} O.`,
+  resRow: (you, n) => you ? 'Siz asosiy maydonda uchtasini bir qatorga terdingiz.' : `${n} asosiy maydonda uchtasini bir qatorga terdi.`,
+  botStarChoosing: n => `${n} yulduz qo'ydi va sizni qayerga yuborishni tanlayapti.`,
+  youStarChoose: t => `Yulduz qo'yildi. ${t} yuboradigan maydonni bosing.`,
+  starMode: "Navigator: keyingi belgingiz yulduz bo'ladi. Undan keyin raqib uchun maydon tanlaysiz.",
+  strikeMode: 'Zarba: hali hech kim yutmagan, belgilangan maydondagi raqib belgisini bosing.',
+  strikeNone: "Hozir zarba berib bo'lmaydi: mavjud maydonda raqib belgisi yo'q yoki u allaqachon yutilgan.",
+  youStart: "Siz boshlaysiz. Istalgan katakka qo'ying.", botStart: n => `${n} boshlaydi.`,
+  symStart: s => `${s} boshlaydi. Istalgan katakka qo'ying.`, startStar: s => ` Boshlang'ich yulduz: ${s}.`,
+  strikeDone: (you, n, c) => you ? `Zarba! Siz ${c} katakdagi belgini olib tashladingiz.` : `Zarba! ${n} ${c} katakdagi belgini olib tashladi.`,
+  starSent: (you, n, oYou, o, b) => you ? `Yulduz: siz ${o} ${b}-maydonga yubordingiz.` : `Yulduz: ${n} ${o} ${b}-maydonga yubordi.`,
+  wonBoard: (you, n, b, oYou, o) => (you ? `Siz ${b}-maydonni yutdingiz va ★ oldingiz.` : `${n} ${b}-maydonni yutdi va ★ oldi.`) + ' ' + (oYou ? 'Siz istalgan joyga yurasiz.' : `${o} istalgan joyga yuradi.`),
+  boardDraw: b => `${b}-maydon: durang, katak neytral bo'ldi.`,
+  moved: (you, n, c) => you ? `Siz ${c} ga yurdingiz.` : `${n} ${c} ga yurdi.`,
+  countMode: (x, o) => ` Qator endi mumkin emas, belgilar soni uchun o'ynaymiz (X ${x} : ${o} O).`,
+  fNoFree: "Bu maydonda bo'sh katak yo'q, boshqasini tanlang.",
+  fStrikeOnly: 'Zarba faqat hali yutilmagan, belgilangan maydondagi raqib belgisiga beriladi.',
+  fOccupied: 'Bu katak band.', fOnlyBoard: b => `Hozir faqat ${b}-maydonga yurish mumkin.`, fCannot: "Bu yerga yurib bo'lmaydi.",
+  secretTitle: "Maxfiy g'alaba!", drawTitle: 'Durang', youWon: 'Siz yutdingiz!', botWon: n => `${n} yutdi`, symWon: s => `${s} g'alaba qozondi!`,
+  secretText: (b, s) => `${b}-maydon faqat ${s} belgilari bilan to'ldi. Bu har qanday qoidadan kuchli.`,
+  countDrawText: (x, o) => `Qator yo'q, belgilar teng: X ${x} : ${o} O.`,
+  countWinText: (x, o) => `Qator yo'q, lekin asosiy maydonda belgilar ko'proq: X ${x} : ${o} O.`,
+  rowText: m => `Asosiy maydonda uchtasi bir qatorda, ${m} yurishda.`,
+  threeRow: (you, n) => you ? 'Siz uchtasini bir qatorga terdingiz.' : `${n} uchtasini bir qatorga terdi.`, classicDraw: 'Durang.', youStartShort: 'Siz boshlaysiz.',
+  xStarts: 'X boshlaydi.', goodLuck: "Omad. U sizga kerak bo'ladi.", threeWins: "Uchtasi bir qatorda — g'alaba",
+  logBoard: b => `· ${b}-maydon`, logDraw: '· durang', logStrike: 'zarba', noMoves: "Hozircha yurish yo'q",
+  aBoard: 'Maydon', aCell: 'katak', aEmpty: "bo'sh", aPlayable: "bo'sh, yurish mumkin", aStar: 'yulduz', aSendHere: 'raqibni shu yerga yuborish', aTCell: 'Katak',
+  bots: {
+    x1: { name: 'Osonmi?', line: 'Eng kuchsizi. Ehtimol.', win: 'Mana. Oson deyishgandi-ku.', lose: 'Mayli. Bu razminka edi.', draw: 'Durang. Boshlanishiga yomon emas.' },
+    x2: { name: "Endi yo'q", line: "Uzoqroq o'ylaydi. Kamroq xato qiladi.", win: "Aytgandim-ku: endi yo'q.", lose: 'Hm. Omading keldi. Yana bittami?', draw: "Durang. Xavfliroq bo'lib qolding." },
+    x3: { name: 'Tamom', line: "Har yurishda minglab o'yinni hisoblaydi.", win: 'Tamom.', lose: "Bunday bo'lmasligi kerak edi.", draw: 'Munosib. Deyarli.' },
+    c1: { name: "Urinib ko'r", line: "Urinib ko'r. Balki chiqar.", win: "Xo'sh, urinib ko'rdingmi?", lose: "Chiqdi. O'rganib qolma.", draw: 'Durang. Urinishda davom et.' },
+    c2: { name: 'Bekorga', line: 'Buni bekorga bosding.', win: 'Bekorga.', lose: '…bekorga emas ekan.', draw: 'Durang. Baribir bekorga.' },
+    c3: { name: "Yo'q", line: 'Yutqazmaydi. Umuman.', win: "Yo'q.", lose: 'Bu xato. Muallifga yozing.', draw: 'Durang — bu eng yuqori natija. Tabriklayman.' }
+  },
+  rulesHTML: `<p>Navbat bilan belgi qo'ying, kichik maydonlarni yuting va asosiy maydonda uchtasini bir qatorga tering. Lekin qayerga yurishni o'zingiz tanlamaysiz: sizning yurishingiz raqib qayerga yurishini belgilaydi.</p>
+<ol>
+<li><b>Razminka.</b> Avval oddiy 3×3 iks-nol, X boshlaydi. G'olib boshlanishiga ★ oladi, yutqazgan esa o'yinda birinchi yuradi. Durang bo'lsa, yulduz berilmaydi, birinchi yurishni tanga hal qiladi.</li>
+<li><b>Qayerga yurish.</b> <b>N</b>-katakka qilingan yurish raqibni <b>N</b>-maydonga yuboradi (u marker bilan belgilangan). Birinchi yurish, erkin yurish va to'lgan maydonga yuborilgandagi yurish istalgan maydonga qilinadi.</li>
+<li><b>Kichik maydonlar.</b> Uchtasi bir qatorda — maydon abadiy sizniki, belgingiz asosiy maydonga o'tadi, yutqazgan esa erkin yurish oladi. Yutilgan maydonga keyin ham belgi qo'yish mumkin. Durang asosiy maydondagi katakni neytral qiladi.</li>
+<li><b>Yulduzlar.</b> Har bir yutilgan maydon uchun ★ olasiz.<br><b>Navigator, 1★:</b> belgi o'rniga yulduz qo'yasiz (u sizning belgingiz hisoblanadi) va raqibni qaysi maydonga yuborishni o'zingiz tanlaysiz.<br><b>Zarba, 2★:</b> yurish o'rniga, sizni yuborgan maydondagi raqib belgisini olib tashlaysiz, agar u maydon hali yutilmagan bo'lsa. Raqib olib tashlangan katak raqamidagi maydonga yuradi.</li>
+<li><b>G'alaba.</b> Asosiy maydonda uchtasi bir qatorda. Agar qator endi mumkin bo'lmasa, o'yin oxirigacha davom etadi va asosiy maydonda belgisi ko'p bo'lgan g'olib bo'ladi. Teng bo'lsa — durang.</li>
+<li class="mystery"><b>???</b> Noma'lum. O'zingiz toping. Asosiy maydon yutqazilgan bo'lsa ham, g'alaba qozonishning yo'li bor.</li>
+</ol>
+<h3>Nostalgiya</h3><p>Oddiy iks-nol: gorizontal, vertikal yoki diagonal bo'yicha uchtasi bir qatorda. X boshlaydi.</p>
+<h3>Botlar</h3><p>Hamma botlar kuchli. Nomlari halol.</p>`
+},
+
+en: {
+  q: s => `“${s}”`,
+  tagline: 'Tic-tac-toe, version 2.0. <em>The update nobody asked for.</em>',
+  sidePick: 'Against a bot I play', langPick: 'Language',
+  modeX02Desc: '81 cells, stars, strikes and a warm-up. The main game.',
+  classicName: 'Nostalgia', classicDesc: 'Classic 3×3 tic-tac-toe. Like in the back row at school.',
+  rules: 'Rules', footNote: 'Test version. Online play is coming later.',
+  menuBtn: '← Menu', preludeTitle: 'Warm-up',
+  preludeDesc: 'Classic tic-tac-toe, X starts. The winner gets a ★ to start with, the loser moves first in the match. A draw: you toss a coin.',
+  startMatch: 'Start the match', skipPrelude: 'Skip the warm-up',
+  coinTitle: 'Draw. Tossing a coin', coinToss: 'Toss the coin',
+  again: 'Play again', toMenu: 'Menu', labelStars: 'Stars',
+  starBtn: '★ Navigator · 1★', strikeBtn: '✕ Strike · 2★', labelMain: 'Main board',
+  undo: 'Undo', newGame: 'New game', labelLog: 'Moves (board-cell)',
+  classicAgain: 'Again', close: 'Close',
+  friend: 'Friend nearby', friendLine: 'Two players, one screen', xVsO: 'X vs O', notPlayed: 'not played yet',
+  scoreMenu: (m, b, d) => `you ${m} : ${b}${d ? ` · draws ${d}` : ''}`,
+  playVs: (n, l) => `Play against the bot ${n}. ${l}`,
+  vsBot: (sym, n) => `You (${sym}) vs <b>${n}</b>`,
+  vsFriend: (x, o) => `${x} vs ${o} · one screen`,
+  chip: (m, b, n, d) => `you ${m} : ${b} ${n}${d ? ` · draws ${d}` : ''}`,
+  you: 'You', youAcc: 'you', opponentAcc: 'your opponent',
+  yourTurn: 'Your move', thinks: n => `${n} is thinking`, turnOf: s => `${s} to move`,
+  gameOver: 'Game over', warmupOver: 'Warm-up over',
+  warmupSub: 'Warm-up: classic tic-tac-toe', needCoin: 'Draw, the coin decides',
+  warmupHint: 'The winner gets a ★, the loser moves first. Decide what you need more.',
+  starOwner: (you, n) => you ? 'the star is yours' : `the star goes to ${n}`,
+  starOwnerSym: s => `${s} gets the ★`,
+  firstMover: (you, n) => you ? 'you move first' : `${n} moves first`,
+  noStarsToss: 'No stars. Toss the coin.', golden: 'Golden coin!',
+  coinWho: 'Whichever side lands moves first',
+  coinResult: (s, f) => `It's ${s}: ${f}`,
+  coinGolden: (s, f) => `Golden coin! It's ${s}: ${f}, plus a ★`,
+  taunt: (n, t) => `${n}: “${t}”`,
+  tBotWin: 'The star is mine.', tBotWinLose: "I tried to lose, but you wouldn't let me.",
+  tHumanWinLose: 'I let you win. The first move is mine.', tHumanWin: 'Take the star. The first move is mine anyway.',
+  tDraw: 'A draw. Let the coin decide.',
+  whereBotChoosing: 'Choosing where to send you', whereYouChoose: 'Pick a board for your opponent',
+  whereFirst: 'First move: any board', whereFree: 'Free move: any board',
+  whereBoard: n => `Play in board ${n}`, whereAny: 'Any board',
+  resSecret: (you, n, b) => you ? `You filled board ${b} with your marks. Secret victory.` : `${n} filled board ${b} with their marks. Secret victory.`,
+  resDraw: (x, o) => `Draw: no row, equal marks (X ${x} : ${o} O).`,
+  resCount: (you, n, x, o) => `${n} ${you ? 'win' : 'wins'} on marks: X ${x} : ${o} O.`,
+  resRow: (you, n) => `${n} made three in a row on the main board.`,
+  botStarChoosing: n => `${n} placed a star and is choosing where to send you.`,
+  youStarChoose: t => `Star placed. Tap the board where you send ${t}.`,
+  starMode: 'Navigator: your next mark will be a star. After it, you pick a board for your opponent.',
+  strikeMode: "Strike: tap an opponent's mark in the highlighted board that nobody has won yet.",
+  strikeNone: 'Nothing to strike: the available board has no opponent marks or is already won.',
+  youStart: 'You start. Play any cell.', botStart: n => `${n} starts.`,
+  symStart: s => `${s} starts. Play any cell.`, startStar: s => ` Starting star: ${s}.`,
+  strikeDone: (you, n, c) => `Strike! ${n} removed the mark at ${c}.`,
+  starSent: (you, n, oYou, o, b) => `Star: ${you ? 'you' : n} sent ${o} to board ${b}.`,
+  wonBoard: (you, n, b, oYou, o) => `${n} won board ${b} and got a ★. ${o} ${oYou ? 'move' : 'moves'} anywhere.`,
+  boardDraw: b => `Board ${b}: draw, its main cell is now neutral.`,
+  moved: (you, n, c) => `${n} played ${c}.`,
+  countMode: (x, o) => ` No row is possible anymore, playing for marks (X ${x} : ${o} O).`,
+  fNoFree: 'This board is full, pick another.',
+  fStrikeOnly: "A strike only hits an opponent's mark in the highlighted board that nobody has won yet.",
+  fOccupied: 'That cell is taken.', fOnlyBoard: b => `Right now you can only play in board ${b}.`, fCannot: "You can't play here.",
+  secretTitle: 'Secret victory!', drawTitle: 'Draw', youWon: 'You won!', botWon: n => `${n} wins`, symWon: s => `${s} wins!`,
+  secretText: (b, s) => `Board ${b} is filled only with ${s}. That beats every rule.`,
+  countDrawText: (x, o) => `No row, equal marks: X ${x} : ${o} O.`,
+  countWinText: (x, o) => `No row, but more marks on the main board: X ${x} : ${o} O.`,
+  rowText: m => `Three in a row on the main board in ${m} moves.`,
+  threeRow: (you, n) => `${n} made three in a row.`, classicDraw: 'Draw.', youStartShort: 'You start.',
+  xStarts: 'X starts.', goodLuck: "Good luck. You'll need it.", threeWins: 'Three in a row wins',
+  logBoard: b => `· board ${b}`, logDraw: '· draw', logStrike: 'strike', noMoves: 'No moves yet',
+  aBoard: 'Board', aCell: 'cell', aEmpty: 'empty', aPlayable: 'empty, playable', aStar: 'star', aSendHere: 'send your opponent here', aTCell: 'Cell',
+  bots: {
+    x1: { name: 'Easy?', line: 'The weakest. Probably.', win: 'See? And they said easy.', lose: 'Fine. That was a warm-up.', draw: 'A draw. Not bad for a start.' },
+    x2: { name: 'Not Anymore', line: 'Thinks longer. Errs less.', win: 'Told you: not anymore.', lose: 'Hm. Lucky. One more?', draw: "A draw. You're getting dangerous." },
+    x3: { name: 'The End', line: 'Calculates thousands of games per move.', win: 'The End.', lose: 'This was not supposed to happen.', draw: 'Respectable. Almost.' },
+    c1: { name: 'Try Me', line: 'Try me. Maybe it works.', win: 'So, did you try?', lose: "It worked. Don't get used to it.", draw: 'A draw. Keep trying.' },
+    c2: { name: 'Big Mistake', line: 'Clicking this was a big mistake.', win: 'Big mistake.', lose: '…not a mistake after all.', draw: 'A draw. Still a mistake.' },
+    c3: { name: 'No', line: "Doesn't lose. Ever.", win: 'No.', lose: "That's a bug. Tell the author.", draw: 'A draw is the ceiling. Congrats.' }
+  },
+  rulesHTML: `<p>Take turns placing marks, win the small boards and make three in a row on the main board. But you don't choose where to play: your move decides where your opponent goes.</p>
+<ol>
+<li><b>Warm-up.</b> First a classic 3×3 game, X starts. The winner gets a ★ to start with, the loser moves first in the match. On a draw nobody gets a star and a coin decides the first move.</li>
+<li><b>Where to play.</b> A move in cell <b>N</b> sends your opponent to board <b>N</b> (it's highlighted). The first move, a free move, and a move when you're sent to a full board can go to any board.</li>
+<li><b>Small boards.</b> Three in a row and the board is yours for good: your mark goes onto the main board, and the loser gets a free move. You can keep playing in a won board. A draw makes the main board cell neutral.</li>
+<li><b>Stars.</b> Every board you win gives you a ★.<br><b>Navigator, 1★:</b> place a star instead of a mark (it counts as your mark) and choose which board your opponent goes to.<br><b>Strike, 2★:</b> instead of a move, remove an opponent's mark in the board you were sent to, if nobody has won it yet. Your opponent goes to the board matching the removed cell.</li>
+<li><b>Victory.</b> Three in a row on the main board. If no row is possible anymore, play on: whoever has more marks on the main board wins. Equal means a draw.</li>
+<li class="mystery"><b>???</b> Unknown. Find it yourself. There is a way to win even when the main board is already lost.</li>
+</ol>
+<h3>Nostalgia</h3><p>Classic tic-tac-toe: three in a row horizontally, vertically or diagonally. X starts.</p>
+<h3>Bots</h3><p>All the bots are strong. The names are honest.</p>`
+}
+};
+
+</script>
+<script>
 (function () {
 "use strict";
 const E = ENGINE();
@@ -951,23 +1221,34 @@ const store = {
 
 // ---------------- bots ----------------
 const BOTS = {
-  x02: [
-    { id: "x1", name: "Лёгкий?", level: 1, ms: 700, line: "Самый слабый. Наверное.",
-      win: "Ну вот. А говорили, лёгкий.", lose: "Ладно. Это была разминка.", draw: "Ничья. Для начала неплохо." },
-    { id: "x2", name: "Уже нет", level: 2, ms: 1700, line: "Думает дольше. Ошибается реже.",
-      win: "Я же говорил: уже нет.", lose: "Хм. Повезло. Ещё одну?", draw: "Ничья. Ты стал опаснее." },
-    { id: "x3", name: "Конец", level: 3, ms: 3600, line: "Просчитывает тысячи партий за один ход.",
-      win: "Конец.", lose: "Этого не должно было случиться.", draw: "Достойно. Почти." }
-  ],
-  classic: [
-    { id: "c1", name: "Попробуй", level: 1, line: "Попробуй. Может, получится.",
-      win: "Ну как, попробовал?", lose: "Получилось. Не привыкай.", draw: "Ничья. Пробуй дальше." },
-    { id: "c2", name: "Зря", level: 2, line: "Зря ты сюда нажал.",
-      win: "Зря.", lose: "…не зря.", draw: "Ничья. Всё ещё зря." },
-    { id: "c3", name: "Нет", level: 3, line: "Не проигрывает. Вообще.",
-      win: "Нет.", lose: "Это баг. Напиши автору.", draw: "Ничья — это потолок. Поздравляю." }
-  ]
+  x02: [ { id: "x1", level: 1, ms: 700 }, { id: "x2", level: 2, ms: 1700 }, { id: "x3", level: 3, ms: 3600 } ],
+  classic: [ { id: "c1", level: 1 }, { id: "c2", level: 2 }, { id: "c3", level: 3 } ]
 };
+// ---------------- language ----------------
+const LANGS = ["ru", "uz", "en"];
+function detectLang() {
+  const saved = store.get("lang", "");
+  if (LANGS.includes(saved)) return saved;
+  const n = (navigator.language || "ru").toLowerCase();
+  return n.startsWith("uz") ? "uz" : n.startsWith("en") ? "en" : "ru";
+}
+let lang = detectLang();
+const t = (k, ...a) => { const v = I18N[lang][k] !== undefined ? I18N[lang][k] : I18N.ru[k]; return typeof v === "function" ? v(...a) : v; };
+const bt = (id, k) => I18N[lang].bots[id][k];
+const botQ = () => t("q", bt(app.bot.id, "name"));
+const sw = (sym) => `<b style="color:${sym === "X" ? "var(--ink-x)" : "var(--ink-o)"}">${sym}</b>`;
+function applyStatic() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
+  $("rulesBody").innerHTML = t("rulesHTML");
+  document.querySelectorAll(".seg.lang").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+}
+function setLang(l) {
+  if (!LANGS.includes(l) || l === lang) return;
+  lang = l; store.set("lang", l);
+  applyStatic(); buildMenu(); render(null);
+}
 
 const app = {
   screen: "menu", mode: null, bot: null, gameId: 0, history: [],
@@ -977,8 +1258,9 @@ const app = {
 const recorded = new Set();
 const cur = () => app.history[app.history.length - 1];
 const isBot = p => !!app.bot && p > 0 && p !== app.side;
-const nameOf = p => (app.bot ? (p === app.side ? "Ты" : `«${app.bot.name}»`) : SYM[p]);
-const objOf = p => (app.bot ? (p === app.side ? "тебя" : `«${app.bot.name}»`) : SYM[p]);
+const nameOf = p => (app.bot ? (p === app.side ? t("you") : botQ()) : SYM[p]);
+const objOf = p => (app.bot ? (p === app.side ? t("youAcc") : botQ()) : SYM[p]);
+const isYou = p => !!app.bot && p === app.side;
 const pres = (p, third, second) => (app.bot && p === app.side ? second : third);
 let uiMode = null;        // null | "star" | "strike"
 let flash = null;
@@ -1047,19 +1329,19 @@ function buildMenu() {
   for (const mode of ["x02", "classic"]) {
     const box = document.querySelector(`.opponents[data-mode="${mode}"]`);
     let h = `<button class="opp" type="button" data-mode="${mode}" data-bot="">
-      <span class="opp-name">Друг рядом</span><span class="opp-line">Вдвоём за одним экраном</span>
-      <span class="opp-meta"><span class="opp-score">X против O</span></span></button>`;
+      <span class="opp-name">${t("friend")}</span><span class="opp-line">${t("friendLine")}</span>
+      <span class="opp-meta"><span class="opp-score">${t("xVsO")}</span></span></button>`;
     for (const b of BOTS[mode]) {
       const s = scoreOf(b.id), played = s.me + s.bot + s.draw;
       const pips = [1, 2, 3].map(n => `<span class="pip${n <= b.level ? " on" : ""}"></span>`).join("");
-      h += `<button class="opp" type="button" data-mode="${mode}" data-bot="${b.id}" aria-label="Играть против бота «${b.name}». ${b.line}">
-        <span class="opp-name">«${b.name}»</span><span class="opp-line">${b.line}</span>
+      h += `<button class="opp" type="button" data-mode="${mode}" data-bot="${b.id}" aria-label="${t("playVs", t("q", bt(b.id, "name")), bt(b.id, "line"))}">
+        <span class="opp-name">${t("q", bt(b.id, "name"))}</span><span class="opp-line">${bt(b.id, "line")}</span>
         <span class="opp-meta"><span class="pips" aria-hidden="true">${pips}</span>
-        <span class="opp-score" title="ты : бот">${played ? `ты ${s.me} : ${s.bot}${s.draw ? ` · ничьих ${s.draw}` : ""}` : "ещё не играли"}</span></span></button>`;
+        <span class="opp-score">${played ? t("scoreMenu", s.me, s.bot, s.draw) : t("notPlayed")}</span></span></button>`;
     }
     box.innerHTML = h;
   }
-  document.querySelectorAll(".seg").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
+  document.querySelectorAll(".seg[data-side]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
 }
 function show(screen) {
   app.screen = screen;
@@ -1344,9 +1626,9 @@ function flipCoin(cb) {
 // ---------------- render: bars ----------------
 function renderBars() {
   const vs = app.bot
-    ? `Ты (<b style="color:${app.side === 1 ? "var(--ink-x)" : "var(--ink-o)"}">${SYM[app.side]}</b>) против <b>«${app.bot.name}»</b>`
-    : `<b style="color:var(--ink-x)">X</b> против <b style="color:var(--ink-o)">O</b> · за одним экраном`;
-  const chip = app.bot ? (() => { const s = scoreOf(app.bot.id); return `ты ${s.me} : ${s.bot} «${app.bot.name}»${s.draw ? ` · ничьих ${s.draw}` : ""}`; })() : "";
+    ? t("vsBot", sw(SYM[app.side]), botQ())
+    : t("vsFriend", sw("X"), sw("O"));
+  const chip = app.bot ? (() => { const s = scoreOf(app.bot.id); return t("chip", s.me, s.bot, botQ(), s.draw); })() : "";
   for (const [v, c] of [["x02Vs", "x02Score"], ["cVs", "cScore"]]) {
     $(v).innerHTML = vs;
     $(c).hidden = !app.bot;
@@ -1379,33 +1661,33 @@ function drawLine(container, line) {
   const dx = (Z[0] - A[0]) * 0.18, dy = (Z[1] - A[1]) * 0.18;
   container.insertAdjacentHTML("beforeend", `<svg class="ttt-line" viewBox="0 0 300 300" aria-hidden="true"><line pathLength="1" x1="${A[0] - dx}" y1="${A[1] - dy}" x2="${Z[0] + dx}" y2="${Z[1] + dy}"/></svg>`);
 }
-function renderTTTCells(cells, t, ctx, offset, lockAll) {
+function renderTTTCells(cells, tt, ctx, offset, lockAll) {
   for (let i = 0; i < 9; i++) {
-    const el = cells[i], v = t.b[i];
-    const fresh = ctx && t.last === i;
+    const el = cells[i], v = tt.b[i];
+    const fresh = ctx && tt.last === i;
     const key = v ? String(v) : "";
     if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, offset + i, fresh ? "fresh" : "") : ""; }
-    el.disabled = !!v || !!t.result || lockAll;
-    el.setAttribute("aria-label", `Клетка ${i + 1}: ${v ? SYM[v] : "свободно"}`);
+    el.disabled = !!v || !!tt.result || lockAll;
+    el.setAttribute("aria-label", `${t("aTCell")} ${i + 1}: ${v ? SYM[v] : t("aEmpty")}`);
   }
 }
 function preludeTaunt(e) {
-  const r = e.t.result, bs = 3 - app.side, nm = `«${app.bot.name}»`;
-  if (r === bs) return e.goal === "lose" ? `${nm}: «Хотел поддаться, но ты не дал».` : `${nm}: «Звезда моя».`;
-  if (r === app.side) return e.goal === "lose" ? `${nm}: «Я поддался. Первый ход мой».` : `${nm}: «Бери звезду. Первый ход всё равно мой».`;
-  return `${nm}: «Ничья. Пусть решит монета».`;
+  const r = e.t.result, bs = 3 - app.side, nm = botQ();
+  if (r === bs) return t("taunt", nm, e.goal === "lose" ? t("tBotWinLose") : t("tBotWin"));
+  if (r === app.side) return t("taunt", nm, e.goal === "lose" ? t("tHumanWinLose") : t("tHumanWin"));
+  return t("taunt", nm, t("tDraw"));
 }
-function starOwnerText(p) { return app.bot ? (p === app.side ? "звезда твоя" : `звезда у «${app.bot.name}»`) : `★ получает ${SYM[p]}`; }
-function firstText(p) { return app.bot ? (p === app.side ? "первым ходишь ты" : `первым ходит «${app.bot.name}»`) : `первым ходит ${SYM[p]}`; }
+function starOwnerText(p) { return app.bot ? t("starOwner", p === app.side, botQ()) : t("starOwnerSym", SYM[p]); }
+function firstText(p) { return app.bot ? t("firstMover", p === app.side, botQ()) : t("firstMover", false, SYM[p]); }
 function renderPrelude(e, ctx) {
-  const t = e.t, coinMode = t.result === 3;
-  const botTurn = !t.result && isBot(t.turn);
+  const tt = e.t, coinMode = tt.result === 3;
+  const botTurn = !tt.result && isBot(tt.turn);
   const pr = $("prelude");
   const wasCoin = pr.classList.contains("in-coin");
   pr.classList.toggle("in-coin", coinMode);
   $("coinStage").hidden = !coinMode;
-  renderTTTCells(pCells, t, ctx, 500, botTurn);
-  drawLine($("preludeGrid"), t.line);
+  renderTTTCells(pCells, tt, ctx, 500, botTurn);
+  drawLine($("preludeGrid"), tt.line);
   // coin
   if (!flipping) showCoinFace(e.coin || 1);
   $("coinBtn").hidden = !(coinMode && !e.coin);
@@ -1415,76 +1697,76 @@ function renderPrelude(e, ctx) {
   $("coin").classList.toggle("golden", gold && !flipping);
   $("coinText").classList.toggle("golden", gold);
   $("coinText").textContent = flipping ? "…" : e.coin
-    ? (gold ? `Золотая монета! Выпал ${SYM[e.coin]}: ${firstText(e.coin)} и получает ★` : `Выпал ${SYM[e.coin]}: ${firstText(e.coin)}`)
-    : "Кто выпадет, тот ходит первым";
+    ? (gold ? t("coinGolden", SYM[e.coin], firstText(e.coin)) : t("coinResult", SYM[e.coin], firstText(e.coin)))
+    : t("coinWho");
   if (coinMode && !wasCoin && !e.coin) setTimeout(() => { try { $("coinBtn").focus(); } catch (err) {} }, 50);
-  $("preludeStart").hidden = !(t.result === 1 || t.result === 2);
-  $("preludeSkip").hidden = !!t.result;
+  $("preludeStart").hidden = !(tt.result === 1 || tt.result === 2);
+  $("preludeSkip").hidden = !!tt.result;
   // notes
-  setTurnMark($("turnMark"), t.result ? 0 : t.turn, false);
-  if (t.result) {
-    $("turnWho").textContent = "Разминка окончена";
-    $("turnWhere").textContent = t.result === 3 ? (e.coin ? firstText(e.coin) : "Ничья, нужна монета") : firstText(3 - t.result);
+  setTurnMark($("turnMark"), tt.result ? 0 : tt.turn, false);
+  if (tt.result) {
+    $("turnWho").textContent = t("warmupOver");
+    $("turnWhere").textContent = tt.result === 3 ? (e.coin ? firstText(e.coin) : t("needCoin")) : firstText(3 - tt.result);
   } else {
-    $("turnWho").innerHTML = (app.bot ? (t.turn === app.side ? "Твой ход" : `«${app.bot.name}» думает${dots}`) : `Ход ${SYM[t.turn]}`);
-    $("turnWhere").textContent = "Разминка: обычные крестики-нолики";
+    $("turnWho").innerHTML = (app.bot ? (tt.turn === app.side ? t("yourTurn") : t("thinks", botQ()) + dots) : t("turnOf", SYM[tt.turn]));
+    $("turnWhere").textContent = t("warmupSub");
   }
   const st = $("status");
   st.className = "status";
-  if (!t.result) st.textContent = "Победитель получает ★, проигравший ходит первым. Решай, что тебе нужнее.";
-  else if (t.result === 3) {
-    st.textContent = (app.bot ? preludeTaunt(e) + " " : "") + (e.coin ? (gold ? "Золотая монета!" : "") : "Звёзд нет. Бросай монету.");
+  if (!tt.result) st.textContent = t("warmupHint");
+  else if (tt.result === 3) {
+    st.textContent = (app.bot ? preludeTaunt(e) + " " : "") + (e.coin ? (gold ? t("golden") : "") : t("noStarsToss"));
   } else {
-    const facts = `${starOwnerText(t.result)}, ${firstText(3 - t.result)}.`;
+    const facts = `${starOwnerText(tt.result)}, ${firstText(3 - tt.result)}.`;
     st.textContent = app.bot ? `${preludeTaunt(e)} ${facts[0].toUpperCase() + facts.slice(1)}` : facts[0].toUpperCase() + facts.slice(1);
   }
 }
 
 function whereText(g) {
   if (g.result) return "";
-  if (g.choosing) return isBot(g.turn) ? "Выбирает, куда тебя отправить" : "Выбери поле для соперника";
+  if (g.choosing) return isBot(g.turn) ? t("whereBotChoosing") : t("whereYouChoose");
   const a = E.allowed(g);
-  if (g.moves === 0) return "Первый ход: любое поле";
-  if (g.free) return "Свободный ход: любое поле";
-  if (a.length === 1) return `Ход в поле ${a[0] + 1}`;
-  return "Можно в любое поле";
+  if (g.moves === 0) return t("whereFirst");
+  if (g.free) return t("whereFree");
+  if (a.length === 1) return t("whereBoard", a[0] + 1);
+  return t("whereAny");
 }
 function statusMain(g) {
   if (flash) return [flash, "warn"];
   const last = g.log[g.log.length - 1];
   if (g.result) {
     const r = g.result, k = E.count(g.owner);
-    if (g.secret >= 0) return [`${nameOf(r)} заполнил всё поле ${g.secret + 1} своими знаками. Секретная победа.`, "star"];
-    if (r === 3) return [`Ничья: ряда нет, знаков поровну (X ${k[1]} : ${k[2]} O).`, ""];
-    if (g.byCount) return [`${nameOf(r)} ${pres(r, "побеждает", "побеждаешь")} по количеству знаков: X ${k[1]} : ${k[2]} O.`, ""];
-    return [`${nameOf(r)} собрал три в ряд на главном поле.`, ""];
+    if (g.secret >= 0) return [t("resSecret", isYou(r), nameOf(r), g.secret + 1), "star"];
+    if (r === 3) return [t("resDraw", k[1], k[2]), ""];
+    if (g.byCount) return [t("resCount", isYou(r), nameOf(r), k[1], k[2]), ""];
+    return [t("resRow", isYou(r), nameOf(r)), ""];
   }
   if (g.choosing) {
     return isBot(g.turn)
-      ? [`${nameOf(g.turn)} поставил звезду и выбирает, куда тебя отправить.`, "star"]
-      : [`Звезда стоит. Нажми на поле, куда отправить ${app.bot ? "соперника" : SYM[3 - g.turn]}.`, "star"];
+      ? [t("botStarChoosing", nameOf(g.turn)), "star"]
+      : [t("youStarChoose", app.bot ? t("opponentAcc") : SYM[3 - g.turn]), "star"];
   }
-  if (uiMode === "star") return ["Навигатор: следующий знак будет звездой. После хода выберешь поле для соперника.", "star"];
+  if (uiMode === "star") return [t("starMode"), "star"];
   if (uiMode === "strike") {
     const any = E.legal(g).some(a => a >= 200 && a < 300);
-    return any ? ["Удар: нажми на чужой знак в подсвеченном поле, которое ещё никто не выиграл.", "star"]
-               : ["Удар сейчас некуда: в доступном поле нет чужих знаков или оно уже выиграно.", "warn"];
+    return any ? [t("strikeMode"), "star"] : [t("strikeNone"), "warn"];
   }
   if (!last) {
     const who = g.turn;
-    let t = app.bot ? (who === app.side ? "Ты начинаешь. Ставь в любую клетку." : `«${app.bot.name}» начинает.`) : `${SYM[who]} начинает. Ставь в любую клетку.`;
-    if (g.stars[1] || g.stars[2]) t += ` Звезда на старте: ${g.stars[1] ? "X" : "O"}.`;
-    return [t, ""];
+    let m = app.bot ? (who === app.side ? t("youStart") : t("botStart", botQ())) : t("symStart", SYM[who]);
+    if (g.stars[1] || g.stars[2]) m += t("startStar", g.stars[1] ? "X" : "O");
+    return [m, ""];
   }
   const b = (last.i / 9) | 0, c = last.i % 9, p = last.p, o = 3 - p;
-  let t;
-  if (last.k === "s") t = `Удар! ${nameOf(p)} снял знак в клетке ${b + 1}-${c + 1}.`;
-  else if (last.k === "n" && last.to >= 0) t = `Звезда: ${nameOf(p)} отправил ${objOf(o)} в поле ${last.to + 1}.`;
-  else if (last.note === "won") t = `${nameOf(p)} выиграл поле ${b + 1} и получил ★. ${nameOf(o)} ${pres(o, "ходит куда хочет", "ходишь куда хочешь")}.`;
-  else if (last.note === "draw") t = `Поле ${b + 1}: ничья, клетка стала нейтральной.`;
-  else t = `${nameOf(p)} сходил ${b + 1}-${c + 1}.`;
-  if (!g.result && E.noRowPossible(g.owner)) { const k = E.count(g.owner); t += ` Ряд уже невозможен, играем на количество (X ${k[1]} : ${k[2]} O).`; }
-  return [t, ""];
+  let m;
+  const cell = `${b + 1}-${c + 1}`;
+  if (last.k === "s") m = t("strikeDone", isYou(p), nameOf(p), cell);
+  else if (last.k === "n" && last.to >= 0) m = t("starSent", isYou(p), nameOf(p), isYou(o), objOf(o), last.to + 1);
+  else if (last.note === "won") m = t("wonBoard", isYou(p), nameOf(p), b + 1, isYou(o), nameOf(o));
+  else if (last.note === "draw") m = t("boardDraw", b + 1);
+  else m = t("moved", isYou(p), nameOf(p), cell);
+  if (!g.result && E.noRowPossible(g.owner)) { const k = E.count(g.owner); m += t("countMode", k[1], k[2]); }
+  return [m, ""];
 }
 function renderMain(g, ctx) {
   const prev = ctx && ctx.prev;
@@ -1521,8 +1803,8 @@ function renderMain(g, ctx) {
       const key = v ? `${v}${g.star[i]}` : "";
       if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, i + 1, fresh ? "fresh" : "", g.star[i]) : ""; }
       el.setAttribute("aria-label", g.choosing
-        ? `Поле ${b + 1}${ok ? ": отправить соперника сюда" : ""}`
-        : `Поле ${b + 1}, клетка ${c + 1}: ${v ? SYM[v] + (g.star[i] ? ", звезда" : "") : (ok ? "свободно, можно ходить" : "свободно")}`);
+        ? `${t("aBoard")} ${b + 1}${ok ? ": " + t("aSendHere") : ""}`
+        : `${t("aBoard")} ${b + 1}, ${t("aCell")} ${c + 1}: ${v ? SYM[v] + (g.star[i] ? ", " + t("aStar") : "") : (ok ? t("aPlayable") : t("aEmpty"))}`);
     }
   }
   // main board
@@ -1550,8 +1832,8 @@ function renderMain(g, ctx) {
   }
   // turn
   setTurnMark($("turnMark"), g.result ? 0 : g.turn, uiMode === "star");
-  $("turnWho").innerHTML = g.result ? "Партия окончена"
-    : app.bot ? (g.turn === app.side ? "Твой ход" : `«${app.bot.name}» думает${dots}`) : `Ход ${SYM[g.turn]}`;
+  $("turnWho").innerHTML = g.result ? t("gameOver")
+    : app.bot ? (g.turn === app.side ? t("yourTurn") : t("thinks", botQ()) + dots) : t("turnOf", SYM[g.turn]);
   $("turnWhere").textContent = whereText(g);
   // stars
   const canAct = !g.result && !g.choosing && !botTurn;
@@ -1573,15 +1855,15 @@ function renderMain(g, ctx) {
   st.textContent = text;
   // log
   const log = $("log");
-  if (!g.log.length) log.innerHTML = '<li class="empty">Пока ходов нет</li>';
+  if (!g.log.length) log.innerHTML = `<li class="empty">${t("noMoves")}</li>`;
   else {
     log.innerHTML = g.log.map((en, n) => {
       const b = (en.i / 9) | 0, c = en.i % 9;
       let note = "";
       if (en.k === "n") note += ` <span class="note s">★${en.to >= 0 ? "→" + (en.to + 1) : ""}</span>`;
-      if (en.k === "s") note += ' <span class="note k">удар</span>';
-      if (en.note === "won") note += ` <span class="note">· поле ${b + 1}</span>`;
-      if (en.note === "draw") note += ' <span class="note">· ничья</span>';
+      if (en.k === "s") note += ` <span class="note k">${t("logStrike")}</span>`;
+      if (en.note === "won") note += ` <span class="note">${t("logBoard", b + 1)}</span>`;
+      if (en.note === "draw") note += ` <span class="note">${t("logDraw")}</span>`;
       return `<li><span class="num">${n + 1}.</span><span class="${en.p === 1 ? "px" : "po"}">${SYM[en.p]}</span> ${b + 1}-${c + 1}${note}</li>`;
     }).join("");
     log.scrollTop = log.scrollHeight;
@@ -1590,15 +1872,15 @@ function renderMain(g, ctx) {
   const banner = $("banner");
   if (g.result) {
     const r = g.result, k = E.count(g.owner);
-    $("bannerTitle").textContent = g.secret >= 0 ? "Секретная победа!"
-      : r === 3 ? "Ничья"
-      : app.bot ? (r === app.side ? "Ты победил!" : `«${app.bot.name}» победил`) : `Победа ${SYM[r]}!`;
-    $("bannerTaunt").textContent = app.bot ? `«${r === 3 ? app.bot.draw : r === app.side ? app.bot.lose : app.bot.win}»` : "";
+    $("bannerTitle").textContent = g.secret >= 0 ? t("secretTitle")
+      : r === 3 ? t("drawTitle")
+      : app.bot ? (r === app.side ? t("youWon") : t("botWon", botQ())) : t("symWon", SYM[r]);
+    $("bannerTaunt").textContent = app.bot ? t("q", bt(app.bot.id, r === 3 ? "draw" : r === app.side ? "lose" : "win")) : "";
     $("bannerText").textContent = g.secret >= 0
-      ? `Всё поле ${g.secret + 1} заполнено только знаками ${SYM[r]}. Это сильнее любых правил.`
+      ? t("secretText", g.secret + 1, SYM[r])
       : g.byCount
-        ? (r === 3 ? `Ряда нет, знаков поровну: X ${k[1]} : ${k[2]} O.` : `Ряда нет, но знаков на главном поле больше: X ${k[1]} : ${k[2]} O.`)
-        : `Три в ряд на главном поле за ${g.moves} ходов.`;
+        ? (r === 3 ? t("countDrawText", k[1], k[2]) : t("countWinText", k[1], k[2]))
+        : t("rowText", g.moves);
     if (!banner.classList.contains("show")) banner.classList.add("show");
   } else banner.classList.remove("show");
 }
@@ -1607,27 +1889,27 @@ function renderMain(g, ctx) {
 function renderClassic(ctx) {
   const e = cur();
   if (!e) return;
-  const t = e.t, botTurn = !t.result && isBot(t.turn);
+  const tt = e.t, botTurn = !tt.result && isBot(tt.turn);
   renderBars();
-  renderTTTCells(cCells, t, ctx, 600, botTurn);
-  drawLine($("tttBoard"), t.line);
-  setTurnMark($("cTurnMark"), t.result ? 0 : t.turn, false);
-  $("cTurnWho").innerHTML = t.result ? "Партия окончена"
-    : app.bot ? (t.turn === app.side ? "Твой ход" : `«${app.bot.name}» думает${dots}`) : `Ход ${SYM[t.turn]}`;
-  $("cTurnWhere").textContent = t.result ? "" : "Три в ряд — победа";
+  renderTTTCells(cCells, tt, ctx, 600, botTurn);
+  drawLine($("tttBoard"), tt.line);
+  setTurnMark($("cTurnMark"), tt.result ? 0 : tt.turn, false);
+  $("cTurnWho").innerHTML = tt.result ? t("gameOver")
+    : app.bot ? (tt.turn === app.side ? t("yourTurn") : t("thinks", botQ()) + dots) : t("turnOf", SYM[tt.turn]);
+  $("cTurnWhere").textContent = tt.result ? "" : t("threeWins");
   const st = $("cStatus");
   st.className = "status";
-  const filled = t.b.filter(Boolean).length;
-  st.textContent = t.result
-    ? (t.result === 3 ? "Ничья." : `${nameOf(t.result)} ${pres(t.result, "собрал", "собрал")} три в ряд.`)
-    : filled === 0 ? (app.bot ? (app.side === 1 ? "Ты начинаешь." : `«${app.bot.name}» начинает.`) : "X начинает.")
-    : app.bot && app.bot.level === 3 ? "Удачи. Она понадобится." : "";
+  const filled = tt.b.filter(Boolean).length;
+  st.textContent = tt.result
+    ? (tt.result === 3 ? t("classicDraw") : t("threeRow", isYou(tt.result), nameOf(tt.result)))
+    : filled === 0 ? (app.bot ? (app.side === 1 ? t("youStartShort") : t("botStart", botQ())) : t("xStarts"))
+    : app.bot && app.bot.level === 3 ? t("goodLuck") : "";
   document.querySelectorAll('#scr-classic [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
   const banner = $("cBanner");
-  if (t.result) {
-    const r = t.result;
-    $("cBannerTitle").textContent = r === 3 ? "Ничья" : app.bot ? (r === app.side ? "Ты победил!" : `«${app.bot.name}» победил`) : `Победа ${SYM[r]}!`;
-    $("cBannerTaunt").textContent = app.bot ? `«${r === 3 ? app.bot.draw : r === app.side ? app.bot.lose : app.bot.win}»` : "";
+  if (tt.result) {
+    const r = tt.result;
+    $("cBannerTitle").textContent = r === 3 ? t("drawTitle") : app.bot ? (r === app.side ? t("youWon") : t("botWon", botQ())) : t("symWon", SYM[r]);
+    $("cBannerTaunt").textContent = app.bot ? t("q", bt(app.bot.id, r === 3 ? "draw" : r === app.side ? "lose" : "win")) : "";
     if (!banner.classList.contains("show")) banner.classList.add("show");
   } else banner.classList.remove("show");
 }
@@ -1659,11 +1941,12 @@ function bind() {
     const o = ev.target.closest(".opp");
     if (o) startGame(o.dataset.mode, o.dataset.bot);
   });
-  document.querySelectorAll(".seg").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".seg[data-side]").forEach(b => b.addEventListener("click", () => {
     app.side = +b.dataset.side;
     store.set("side", app.side);
-    document.querySelectorAll(".seg").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.side === app.side)));
+    document.querySelectorAll(".seg[data-side]").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.side === app.side)));
   }));
+  document.querySelectorAll(".seg.lang").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("rulesClose").addEventListener("click", closeRules);
   $("rulesSheet").addEventListener("click", ev => { if (ev.target === $("rulesSheet")) closeRules(); });
   document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !$("rulesSheet").hidden) closeRules(); });
@@ -1679,10 +1962,10 @@ function bind() {
     const a = g.choosing ? 300 + b : uiMode === "strike" ? 200 + i : uiMode === "star" ? 100 + i : i;
     if (!E.isLegal(g, a)) {
       const al = E.allowed(g);
-      flash = g.choosing ? "В этом поле нет свободных клеток, выбери другое."
-        : uiMode === "strike" ? "Удар — только по чужому знаку в подсвеченном поле, которое ещё никто не выиграл."
-        : g.cells[i] ? "Эта клетка уже занята."
-        : al.length === 1 ? `Сейчас можно ходить только в поле ${al[0] + 1}.` : "Сюда ходить нельзя.";
+      flash = g.choosing ? t("fNoFree")
+        : uiMode === "strike" ? t("fStrikeOnly")
+        : g.cells[i] ? t("fOccupied")
+        : al.length === 1 ? t("fOnlyBoard", al[0] + 1) : t("fCannot");
       renderX02(null);
       flash = null;
       return;
@@ -1733,6 +2016,7 @@ function snapshot() {
 }
 function boot(data) {
   buildDOM();
+  applyStatic();
   buildMenu();
   bind();
   const ok = data && data.mode && (data.screen === "x02" || data.screen === "classic") && Array.isArray(data.history) && data.history.length
