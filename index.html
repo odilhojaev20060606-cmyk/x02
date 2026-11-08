@@ -985,14 +985,349 @@ function ENGINE() {
     const win = em.filter(i => winsAt(b, i, me));
     if (win.length) return pick(win);
     const block = em.filter(i => winsAt(b, i, op));
-    if (level === 2) {
+    if (level === 2) {               // plays perfectly; its mistakes are scheduled by the app (every 5–7 games)
       if (block.length) return pick(block);
-      if (Math.random() < 0.08) return pick(em);
       return best();
     }
     if (block.length && Math.random() < 0.8) return pick(block);
     if (Math.random() < 0.22) return pick(em);
     return best();
+  }
+
+  // ================= fast engine for the strongest bot (bit masks) =================
+  // Same rules as applyMut, packed into an Int32Array. Index map:
+  const FX = 0, FO = 9, FOWN = 18, FMX = 27, FMO = 28, FMD = 29, FSX = 30, FSO = 31, FTURN = 32, FACT = 33, FCHO = 34, FRES = 35, FFREE = 36, FLEN = 37;
+  const LINE_MASKS = LINES.map(l => (1 << l[0]) | (1 << l[1]) | (1 << l[2]));
+  const WIN = new Uint8Array(512), POP = new Uint8Array(512), BITS = [];
+  for (let m = 0; m < 512; m++) {
+    for (const L of LINE_MASKS) if ((m & L) === L) { WIN[m] = 1; break; }
+    const bl = [];
+    for (let c = 0; c < 9; c++) if (m & (1 << c)) bl.push(c);
+    POP[m] = bl.length; BITS.push(bl);
+  }
+  let WINC = null;   // WINC[(my << 9) | other] = empty cells that complete one of my lines
+  function buildWinc() {
+    WINC = new Uint16Array(1 << 18);
+    for (let my = 0; my < 512; my++) for (let ot = 0; ot < 512; ot++) {
+      if (my & ot) continue;
+      const occ = my | ot;
+      let r = 0;
+      for (let c = 0; c < 9; c++) { const bit = 1 << c; if (!(occ & bit) && WIN[my | bit]) r |= bit; }
+      WINC[(my << 9) | ot] = r;
+    }
+  }
+  let rs = (Date.now() ^ 0x9e3779b9) | 0 || 1;
+  const rnd = () => { rs ^= rs << 13; rs ^= rs >>> 17; rs ^= rs << 5; return (rs >>> 0) / 4294967296; };
+  const seed = s => { rs = (s | 0) || 1; };
+
+  function fastFrom(s) {
+    const F = new Int32Array(FLEN);
+    for (let b = 0; b < 9; b++) {
+      let x = 0, o = 0;
+      for (let c = 0; c < 9; c++) { const v = s.cells[b * 9 + c]; if (v === 1) x |= 1 << c; else if (v === 2) o |= 1 << c; }
+      F[FX + b] = x; F[FO + b] = o; F[FOWN + b] = s.owner[b];
+      if (s.owner[b] === 1) F[FMX] |= 1 << b; else if (s.owner[b] === 2) F[FMO] |= 1 << b; else if (s.owner[b] === 3) F[FMD] |= 1 << b;
+    }
+    F[FSX] = s.stars[1]; F[FSO] = s.stars[2]; F[FTURN] = s.turn; F[FACT] = s.active;
+    F[FCHO] = s.choosing; F[FRES] = s.result; F[FFREE] = s.free;
+    return F;
+  }
+  function fastShouldEnd(F) {
+    let open = false;
+    for (let b = 0; b < 9; b++) if ((F[FX + b] | F[FO + b]) !== 511) { open = true; break; }
+    if (!open) return true;
+    if ((F[FMX] | F[FMO] | F[FMD]) !== 511) return false;
+    for (const L of LINE_MASKS) if (!(L & F[FMD]) && !((L & F[FMX]) && (L & F[FMO]))) return false;
+    return true;
+  }
+  function fastFinishCount(F) { const x = POP[F[FMX]], o = POP[F[FMO]]; F[FRES] = x > o ? 1 : o > x ? 2 : 3; }
+  function fastApply(F, a) {
+    const p = F[FTURN], o = 3 - p;
+    if (a >= 300) { F[FCHO] = 0; F[FFREE] = 0; F[FACT] = a - 300; F[FTURN] = o; return; }
+    if (a >= 200) {
+      const i = a - 200, b = (i / 9) | 0, c = i - b * 9;
+      F[(o === 1 ? FX : FO) + b] &= ~(1 << c);
+      F[p === 1 ? FSX : FSO] -= 2;
+      F[FTURN] = o; F[FACT] = c; F[FFREE] = 0;
+      if (fastShouldEnd(F)) fastFinishCount(F);
+      return;
+    }
+    const star = a >= 100, i = star ? a - 100 : a, b = (i / 9) | 0, c = i - b * 9;
+    const mi = (p === 1 ? FX : FO) + b, pm = F[mi] | (1 << c);
+    F[mi] = pm;
+    if (star) F[p === 1 ? FSX : FSO]--;
+    F[FFREE] = 0;
+    const full = (pm | F[(p === 1 ? FO : FX) + b]) === 511;
+    let won = false;
+    if (F[FOWN + b] === 0) {
+      if (WIN[pm]) { F[FOWN + b] = p; F[p === 1 ? FMX : FMO] |= 1 << b; F[p === 1 ? FSX : FSO]++; won = true; }
+      else if (full) { F[FOWN + b] = 3; F[FMD] |= 1 << b; }
+    }
+    if (full && pm === 511) { F[FRES] = p; return; }
+    if (won && WIN[F[p === 1 ? FMX : FMO]]) { F[FRES] = p; return; }
+    if (fastShouldEnd(F)) { fastFinishCount(F); return; }
+    if (star && !won) F[FCHO] = 1;
+    else { F[FTURN] = o; F[FACT] = won ? -1 : c; F[FFREE] = won ? 1 : 0; }
+  }
+  function fastAllowedMask(F) {
+    if (F[FRES]) return 0;
+    const act = F[FACT];
+    if (!F[FCHO] && act >= 0 && (F[FX + act] | F[FO + act]) !== 511) return 1 << act;
+    let m = 0;
+    for (let b = 0; b < 9; b++) if ((F[FX + b] | F[FO + b]) !== 511) m |= 1 << b;
+    return m;
+  }
+  function fastLegal(F, out) {
+    const am = fastAllowedMask(F);
+    let n = 0;
+    if (!am) return 0;
+    if (F[FCHO]) { for (let b = 0; b < 9; b++) if (am & (1 << b)) out[n++] = 300 + b; return n; }
+    const p = F[FTURN], st = F[p === 1 ? FSX : FSO];
+    for (let b = 0; b < 9; b++) {
+      if (!(am & (1 << b))) continue;
+      const xm = F[FX + b], om = F[FO + b], em = 511 & ~(xm | om), opp = p === 1 ? om : xm, open = F[FOWN + b] === 0;
+      for (let c = 0; c < 9; c++) {
+        const bit = 1 << c, i = b * 9 + c;
+        if (em & bit) { out[n++] = i; if (st >= 1) out[n++] = 100 + i; }
+        else if (st >= 2 && open && (opp & bit)) out[n++] = 200 + i;
+      }
+    }
+    return n;
+  }
+  // cells of board b where player p would complete a line (only boards nobody owns yet)
+  const winCells = (F, p, b) => F[FOWN + b] !== 0 ? 0 : WINC[((p === 1 ? F[FX + b] : F[FO + b]) << 9) | (p === 1 ? F[FO + b] : F[FX + b])];
+  // boards whose capture would complete p's line on the main board
+  const mainWins = (F, p) => WINC[((p === 1 ? F[FMX] : F[FMO]) << 9) | ((p === 1 ? F[FMO] : F[FMX]) | F[FMD])];
+
+  // ---------- heavy rollout policy ----------
+  const RB = new Int16Array(96);
+  function rolloutStep(F) {
+    const p = F[FTURN], o = 3 - p, am = fastAllowedMask(F);
+    const mainOpp = mainWins(F, o);
+    if (F[FCHO]) {   // navigator: send the opponent where they cannot win anything at once
+      let n = 0, nb = 0, any = 0;
+      for (let b = 0; b < 9; b++) {
+        if (!(am & (1 << b))) continue;
+        any = b;
+        const w = winCells(F, o, b);
+        if (!w) RB[n++] = b; else if (!(mainOpp & (1 << b))) RB[48 + nb++] = b;
+      }
+      if (n) return 300 + RB[(rnd() * n) | 0];
+      if (nb) return 300 + RB[48 + ((rnd() * nb) | 0)];
+      return 300 + any;
+    }
+    const mainMine = mainWins(F, p);
+    let nw = 0;
+    for (let b = 0; b < 9; b++) {
+      if (!(am & (1 << b))) continue;
+      const w = winCells(F, p, b);
+      if (!w) continue;
+      const bl = BITS[w];
+      if (mainMine & (1 << b)) return b * 9 + bl[0];             // wins the whole game
+      RB[nw++] = b * 9 + bl[(rnd() * bl.length) | 0];
+    }
+    if (nw && rnd() < 0.9) return RB[(rnd() * nw) | 0];         // wins a small board
+    // block a board the opponent is about to win (if we are in it), sometimes
+    // collect empty cells
+    let n = 0;
+    for (let b = 0; b < 9; b++) {
+      if (!(am & (1 << b))) continue;
+      const bl = BITS[511 & ~(F[FX + b] | F[FO + b])];
+      for (let k = 0; k < bl.length; k++) RB[n++] = b * 9 + bl[k];
+    }
+    // opponent's chances if they get a free move
+    let freeG = -1;
+    const dangerOf = (b, c) => {   // after our move at (b,c): 2 = opponent can win the game, 1 = a board, 0 = safe
+      let t = c;
+      const fullT = t === b ? ((F[FX + b] | F[FO + b] | (1 << c)) === 511) : ((F[FX + t] | F[FO + t]) === 511);
+      if (fullT) {
+        if (freeG < 0) { freeG = 0; for (let k = 0; k < 9; k++) { const w = winCells(F, o, k); if (w) { if (mainOpp & (1 << k)) { freeG = 2; break; } freeG = 1; } } }
+        return freeG;
+      }
+      if (F[FOWN + t] !== 0) return 0;
+      let w;
+      if (t === b) {
+        const pmask = (p === 1 ? F[FX + b] : F[FO + b]) | (1 << c), omask = p === 1 ? F[FO + b] : F[FX + b];
+        w = WINC[(omask << 9) | pmask];
+      } else w = winCells(F, o, t);
+      return !w ? 0 : (mainOpp & (1 << t)) ? 2 : 1;
+    };
+    const st = F[p === 1 ? FSX : FSO];
+    let fallback = -1, okBoard = -1;
+    for (let k = 0; k < 5; k++) {
+      const i = RB[(rnd() * n) | 0], b = (i / 9) | 0, c = i - b * 9;
+      const d = dangerOf(b, c);
+      if (d === 0) return i;
+      if (d === 1 && okBoard < 0) okBoard = i;
+      if (fallback < 0) fallback = i;
+    }
+    if (st >= 1 && rnd() < 0.7) return 100 + (okBoard >= 0 ? okBoard : fallback);   // use a star to choose the target
+    if (okBoard >= 0) return okBoard;
+    return fallback;
+  }
+  function fastRollout(F) {
+    let g = 0;
+    while (!F[FRES] && g++ < 400) fastApply(F, rolloutStep(F));
+    return F[FRES] || 3;
+  }
+
+  // ---------- move ordering (prior knowledge for the tree) ----------
+  function orderMoves(F, buf, n) {
+    const p = F[FTURN], o = 3 - p, mainMine = mainWins(F, p), mainOpp = mainWins(F, o);
+    const myW = new Int32Array(9), opW = new Int32Array(9);
+    let oppAnyG = 0, oppAnyB = 0;
+    for (let b = 0; b < 9; b++) {
+      myW[b] = winCells(F, p, b); opW[b] = winCells(F, o, b);
+      if (opW[b] && (F[FX + b] | F[FO + b]) !== 511) { oppAnyB = 1; if (mainOpp & (1 << b)) oppAnyG = 1; }
+    }
+    const sendPenalty = (b, c, wonHere) => {
+      const fullT = c === b ? ((F[FX + b] | F[FO + b] | (1 << c)) === 511) : ((F[FX + c] | F[FO + c]) === 511);
+      if (wonHere || fullT) return (oppAnyG ? 5000 : 0) + (oppAnyB ? 40 : 0) + 15;
+      if (F[FOWN + c] !== 0) return 0;
+      let w;
+      if (c === b) w = WINC[((p === 1 ? F[FO + b] : F[FX + b]) << 9) | ((p === 1 ? F[FX + b] : F[FO + b]) | (1 << c))];
+      else w = opW[c];
+      return !w ? 0 : (mainOpp & (1 << c)) ? 5000 : 45;
+    };
+    const sc = new Float64Array(n);
+    for (let k = 0; k < n; k++) {
+      const a = buf[k];
+      let s = 0;
+      if (a >= 300) {
+        const t = a - 300;
+        s = opW[t] ? ((mainOpp & (1 << t)) ? -5000 : -45) : 0;
+      } else if (a >= 200) {
+        const i = a - 200, b = (i / 9) | 0, c = i - b * 9, bit = 1 << c;
+        const om = p === 1 ? F[FO + b] : F[FX + b], pm = p === 1 ? F[FX + b] : F[FO + b];
+        const breaks = opW[b] && !WINC[((om & ~bit) << 9) | pm];
+        s = (breaks ? 50 : -40) - (F[FOWN + c] === 0 && opW[c] && c !== b ? 45 : 0);
+      } else {
+        const star = a >= 100, i = star ? a - 100 : a, b = (i / 9) | 0, c = i - b * 9, bit = 1 << c;
+        const wins = (myW[b] & bit) !== 0;
+        if (wins) s += (mainMine & (1 << b)) ? 100000 : 120;
+        if (opW[b] & bit) s += 70;
+        s += c === 4 ? 3 : (c & 1) ? 0 : 1;
+        if (star) s += wins ? -80 : -25;          // a star that wins the board is wasted (free move for the opponent)
+        else s -= sendPenalty(b, c, wins);
+        if (star && wins) s -= sendPenalty(b, c, true);
+      }
+      sc[k] = s + rnd() * 0.5;
+    }
+    const idx = Array.from({ length: n }, (_, k) => k).sort((x, y) => sc[y] - sc[x]);
+    const out = new Int16Array(n);
+    for (let k = 0; k < n; k++) out[k] = buf[idx[k]];
+    return out;
+  }
+
+  // ---------- the strongest search: MCTS + solver + progressive widening + tree reuse ----------
+  function createSearch2(rootState, opts) {
+    if (!WINC) buildWinc();
+    opts = opts || {};
+    if (opts.seed) seed(opts.seed);
+    const C = opts.c || 0.7, CAP = opts.cap || 250000;
+    const F0 = fastFrom(rootState), F = new Int32Array(FLEN), LB = new Int16Array(200);
+    const mk = (a, p, parent, mover) => ({ a, p, parent, mover, kids: null, moves: null, nExp: 0, N: 0, W: 0, proof: 0 });
+    let root = null, nodes = 0, iters = 0;
+    if (opts.reuse && opts.reuse.root && opts.path) {     // continue the previous tree along the moves played since
+      let r = opts.reuse.root;
+      const G = new Int32Array(opts.reuse.F);
+      for (const a of opts.path) {
+        fastApply(G, a);
+        r = r && r.kids ? r.kids.find(k => k.a === a) || null : null;
+      }
+      let same = !!r;
+      for (let k = 0; same && k < FLEN; k++) if (G[k] !== F0[k]) same = false;
+      if (same) { root = r; root.parent = null; root.p = 0; nodes = Math.floor((opts.reuse.nodes || 0) * 0.3); }
+    }
+    const reusedFlag = !!root;
+    if (!root) root = mk(-1, 0, null, F0[FTURN]);
+    if (F0[FRES]) root.proof = F0[FRES];
+    let forced = -1;
+    {
+      const n = fastLegal(F0, LB);
+      if (n === 1) forced = LB[0];
+      for (let k = 0; forced < 0 && k < n; k++) { F.set(F0); fastApply(F, LB[k]); if (F[FRES] === F0[FTURN]) forced = LB[k]; }
+    }
+    function tryProve(nd) {
+      const m = nd.mover;
+      let all = nd.moves && nd.nExp === nd.moves.length, draw = false;
+      for (const k of nd.kids) {
+        if (k.proof === m) { nd.proof = m; return; }
+        if (!k.proof) all = false; else if (k.proof === 3) draw = true;
+      }
+      if (all) nd.proof = draw ? 3 : 3 - m;
+    }
+    function iterate() {
+      let nd = root;
+      F.set(F0);
+      for (;;) {
+        if (nd.proof || F[FRES]) break;
+        if (!nd.moves) { const n = fastLegal(F, LB); nd.moves = orderMoves(F, LB, n); }
+        const limit = Math.min(nd.moves.length, 2 + Math.floor(1.6 * Math.sqrt(nd.N)));
+        if (nd !== root && !nd.kids && nd.N < 3) break;           // evaluate a fresh leaf a few times before growing it
+        if (nd.nExp < limit && nodes < CAP) {
+          const a = nd.moves[nd.nExp++], mover = F[FTURN];
+          fastApply(F, a);
+          const kid = mk(a, mover, nd, F[FTURN]);
+          nodes++;
+          if (F[FRES]) kid.proof = F[FRES];
+          (nd.kids || (nd.kids = [])).push(kid);
+          nd = kid;
+          break;
+        }
+        if (!nd.kids) break;
+        const m = nd.mover, lnN = Math.log(nd.N + 1);
+        let best = null, bv = -1e9;
+        for (const k of nd.kids) {
+          if (k.proof === m) { best = k; break; }
+          const v = k.proof ? (k.proof === 3 ? 0.5 : -1) : k.W / k.N + C * Math.sqrt(lnN / k.N);
+          if (v > bv) { bv = v; best = k; }
+        }
+        fastApply(F, best.a);
+        nd = best;
+      }
+      const r = nd.proof || F[FRES] || fastRollout(F);
+      let child = null;
+      for (let x = nd; x; x = x.parent) {
+        x.N++;
+        if (x.p) x.W += r === x.p ? 1 : r === 3 ? 0.5 : 0;
+        if (!x.proof && x.kids && child && child.proof) tryProve(x);
+        child = x;
+      }
+      iters++;
+    }
+    return {
+      step(ms) {
+        if (forced >= 0) return;
+        const t0 = Date.now();
+        do { for (let k = 0; k < 16 && !root.proof; k++) iterate(); } while (!root.proof && Date.now() - t0 < ms);
+      },
+      best() {
+        if (forced >= 0) return forced;
+        const m = root.mover;
+        let best = null;
+        for (const k of root.kids || []) if (k.proof === m) return k.a;
+        for (const k of root.kids || []) { if (k.proof && k.proof !== 3) continue; if (!best || k.N > best.N) best = k; }
+        if (!best) for (const k of root.kids || []) if (!best || k.N > best.N) best = k;
+        if (best) return best.a;
+        const n = fastLegal(F0, LB);
+        return LB[0];
+      },
+      stats() {
+        if (forced >= 0) return { forced, kids: [], mover: root.mover };
+        return { forced: -1, mover: root.mover, kids: (root.kids || []).map(k => [k.a, k.N, k.W, k.proof]) };
+      },
+      keep() { return { root, F: Array.from(F0), nodes }; },
+      get iters() { return iters; },
+      get nodes() { return nodes; },
+      get reused() { return reusedFlag; },
+      get done() { return forced >= 0 || !!root.proof; }
+    };
+  }
+  function think2(state, ms, opts) {
+    const s = createSearch2(state, opts);
+    s.step(ms);
+    return { action: s.best(), iters: s.iters, stats: s.stats(), search: s };
   }
 
   // A deliberate mistake: a move after which the opponent can force a win (used once, for the "chance" game).
@@ -1003,7 +1338,7 @@ function ENGINE() {
   }
 
   return {
-    LINES, newMain, tttBlunder, cloneLite, cloneFull, allowed, legal, isLegal, apply, applyMut, count, noRowPossible,
+    LINES, newMain, tttBlunder, createSearch2, think2, fastFrom, fastApply, fastLegal, buildWinc, cloneLite, cloneFull, allowed, legal, isLegal, apply, applyMut, count, noRowPossible,
     createSearch, think, rolloutMove,
     newTTT, tttApply, tttBot, tttRes
   };
@@ -1342,7 +1677,7 @@ const store = {
 
 // ---------------- bots ----------------
 const BOTS = {
-  x02: [ { id: "x1", level: 1, ms: 700 }, { id: "x2", level: 2, ms: 1700 }, { id: "x3", level: 3, ms: 3600 } ],
+  x02: [ { id: "x1", level: 1, ms: 700 }, { id: "x2", level: 2, ms: 1700 }, { id: "x3", level: 3, ms: 7000, deep: true } ],
   classic: [ { id: "c1", level: 1 }, { id: "c2", level: 2 }, { id: "c3", level: 3 } ]
 };
 // ---------------- language ----------------
@@ -1439,7 +1774,8 @@ function loadProfile() {
   return {
     clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
-    netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten
+    netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
+    cc: p.cc || {}, cnext: p.cnext || {}
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -1567,6 +1903,15 @@ function startGame(mode, botId) {
   $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = "";
   app.undoUsed = false; app.chance = false; app.chanceUsed = false;
   // "Нет" gives one chance every 10 games after 1000 losses, until it is beaten once
+  // "Попробуй" makes one real mistake every 2–3 games, "Зря" every 5–7
+  if (app.bot && (app.bot.id === "c1" || app.bot.id === "c2")) {
+    const id = app.bot.id, lo = id === "c1" ? 2 : 5, hi = id === "c1" ? 3 : 7;
+    const nextGap = () => lo + Math.floor(Math.random() * (hi - lo + 1));
+    if (!profile.cnext[id]) profile.cnext[id] = nextGap();
+    profile.cc[id] = (profile.cc[id] || 0) + 1;
+    if (profile.cc[id] >= profile.cnext[id]) { app.chance = true; profile.cc[id] = 0; profile.cnext[id] = nextGap(); }
+    saveProfile();
+  }
   if (app.bot && app.bot.id === "c3" && profile.netLosses >= 1000 && !profile.netBeaten && !(owns("x_gold") && owns("o_gold"))) {
     profile.netCounter++; saveProfile();
     app.chance = profile.netCounter % 10 === 0;
@@ -1676,38 +2021,78 @@ function startMainFromPrelude() {
 
 // ---------------- bot runner ----------------
 let botJob = 0, activeJob = -1;
-let worker = null, workerOK = true, reqSeq = 0;
+let pool = null, poolOK = true, reqSeq = 0;
 const pending = new Map();
-function makeWorker() {
-  if (!workerOK) return null;
-  if (worker) return worker;
+const POOL_N = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1));
+const WORKER_SRC = () => ENGINE.toString() + `
+var E = ENGINE(), keep = null, keepKey = "", keepActs = [];
+self.onmessage = function (e) {
+  var d = e.data;
+  if (d.kind === "basic") { var r = E.think(d.state, d.ms); self.postMessage({ id: d.id, action: r.action }); return; }
+  var reuse = null, path = null;
+  if (keep && keepKey === d.key && d.acts.length >= keepActs.length) {
+    var ok = true;
+    for (var i = 0; i < keepActs.length; i++) if (keepActs[i] !== d.acts[i]) { ok = false; break; }
+    if (ok) { reuse = keep; path = d.acts.slice(keepActs.length); }
+  }
+  var s = E.createSearch2(d.state, { seed: d.seed, reuse: reuse, path: path, cap: d.cap });
+  s.step(d.ms);
+  keep = s.keep(); keepKey = d.key; keepActs = d.acts.slice();
+  self.postMessage({ id: d.id, stats: s.stats(), iters: s.iters });
+};`;
+function makePool() {
+  if (!poolOK) return null;
+  if (pool) return pool;
   try {
-    const src = ENGINE.toString() + "\nvar E = ENGINE();\nself.onmessage = function (e) { var d = e.data; var r = E.think(d.state, d.ms); self.postMessage({ id: d.id, action: r.action, iters: r.iters }); };";
-    worker = new Worker(URL.createObjectURL(new Blob([src], { type: "text/javascript" })));
-    worker.onmessage = ev => { const f = pending.get(ev.data.id); if (f) { pending.delete(ev.data.id); f(ev.data.action); } };
-    worker.onerror = ev => { if (ev && ev.preventDefault) ev.preventDefault(); workerOK = false; killWorker(); };
-  } catch (err) { workerOK = false; worker = null; }
-  return worker;
+    const url = URL.createObjectURL(new Blob([WORKER_SRC()], { type: "text/javascript" }));
+    pool = [];
+    for (let k = 0; k < POOL_N; k++) {
+      const w = new Worker(url);
+      w.onmessage = ev => { const f = pending.get(ev.data.id); if (f) { pending.delete(ev.data.id); f(ev.data); } };
+      w.onerror = ev => { if (ev && ev.preventDefault) ev.preventDefault(); poolOK = false; killPool(); };
+      pool.push(w);
+    }
+  } catch (err) { poolOK = false; pool = null; }
+  return pool;
 }
-function killWorker() {
-  if (worker) { try { worker.terminate(); } catch (e) {} worker = null; }
+window.X02_DEBUG = () => ({ pool: !!pool, poolOK, workers: POOL_N });
+function killPool() {
+  if (pool) { for (const w of pool) { try { w.terminate(); } catch (e) {} } pool = null; }
   for (const f of pending.values()) f(null);
   pending.clear();
 }
-async function searchMain(g, ms, job) {
-  const state = E.cloneLite(g);
-  const w = makeWorker();
-  if (w) {
-    const res = await new Promise(resolve => {
-      const id = ++reqSeq;
-      pending.set(id, resolve);
-      setTimeout(() => { if (pending.has(id)) { pending.delete(id); resolve(null); } }, ms + 6000);
-      try { w.postMessage({ id, state, ms }); } catch (e) { pending.delete(id); resolve(null); }
-    });
-    if (res !== null && res !== undefined) return res;
-    if (job !== botJob) return null;
+function ask(w, msg, ms) {
+  return new Promise(resolve => {
+    const id = ++reqSeq;
+    msg.id = id;
+    pending.set(id, resolve);
+    setTimeout(() => { if (pending.has(id)) { pending.delete(id); resolve(null); } }, ms + 8000);
+    try { w.postMessage(msg); } catch (e) { pending.delete(id); resolve(null); }
+  });
+}
+function actionsFromLog(log) {
+  const out = [];
+  for (const e of log) {
+    if (e.k === "m") out.push(e.i);
+    else if (e.k === "s") out.push(200 + e.i);
+    else { out.push(100 + e.i); if (e.to >= 0) out.push(300 + e.to); }
   }
-  const s = E.createSearch(state), t0 = Date.now();
+  return out;
+}
+function mergeStats(list) {
+  for (const st of list) if (st.forced >= 0) return st.forced;
+  const m = list[0].mover, tot = new Map(), lose = new Set();
+  for (const st of list) for (const [a, N, W, proof] of st.kids) {
+    if (proof === m) return a;
+    if (proof && proof !== 3) lose.add(a);
+    tot.set(a, (tot.get(a) || 0) + N);
+  }
+  let best = -1, bn = -1, any = -1, an = -1;
+  for (const [a, n] of tot) { if (n > an) { an = n; any = a; } if (!lose.has(a) && n > bn) { bn = n; best = a; } }
+  return best >= 0 ? best : any;
+}
+async function localSearch(make, ms, job) {
+  const s = make(), t0 = Date.now();
   while (!s.done && Date.now() - t0 < ms) {
     if (job !== botJob) return null;
     s.step(18);
@@ -1715,7 +2100,28 @@ async function searchMain(g, ms, job) {
   }
   return s.best();
 }
-function cancelBot() { botJob++; if (pending.size) killWorker(); }
+// "Лёгкий?" and "Уже нет": the original single-thread search
+async function searchMain(g, ms, job) {
+  const state = E.cloneLite(g), p = makePool();
+  if (p) {
+    const r = await ask(p[0], { kind: "basic", state, ms }, ms);
+    if (r && r.action !== undefined && r.action !== null) return r.action;
+    if (job !== botJob) return null;
+  }
+  return localSearch(() => E.createSearch(state), ms, job);
+}
+// "Конец": the strongest search on every available core, with the tree kept between moves
+async function searchDeep(g, ms, job) {
+  const state = E.cloneLite(g), acts = actionsFromLog(g.log), key = String(app.gameId), p = makePool();
+  if (p) {
+    const res = await Promise.all(p.map((w, k) => ask(w, { kind: "deep", state, ms, acts, key, cap: 220000, seed: (Date.now() ^ (k * 7919 + 13)) | 0 }, ms)));
+    if (job !== botJob) return null;
+    const ok = res.filter(r => r && r.stats);
+    if (ok.length) return mergeStats(ok.map(r => r.stats));
+  }
+  return localSearch(() => E.createSearch2(state, {}), ms, job);
+}
+function cancelBot() { botJob++; if (pending.size) killPool(); }
 async function kickBot() {
   if (!app.bot || app.screen === "menu" || activeJob === botJob) return;
   const job = botJob;
@@ -1733,7 +2139,7 @@ async function kickBot() {
         if (a < 0) a = E.tttBot(e.t, app.bot.level, "win");
       }
       else if (e.phase === "prelude") a = E.tttBot(e.t, app.bot.level, e.goal);
-      else a = await searchMain(e.g, e.g.choosing ? Math.max(350, app.bot.ms * 0.4) : app.bot.ms, job);
+      else a = await (app.bot.deep ? searchDeep : searchMain)(e.g, e.g.choosing ? Math.max(350, app.bot.ms * 0.4) : app.bot.ms, job);
       const minShow = app.mode === "classic" || e.phase === "prelude" ? 520 : 650;
       const left = minShow - (Date.now() - t0);
       if (left > 0) await sleep(left);
