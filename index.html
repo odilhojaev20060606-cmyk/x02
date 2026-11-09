@@ -801,6 +801,21 @@ details.acc[open] summary::after { content: "–"; }
 .btn.primary .ico-link { stroke: #fff; }
 .online-new .ico-link { width: 20px; height: 20px; }
 
+/* ---------- v14 ---------- */
+.screen.menu.active .cover { min-height: min(calc(100dvh - 80px), 900px); align-content: space-between; }
+.in-tg .screen.menu.active .cover { min-height: min(calc(100dvh - 80px - var(--tg-safe-area-inset-top, 0px) - var(--tg-content-safe-area-inset-top, 0px) - var(--tg-safe-area-inset-bottom, 0px)), 900px); }
+.banner-share { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+.banner-share[hidden] { display: none; }
+.banner-share .btn { font-size: 13.5px; }
+.ref-line { margin: -4px 0 0; font-size: 13px; color: var(--pencil-soft); }
+.ref-line:empty { display: none; }
+.fr .fr-btns { display: flex; gap: 6px; align-items: center; }
+.me-empty { display: grid; gap: 10px; justify-items: start; padding: 12px 14px; border: 1.5px dashed var(--grid-strong); border-radius: 10px; background: var(--paper); color: var(--pencil-soft); font-size: 14px; }
+.me-empty .btn { color: var(--paper); }
+.install-link { word-break: break-all; font-size: 13px; padding: 8px 10px; border: 1.5px dashed var(--grid-strong); border-radius: 8px; background: var(--paper); }
+#installBody { display: grid; gap: 10px; font-size: 15px; }
+#installRow[hidden] { display: none; }
+
 </style>
 </head>
 <body>
@@ -885,6 +900,7 @@ details.acc[open] summary::after { content: "–"; }
     <div class="me-stats" id="pfStats"></div>
     <div class="me-bots" id="meBots"></div>
     <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
+    <p class="ref-line" id="refLine"></p>
     <p class="lbl" data-i18n="friendsTitle"></p>
     <div class="friends" id="friendsList"></div>
   </section>
@@ -910,6 +926,7 @@ details.acc[open] summary::after { content: "–"; }
           <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
           <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
         </div></div>
+      <div class="pf-row" id="installRow" hidden><span id="installLabel"></span><button class="btn small" type="button" data-act="install" id="installBtn"></button></div>
       <div class="set-acc"><span class="set-acc-t" data-i18n="setAccount"></span><span class="set-acc-v" id="accLine"></span><div class="tg-login" id="tgLogin"></div></div>
       <div class="set-links">
         <button class="btn" type="button" data-go="about" data-i18n="about"></button>
@@ -979,6 +996,7 @@ details.acc[open] summary::after { content: "–"; }
             <div class="banner-text" id="bannerText"></div>
             <div class="banner-reward" id="bannerReward"></div>
             <div class="rematch-note" id="rematchNote" hidden></div>
+            <div class="banner-share" id="bannerShare" hidden></div>
             <div class="banner-actions">
               <button class="btn primary" type="button" data-act="again" data-i18n="again"></button>
               <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
@@ -1050,6 +1068,7 @@ details.acc[open] summary::after { content: "–"; }
             <div class="taunt" id="cBannerTaunt"></div>
             <div class="banner-reward" id="cBannerReward"></div>
             <div class="rematch-note" id="cRematchNote" hidden></div>
+            <div class="banner-share" id="cBannerShare" hidden></div>
             <div class="banner-actions">
               <button class="btn primary" type="button" data-act="again" data-i18n="classicAgain"></button>
               <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
@@ -1138,6 +1157,13 @@ details.acc[open] summary::after { content: "–"; }
     <div class="welcome-sum" id="welcomeSum"></div>
     <button class="btn primary big" type="button" data-act="welcomeLearn" data-i18n="welcomeLearn"></button>
     <button class="btn big" type="button" data-act="welcomeLater" data-i18n="later"></button>
+  </div>
+</div>
+
+<div class="sheet" id="installSheet" role="dialog" aria-modal="true" aria-labelledby="installTitle" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head"><h2 id="installTitle" data-i18n="installTitle"></h2><button class="btn small" type="button" data-act="closeInstall" data-i18n="close"></button></div>
+    <div id="installBody"></div>
   </div>
 </div>
 
@@ -1825,6 +1851,20 @@ function ENGINE() {
 const ruPl = (n, one, few, many) => { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; };
 const I18N = {
 ru: {
+  // ---- v14
+  inviteRef: 'Заходи в X02.0 — крестики-нолики 2.0. По моей ссылке мы оба получим +50 скрепок!',
+  refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
+  refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
+  frPlay: 'Сыграть', frCalled: n => `${n} получил приглашение. Ждём…`, frNotSent: 'Не получилось написать другу — отправь ему ссылку.',
+  chTaken: n => n ? `Вызов уже принял ${n}. Брось свой!` : 'Вызов уже принят. Брось свой!',
+  shareWin: '📤 Поделиться', shareStory: 'В сторис', cardMaking: 'Рисую картинку…', cardSaved: 'Картинка сохранена — отправь её друзьям.',
+  cardWin: n => `Я победил ${n}`, cardNetSub: 'Да, того самого.', cardMoves: (k, m) => k ? `за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${m}` : m,
+  cardFoot: 'Сыграй со мной', cardText: n => `Я победил ${n} в X02.0! Сможешь так же?`,
+  homeAdd: 'На главный экран', installBtn: 'Установить игру', bnHome: 'Добавь игру на главный экран', homeAdded: 'Готово: игра на главном экране',
+  installTitle: 'Установить X02.0', iosSteps: 'Внизу Safari нажми «Поделиться» (квадрат со стрелкой), потом «На экран „Домой“».',
+  inappSteps: 'Этот браузер не умеет устанавливать игры. Открой ссылку в Chrome или Safari:',
+  resumeBn: n => n ? `Продолжить партию с ${n}` : 'Продолжить партию вдвоём',
+  meEmpty: 'Здесь появится твоя статистика.', meFirst: 'Сыграть первую партию',
   // ---- v13: game-style menu
   settings: 'Настройки', about: 'Об игре', backBtn: '← Назад', segOn: 'Вкл', segOff: 'Выкл',
   mbX02: '81 клетка, звёзды, удары', mbClassic: 'Классика 3×3', mbOnline: 'Онлайн', mbOnlineSub: 'С друзьями по ссылке',
@@ -1833,10 +1873,10 @@ ru: {
   bridgeText: 'Слишком просто? Попробуй <b>X02.0</b>', learnBtn: 'Как играть · обучение',
   cardWins: n => `${n} ${ruPl(n, 'победа', 'победы', 'побед')}`, cardFriends: n => `${n} ${ruPl(n, 'друг', 'друга', 'друзей')}`,
   guestCard: 'Гость · войди через Telegram',
-  bnLearn: 'Пройди обучение за 2 минуты', bnTurn: n => `Твой ход против ${n}`, bnLogin: 'Войди через Telegram, чтобы не потерять прогресс', bnInvite: 'Позови друга сыграть',
+  bnLearn: 'Пройди обучение за 2 минуты', bnTurn: n => `Твой ход против ${n}`, bnLogin: 'Войди через Telegram, чтобы не потерять прогресс', bnInvite: 'Пригласи друга — +50 вам обоим',
   newOnline: m => `Новая партия · ${m}`, yourGames: 'Твои партии', onlineEmpty: 'Пока нет партий. Создай новую и отправь ссылку другу.',
   meTitle: 'Профиль и друзья', stW: 'победы', stL: 'поражения', stD: 'ничьи', meOnline: 'Онлайн с друзьями',
-  inviteBtn: 'Позвать друга в игру', inviteGame: 'Сыграй со мной в X02.0 — крестики-нолики 2.0',
+  inviteBtn: 'Пригласить друга · +50 обоим', inviteGame: 'Сыграй со мной в X02.0 — крестики-нолики 2.0',
   friendsTitle: 'Друзья', friendsEmpty: 'Здесь появятся друзья, с которыми ты сыграешь онлайн.', friendsLogin: 'Войди через Telegram — и здесь появятся твои друзья.',
   frOnline: 'в сети', frTurn: 'ждёт твой ход', frTheir: 'ход соперника', frGo: 'Ходить', frOpen: 'Открыть',
   ago: m => m < 1 ? 'только что' : m < 60 ? `${m} мин назад` : m < 1440 ? `${Math.floor(m / 60)} ч назад` : m < 2880 ? 'вчера' : `${Math.floor(m / 1440)} дн назад`,
@@ -2029,18 +2069,32 @@ ru: {
 },
 
 uz: {
+  // ---- v14
+  inviteRef: "X02.0 ga kiring — iks-nol 2.0. Mening havolam orqali ikkalamiz +50 skrepka olamiz!",
+  refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
+  refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
+  frPlay: "O'ynash", frCalled: n => `${n} taklifni oldi. Kutamiz…`, frNotSent: "Do'stga yozib bo'lmadi — unga havola yuboring.",
+  chTaken: n => n ? `Chaqiruvni ${n} qabul qildi. O'zingiznikini yuboring!` : "Chaqiruv allaqachon qabul qilingan. O'zingiznikini yuboring!",
+  shareWin: '📤 Ulashish', shareStory: 'Storisga', cardMaking: 'Rasm chizilmoqda…', cardSaved: "Rasm saqlandi — do'stlaringizga yuboring.",
+  cardWin: n => `Men ${n} ni yengdim`, cardNetSub: "Ha, o'shani.", cardMoves: (k, m) => k ? `${k} yurishda · ${m}` : m,
+  cardFoot: "Men bilan o'yna", cardText: n => `Men X02.0 da ${n} ni yengdim! Sen ham uddalaysanmi?`,
+  homeAdd: 'Bosh ekranga', installBtn: "O'yinni o'rnatish", bnHome: "O'yinni telefon bosh ekraniga qo'shing", homeAdded: "Tayyor: o'yin bosh ekranda",
+  installTitle: "X02.0 ni o'rnatish", iosSteps: "Safari pastida «Ulashish» (strelkali kvadrat) ni, keyin «Bosh ekranga» ni bosing.",
+  inappSteps: "Bu brauzer o'yinlarni o'rnata olmaydi. Havolani Chrome yoki Safari'da oching:",
+  resumeBn: n => n ? `${n} bilan o'yinni davom ettirish` : "Ikki kishilik o'yinni davom ettirish",
+  meEmpty: 'Bu yerda statistikangiz paydo bo\'ladi.', meFirst: "Birinchi o'yinni o'ynash",
   // ---- v13: game-style menu
   settings: 'Sozlamalar', about: "O'yin haqida", backBtn: '← Orqaga', segOn: 'Ha', segOff: "Yo'q",
   mbX02: '81 katak, yulduzlar, zarbalar', mbClassic: 'Klassika 3×3', mbOnline: 'Onlayn', mbOnlineSub: "Do'stlar bilan havola orqali",
-  withBot: 'Bot bilan', withFriend: "Do'st bilan", nearby: 'Yonimda', byLink: 'Havola orqali',
+  withBot: 'Bot bilan', withFriend: "Do'st bilan", nearby: 'Yonimda', byLink: 'Havola',
   ladDone: s => `Yengilgan · ${s}`, ladNext: 'Keyingi raqib', rwGold: '2 ta oltin',
   bridgeText: "Juda osonmi? <b>X02.0</b> ni sinab ko'ring", learnBtn: "Qanday o'ynaladi · o'rgatish",
   cardWins: n => `${n} g'alaba`, cardFriends: n => `${n} do'st`,
   guestCard: 'Mehmon · Telegram orqali kiring',
-  bnLearn: "2 daqiqalik o'rgatishdan o'ting", bnTurn: n => `${n} bilan o'yinda sizning navbat`, bnLogin: "Progress yo'qolmasligi uchun Telegram orqali kiring", bnInvite: "Do'stingizni o'ynashga chaqiring",
+  bnLearn: "2 daqiqalik o'rgatishdan o'ting", bnTurn: n => `${n} bilan o'yinda sizning navbat`, bnLogin: "Progress yo'qolmasligi uchun Telegram orqali kiring", bnInvite: "Do'stingizni taklif qiling — ikkalangizga +50",
   newOnline: m => `Yangi o'yin · ${m}`, yourGames: "Sizning o'yinlaringiz", onlineEmpty: "Hozircha o'yinlar yo'q. Yangisini yarating va havolani do'stingizga yuboring.",
   meTitle: "Profil va do'stlar", stW: "g'alaba", stL: "mag'lubiyat", stD: 'durang', meOnline: "Do'stlar bilan onlayn",
-  inviteBtn: "Do'stni o'yinga chaqirish", inviteGame: "Men bilan X02.0 o'ynang — iks-nol 2.0",
+  inviteBtn: "Do'stni taklif qilish · ikkalangizga +50", inviteGame: "Men bilan X02.0 o'ynang — iks-nol 2.0",
   friendsTitle: "Do'stlar", friendsEmpty: "Bu yerda onlayn o'ynagan do'stlaringiz paydo bo'ladi.", friendsLogin: "Telegram orqali kiring — bu yerda do'stlaringiz paydo bo'ladi.",
   frOnline: 'tarmoqda', frTurn: 'navbatingizni kutmoqda', frTheir: 'raqib navbati', frGo: 'Yurish', frOpen: 'Ochish',
   ago: m => m < 1 ? 'hozirgina' : m < 60 ? `${m} daqiqa oldin` : m < 1440 ? `${Math.floor(m / 60)} soat oldin` : m < 2880 ? 'kecha' : `${Math.floor(m / 1440)} kun oldin`,
@@ -2233,6 +2287,20 @@ uz: {
 },
 
 en: {
+  // ---- v14
+  inviteRef: 'Join me in X02.0 — tic-tac-toe 2.0. With my link we both get +50 paperclips!',
+  refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
+  refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
+  frPlay: 'Play', frCalled: n => `${n} got your invitation. Waiting…`, frNotSent: "Couldn't message your friend — send them the link.",
+  chTaken: n => n ? `${n} already accepted this challenge. Throw your own!` : 'This challenge is already taken. Throw your own!',
+  shareWin: '📤 Share', shareStory: 'To story', cardMaking: 'Drawing the picture…', cardSaved: 'Picture saved — send it to your friends.',
+  cardWin: n => `I beat ${n}`, cardNetSub: 'Yes, that one.', cardMoves: (k, m) => k ? `in ${k} moves · ${m}` : m,
+  cardFoot: 'Play me', cardText: n => `I beat ${n} in X02.0! Can you?`,
+  homeAdd: 'Add to home screen', installBtn: 'Install the game', bnHome: 'Add the game to your home screen', homeAdded: 'Done: the game is on your home screen',
+  installTitle: 'Install X02.0', iosSteps: 'At the bottom of Safari tap “Share” (the square with an arrow), then “Add to Home Screen”.',
+  inappSteps: 'This browser cannot install games. Open the link in Chrome or Safari:',
+  resumeBn: n => n ? `Continue the game with ${n}` : 'Continue the two-player game',
+  meEmpty: 'Your stats will show up here.', meFirst: 'Play your first game',
   // ---- v13: game-style menu
   settings: 'Settings', about: 'About', backBtn: '← Back', segOn: 'On', segOff: 'Off',
   mbX02: '81 cells, stars, strikes', mbClassic: 'Classic 3×3', mbOnline: 'Online', mbOnlineSub: 'With friends by link',
@@ -2241,10 +2309,10 @@ en: {
   bridgeText: 'Too easy? Try <b>X02.0</b>', learnBtn: 'How to play · tutorial',
   cardWins: n => n === 1 ? '1 win' : `${n} wins`, cardFriends: n => n === 1 ? '1 friend' : `${n} friends`,
   guestCard: 'Guest · log in with Telegram',
-  bnLearn: 'Take the 2-minute tutorial', bnTurn: n => `Your move against ${n}`, bnLogin: 'Log in with Telegram to keep your progress', bnInvite: 'Invite a friend to play',
+  bnLearn: 'Take the 2-minute tutorial', bnTurn: n => `Your move against ${n}`, bnLogin: 'Log in with Telegram to keep your progress', bnInvite: 'Invite a friend — +50 for both of you',
   newOnline: m => `New game · ${m}`, yourGames: 'Your games', onlineEmpty: 'No games yet. Create one and send the link to a friend.',
   meTitle: 'Profile and friends', stW: 'wins', stL: 'losses', stD: 'draws', meOnline: 'Online with friends',
-  inviteBtn: 'Invite a friend to the game', inviteGame: 'Play X02.0 with me — tic-tac-toe 2.0',
+  inviteBtn: 'Invite a friend · +50 for both', inviteGame: 'Play X02.0 with me — tic-tac-toe 2.0',
   friendsTitle: 'Friends', friendsEmpty: 'Friends you play online with will show up here.', friendsLogin: 'Log in with Telegram and your friends will show up here.',
   frOnline: 'online', frTurn: 'waiting for your move', frTheir: 'their move', frGo: 'Move', frOpen: 'Open',
   ago: m => m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.floor(m / 60)} h ago` : m < 2880 ? 'yesterday' : `${Math.floor(m / 1440)} days ago`,
@@ -2454,7 +2522,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v13";
+const APP_VERSION = "v14";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -2669,10 +2737,14 @@ async function syncProfile() {
   const uid = accountId(), linked = store.get("linked", "") === uid;
   try {
     await flushPending();
-    const p = await apiCall("/api/profile", linked ? {} : { local: {
+    const p = await apiCall("/api/profile", linked ? spBody() : { ...spBody(), local: {
       clips: profile.clips, owned: profile.owned, equip: profile.equip, scores: app.scores, netLosses: profile.netLosses, netBeaten: profile.netBeaten, bonus: profile.bonus } });
     if (p.status === 401 && !TG) { session = null; store.set("session", null); refreshWalletViews(); return false; }
-    if (applyProfile(p)) { store.set("linked", uid); return true; }
+    if (applyProfile(p)) {
+      store.set("linked", uid);
+      if (p.ref && !store.get("refShown", false) && !app.linkVisit) { store.set("refShown", true); setTimeout(() => toast(t("refWelcome", p.ref.name || "…")), 1200); }
+      return true;
+    }
   } catch (e) {}
   return false;
 }
@@ -2682,6 +2754,7 @@ async function sendResult(item, live) {
     const p = await apiCall("/api/result", item);
     if (p.status === 401 || p.status === 400) return;
     if (!applyProfile(p)) throw new Error("bad");
+    if (p.refPaid) toast(t("refPaidToast", p.refPaid));
     if (live && p.capped) {
       const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
       rw.innerHTML = `<span class="quote">${t("capped")}</span>`;
@@ -2747,7 +2820,7 @@ async function handleLoginReturn() {
   try { history.replaceState(null, "", GAME_URL); } catch (e) {}
   if (!API_OK || TG) return;
   try {
-    const r = await fetch(API_BASE + "/api/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tg }) });
+    const r = await fetch(API_BASE + "/api/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tg, ...spBody() }) });
     const j = await r.json();
     if (j.session) { session = { token: j.session, name: j.name, first: [tg.first_name, tg.last_name].filter(Boolean).join(" "), fn: tg.first_name || "", user: tg.username || "", photo: tg.photo_url || "" }; store.set("session", session); refreshWalletViews(); }
   } catch (e) {}
@@ -2903,8 +2976,12 @@ const learnDone = () => !!store.get("learnDone", false) || learnPaid();
 function coverBanner() {
   const turn = myTurnGames()[0];
   if (turn) return { cls: "turn", ic: "!", text: t("bnTurn", esc(turn.opp ? turn.opp.name : "…")), act: "og:" + turn.id };
+  const rs = resumeData();
+  if (rs) return { cls: "turn", ic: "▶", text: t("resumeBn", rs.botId ? t("q", bt(rs.botId, "name")) : ""), act: "resume" };
   if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
   if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
+  const tt = totals();
+  if (installKind() && !store.get("instAsked", false) && tt.w + tt.l + tt.d >= 3) return { cls: "info", ic: "⌂", text: t("bnHome"), act: "install" };
   return { cls: "info", ic: "+", text: t("bnInvite"), act: "invite" };
 }
 function renderCover() {
@@ -2971,12 +3048,16 @@ function renderMe() {
   paintAvatar($("pfAva"), info);
   $("pfName").textContent = info.name;
   $("pfSub").textContent = info.user;
-  const tot = totals();
-  $("pfStats").innerHTML = [[tot.w, t("stW")], [tot.l, t("stL")], [tot.d, t("stD")]].map(([n, l]) => `<div class="ms"><b>${n}</b><span>${l}</span></div>`).join("");
+  const tot = totals(), none = !(tot.w + tot.l + tot.d);
+  $("pfStats").innerHTML = none ? "" : [[tot.w, t("stW")], [tot.l, t("stL")], [tot.d, t("stD")]].map(([n, l]) => `<div class="ms"><b>${n}</b><span>${l}</span></div>`).join("");
+  $("pfStats").hidden = none;
   const row = (name, s) => { const pl = s.me + s.bot + s.draw; return `<div class="mbr"><b>${name}</b><span>${pl ? t("scoreMenu", s.me, s.bot, s.draw) : t("notPlayed")}</span></div>`; };
   const fx = scoreOf("fx"), fc = scoreOf("fc");
-  $("meBots").innerHTML = [...BOTS.x02, ...BOTS.classic].map(b => row(t("q", bt(b.id, "name")), scoreOf(b.id))).join("") +
+  $("meBots").innerHTML = none ? `<div class="me-empty"><span>${t("meEmpty")}</span><button class="btn primary small" type="button" data-go="modex02">${t("meFirst")}</button></div>`
+    : [...BOTS.x02, ...BOTS.classic].map(b => row(t("q", bt(b.id, "name")), scoreOf(b.id))).join("") +
     row(t("meOnline"), { me: fx.me + fc.me, bot: fx.bot + fc.bot, draw: fx.draw + fc.draw });
+  const rf = friendsCache.refs;
+  $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) : t("refHint")) : "";
   renderFriends();
 }
 function renderFriends() {
@@ -2992,9 +3073,10 @@ function renderFriends() {
   box.innerHTML = list.map(f => {
     const g = f.game, turn = !!(g && g.myTurn), mins = Math.max(0, Math.floor((now - (f.seen || 0)) / 60000));
     const sub = g ? (turn ? t("frTurn") : t("frTheir")) : (mins < 5 ? t("frOnline") : t("ago", mins));
+    const score = f.w || f.l || f.d ? ` · ${f.w | 0} : ${f.l | 0}` : "";
     const right = g ? `<button class="btn" type="button" data-og="${esc(g.id)}">${turn ? t("frGo") : t("frOpen")}</button>`
-      : `<span class="fr-score">${f.w | 0} : ${f.l | 0}</span>`;
-    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}</span></span>${right}</div>`;
+      : f.fid ? `<button class="btn" type="button" data-fplay="${esc(f.fid)}" data-fname="${esc(f.name || "")}">${t("frPlay")}</button>` : "";
+    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}${score}</span></span>${right}</div>`;
   }).join("");
 }
 function fetchFriends(force) {
@@ -3003,7 +3085,7 @@ function fetchFriends(force) {
   friendsCache.busy = true;
   apiCall("/api/friends", {}).then(r => {
     const ok = Array.isArray(r.friends);
-    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok };
+    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok, refs: r.refs || friendsCache.refs };
     if (app.screen === "menu") renderCover(); else if (app.screen === "me") renderMe();
   }).catch(() => { friendsCache.busy = false; friendsCache.at = Date.now(); });
 }
@@ -3017,6 +3099,7 @@ function renderSettings() {
   const info = playerInfo();
   $("accLine").textContent = info.logged ? t("accTg", info.user || info.name) : (API_OK ? "" : t("guestSub"));
   renderLogin();
+  renderInstallRow();
   $("verLine").textContent = t("version", APP_VERSION.indexOf("__") === 0 ? "dev" : APP_VERSION);
 }
 function renderAbout() {
@@ -3056,7 +3139,7 @@ function goBack() {
   show(p);
 }
 function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
-function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden; }
+function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden; }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
   try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
@@ -3069,7 +3152,13 @@ function tgInit() {
   const v = x => { try { return !!(TG.isVersionAtLeast && TG.isVersionAtLeast(x)); } catch (e) { return false; } };
   // full screen on phones: no Telegram header, it looks like a real game
   try { if (v("8.0") && ["android", "ios"].includes(TG.platform)) { TG.requestFullscreen(); if (TG.lockOrientation) TG.lockOrientation(); } } catch (e) {}
-  try { if (v("7.7") && TG.disableVerticalSwipes) TG.disableVerticalSwipes(); } catch (e) {}   // a swipe down must not close the game mid-move
+  try { if (v("7.7") && TG.disableVerticalSwipes) TG.disableVerticalSwipes(); } catch (e) {}
+  try {
+    if (v("8.0") && TG.checkHomeScreenStatus) {
+      TG.checkHomeScreenStatus(st => { homeStatus = st || ""; try { renderSettings(); if (app.screen === "menu") renderCover(); } catch (e) {} });
+      TG.onEvent("homeScreenAdded", () => { homeStatus = "added"; toast(t("homeAdded")); try { renderSettings(); renderCover(); } catch (e) {} });
+    }
+  } catch (e) {}   // a swipe down must not close the game mid-move
   try { if (TG.setHeaderColor) TG.setHeaderColor("#f6f7f2"); if (TG.setBackgroundColor) TG.setBackgroundColor("#f6f7f2"); } catch (e) {}
   try { if (v("7.0") && TG.SettingsButton) { TG.SettingsButton.show(); TG.SettingsButton.onClick(() => { if (inGame() || app.screen === "wait") goMenu(); openScreen("settings"); }); } } catch (e) {}
   try {
@@ -3077,6 +3166,7 @@ function tgInit() {
       if (!$("rulesSheet").hidden) closeRules();
       else if (!$("onlineSheet").hidden) closeOnlineSheet();
       else if (!$("welcomeSheet").hidden) welcomeClose(false);
+      else if (!$("installSheet").hidden) closeInstall();
       else if (inGame() || app.screen === "wait") goMenu();
       else if (app.screen !== "menu") goBack();
     });
@@ -3097,9 +3187,9 @@ function goMenu() {
   show(home);
 }
 function shareGameInvite() {
-  const text = t("inviteGame"), share = "https://t.me/share/url?url=" + encodeURIComponent(BOT_LINK) + "&text=" + encodeURIComponent(text);
+  const link = inviteLink(), text = myId() ? t("inviteRef") : t("inviteGame"), share = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
   try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
-  if (navigator.share) { navigator.share({ text, url: BOT_LINK }).catch(() => {}); return; }
+  if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
   window.open(share, "_blank", "noopener");
 }
 function openSupport() {
@@ -3117,6 +3207,232 @@ async function checkUpdate() {
     if (m && m[1] !== APP_VERSION) { setTimeout(() => location.reload(), 600); return; }
   } catch (e) {}
   toast(t("upToDate"));
+}
+
+// ---------------- v14: invitations, victory pictures, chat challenges, install, resume ----------------
+const tgv = x => { try { return !!(TG && TG.isVersionAtLeast && TG.isVersionAtLeast(x)); } catch (e) { return false; } };
+const DEV = store.get("dev", "") || (() => { const d = Math.random().toString(36).slice(2, 10) + Date.now().toString(36); store.set("dev", d); return d; })();
+function myId() {
+  if (TG) { const u = TG.initDataUnsafe && TG.initDataUnsafe.user; return u && u.id ? String(u.id) : ""; }
+  return session && session.token ? session.token.split(".")[0] : "";
+}
+const inviteLink = () => myId() ? `${BOT_LINK}?startapp=r_${myId()}` : BOT_LINK;
+// where this visit came from on the web (in Telegram the signed start_param already carries it)
+(function rememberSource() {
+  try {
+    const q = new URLSearchParams(location.search), r = q.get("r"), ch = q.get("ch");
+    if (r && /^\d{1,15}$/.test(r)) store.set("sp", "r_" + r);
+    else if (ch && /^[a-z0-9_]{1,20}$/.test(ch)) store.set("sp", "ch_" + ch);
+  } catch (e) {}
+})();
+const spBody = () => ({ dev: DEV, sp: store.get("sp", "") || undefined });
+function challengeFromLink() {
+  try {
+    const sp = TG && TG.initDataUnsafe && TG.initDataUnsafe.start_param;
+    if (sp && /^c_\d{1,15}_[xc][235]_[a-z0-9]{4,12}$/.test(sp)) return sp;
+  } catch (e) {}
+  return "";
+}
+async function joinChallenge(code) {
+  if (!serverOn()) { toast(t("gameLogin")); return; }
+  try {
+    const v = await apiCall("/api/g/challenge", { code });
+    if (v.error === "taken") { toast(t("chTaken", v.by || "")); openScreen("online"); return; }
+    if (!v.state) { toast(t("gameGone")); return; }
+    enterOnline(v);
+  } catch (e) { toast(t("netError")); }
+}
+// "Play" next to a friend: the bot writes to them with a button into a new game
+async function playFriend(fid, name) {
+  if (!serverOn()) { toast(t("gameLogin")); return; }
+  try {
+    const v = await apiCall("/api/g/invite", { fid, mode: "x02", minutes: onlineMinutes, side: store.get("side", 1) === 2 ? 2 : 1 });
+    if (!v.id) throw new Error(v.error || "bad");
+    homeHere();
+    enterOnline(v);
+    if (v.sent) toast(t("frCalled", name || "")); else { toast(t("frNotSent")); setTimeout(shareInvite, 400); }
+  } catch (e) { toast(t("netError")); }
+}
+// one polite request, after the first finished game: may the bot write to you ("your move", "a friend is calling")
+function askWrite() {
+  try {
+    const u = TG && TG.initDataUnsafe && TG.initDataUnsafe.user;
+    if (!TG || store.get("wa", false) || !tgv("6.9") || !TG.requestWriteAccess || (u && u.allows_write_to_pm)) return;
+    store.set("wa", true);
+    setTimeout(() => { try { TG.requestWriteAccess(() => {}); } catch (e) {} }, 2500);
+  } catch (e) {}
+}
+
+// ---- victory picture: drawn on a canvas, shared to a chat or a story
+function cardInfoSet(info) {
+  app.cardInfo = info;
+  for (const id of ["bannerShare", "cBannerShare"]) {
+    const el = $(id);
+    el.hidden = !info;
+    el.innerHTML = !info ? "" : `<button class="btn small primary" type="button" data-act="shareCard">${t("shareWin")}</button>` +
+      (TG && tgv("7.8") && TG.shareToStory && serverOn() ? `<button class="btn small" type="button" data-act="shareStory">${t("shareStory")}</button>` : "");
+  }
+}
+function wob(ctx, pts, w, color, k) {         // a hand-drawn line through points
+  ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+    ctx.quadraticCurveTo((x0 + x1) / 2 + (seeded(k + i) - .5) * 10, (y0 + y1) / 2 + (seeded(k + i * 7) - .5) * 10, x1, y1);
+  }
+  ctx.stroke();
+}
+function drawMark(ctx, p, cx, cy, r, k) {
+  if (p === 1) {
+    wob(ctx, [[cx - r, cy - r], [cx + r, cy + r]], r * .22, "#1f3fa8", k);
+    wob(ctx, [[cx + r, cy - r * .95], [cx - r * .95, cy + r]], r * .22, "#1f3fa8", k + 3);
+  } else if (p === 2) {
+    ctx.strokeStyle = "#c4362f"; ctx.lineWidth = r * .2; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.ellipse(cx, cy, r * 1.02, r * .94, seeded(k) * .6, .15, Math.PI * 2 + .35); ctx.stroke();
+  }
+}
+async function drawCard(info) {
+  const W = 1080, H = 1350, c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const ctx = c.getContext("2d");
+  try { await Promise.all([document.fonts.load('700 120px "Caveat"'), document.fonts.load('500 40px "Golos Text"')]); } catch (e) {}
+  ctx.fillStyle = "#f6f7f2"; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "#cfdcea"; ctx.lineWidth = 2;
+  for (let x = 0; x <= W; x += 54) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += 54) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.strokeStyle = "rgba(196,54,47,.5)"; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(108, 0); ctx.lineTo(108, H); ctx.stroke();
+  const hand = (size) => `700 ${size}px "Caveat", cursive`, body = (size) => `500 ${size}px "Golos Text", sans-serif`;
+  ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+  // logo
+  ctx.font = hand(150);
+  const parts = [["X", "#1f3fa8"], ["0", "#c4362f"], ["2.0", "#2b3a55"]], widths = parts.map(([s]) => ctx.measureText(s).width);
+  let x = W / 2 - widths.reduce((a, b) => a + b, 0) / 2;
+  ctx.textAlign = "left";
+  parts.forEach(([s, col], i) => { ctx.fillStyle = col; ctx.fillText(s, x, 190); x += widths[i]; });
+  ctx.textAlign = "center";
+  // headline
+  ctx.fillStyle = "#2b3a55"; ctx.font = hand(96); ctx.fillText(t("cardWin", ""), W / 2, 330);
+  ctx.fillStyle = info.botId === "c3" ? "#c4362f" : "#1f3fa8";
+  let size = 130; ctx.font = hand(size);
+  while (ctx.measureText(info.opp).width > W - 200 && size > 60) { size -= 6; ctx.font = hand(size); }
+  ctx.fillText(info.opp, W / 2, 470);
+  ctx.fillStyle = "#6b707a"; ctx.font = body(38);
+  ctx.fillText(info.botId === "c3" ? t("cardNetSub") : t("cardMoves", info.moves || 0, info.mode === "classic" ? t("classicName") : "X02.0"), W / 2, 545);
+  // the final position: the main board of X02.0 or the 3×3 of Nostalgia
+  const B = 520, bx = (W - B) / 2, by = 600, cs = B / 3;
+  [[1, 0], [2, 0], [1, 1], [2, 1]].forEach(([i, v], n) => {
+    const p = i * cs;
+    wob(ctx, v ? [[bx - 10, by + p], [bx + B + 10, by + p]] : [[bx + p, by - 10], [bx + p, by + B + 10]], 7, "#2b3a55", 50 + n * 11);
+  });
+  const cells = info.cells || [];
+  if (!cells.some(v => v === 1 || v === 2)) {        // won before any mark was placed (resign, time): one big mark of the winner instead of an empty board
+    ctx.clearRect(bx - 20, by - 20, B + 40, B + 40);
+    ctx.fillStyle = "#f6f7f2"; ctx.fillRect(bx - 20, by - 20, B + 40, B + 40);
+    drawMark(ctx, info.sym || 1, W / 2, by + B / 2, B * .32, 7);
+  }
+  for (let i = 0; i < 9; i++) if (cells[i] === 1 || cells[i] === 2) drawMark(ctx, cells[i], bx + cs * (i % 3) + cs / 2, by + cs * ((i / 3) | 0) + cs / 2, cs * .3, i * 5 + 3);
+  if (info.line) {
+    const a = info.line[0], z = info.line[2], cxy = i => [bx + cs * (i % 3) + cs / 2, by + cs * ((i / 3) | 0) + cs / 2];
+    const [x0, y0] = cxy(a), [x1, y1] = cxy(z), dx = (x1 - x0) * .18, dy = (y1 - y0) * .18;
+    ctx.globalAlpha = .75; wob(ctx, [[x0 - dx, y0 - dy], [x1 + dx, y1 + dy]], 16, "#c4362f", 99); ctx.globalAlpha = 1;
+  }
+  // footer
+  ctx.fillStyle = "#2b3a55"; ctx.font = hand(64); ctx.fillText(`${t("cardFoot")}:`, W / 2, 1215);
+  ctx.font = body(40); ctx.fillStyle = "#1f3fa8"; ctx.fillText("t.me/xo_version2bot", W / 2, 1275);
+  if (info.me) { ctx.fillStyle = "#6b707a"; ctx.font = hand(52); ctx.textAlign = "right"; ctx.fillText("— " + info.me, W - 70, 1120); ctx.textAlign = "center"; }
+  return c.toDataURL("image/jpeg", 0.86);
+}
+let cardBusy = false;
+async function shareCard(story) {
+  const info = app.cardInfo;
+  if (!info || cardBusy) return;
+  cardBusy = true;
+  toast(t("cardMaking"));
+  try {
+    const url = await drawCard(info), text = t("cardText", info.opp);
+    if (TG && serverOn()) {
+      const r = await apiCall("/api/card", { img: url, text });
+      if (story && r.url && TG.shareToStory) { TG.shareToStory(r.url, { text: `${text} ${r.play || inviteLink()}`.slice(0, 200) }); return; }
+      if (!story && r.prepared && TG.shareMessage && tgv("8.0")) { TG.shareMessage(r.prepared, () => {}); return; }
+      TG.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(r.play || inviteLink()) + "&text=" + encodeURIComponent(text));
+      return;
+    }
+    const blob = await (await fetch(url)).blob(), file = new File([blob], "x02-win.jpg", { type: "image/jpeg" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: `${text} ${inviteLink()}` }).catch(() => {}); return; }
+    const a = document.createElement("a"); a.href = url; a.download = "x02-win.jpg"; document.body.appendChild(a); a.click(); a.remove();
+    toast(t("cardSaved"));
+  } catch (e) { toast(t("netError")); }
+  finally { cardBusy = false; }
+}
+function cardFromGame(r) {        // a win against a bot: what goes on the picture
+  const e = cur(), info = playerInfo();
+  if (!app.bot || r !== app.side || !e) return null;
+  const base = { opp: t("q", bt(app.bot.id, "name")), botId: app.bot.id, mode: app.mode, me: info.logged ? info.first : "", sym: app.side };
+  if (app.mode === "classic") return Object.assign(base, { cells: e.t.b.slice(), line: e.t.line, moves: e.t.b.filter(Boolean).length });
+  return Object.assign(base, { cells: e.g.owner.map(o => o === 1 || o === 2 ? o : 0), line: e.g.winLine, moves: e.g.moves });
+}
+
+// ---- install / home screen
+let deferredInstall = null, homeStatus = "";
+window.addEventListener("beforeinstallprompt", ev => { ev.preventDefault(); deferredInstall = ev; try { renderSettings(); } catch (e) {} });
+window.addEventListener("appinstalled", () => { deferredInstall = null; try { renderSettings(); } catch (e) {} });
+function installKind() {
+  if (TG) return tgv("8.0") && TG.addToHomeScreen && (homeStatus === "missed" || homeStatus === "unknown") ? "tg" : "";
+  try { if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) return ""; } catch (e) {}
+  const ua = navigator.userAgent || "";
+  if (/FBAN|FBAV|Instagram|Line\/|Snapchat|; wv\)/.test(ua)) return "inapp";
+  if (deferredInstall) return "prompt";
+  if (/iPhone|iPad|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua)) return "ios";
+  return "";
+}
+function doInstall() {
+  store.set("instAsked", true);
+  const k = installKind();
+  if (k === "tg") { try { TG.addToHomeScreen(); } catch (e) {} return; }
+  if (k === "prompt" && deferredInstall) { deferredInstall.prompt(); deferredInstall.userChoice.finally(() => { deferredInstall = null; renderSettings(); }); return; }
+  const box = $("installBody");
+  box.innerHTML = k === "ios" ? `<p>${t("iosSteps")}</p>`
+    : `<p>${t("inappSteps")}</p><div class="install-link">${esc(GAME_URL)}</div><div><button class="btn primary" type="button" data-act="copyGame">${t("copyLink")}</button></div>`;
+  $("installSheet").hidden = false; tgBack();
+}
+function closeInstall() { $("installSheet").hidden = true; tgBack(); }
+function renderInstallRow() {
+  const k = installKind(), row = $("installRow");
+  row.hidden = !k;
+  if (!k) return;
+  $("installLabel").textContent = k === "tg" ? t("homeAdd") : t("installBtn");
+  $("installBtn").textContent = k === "tg" ? t("homeAdd") : t("installBtn");
+}
+
+// ---- resume: leaving mid-game against a bot (or two players) keeps the game for later
+function saveResume() {
+  if (app.online || app.learn || !inGame()) return;
+  const e = cur();
+  if (!e) return;
+  const over = app.mode === "classic" ? !!e.t.result : (e.phase === "main" && !!e.g.result);
+  store.set("resume", over ? null : { mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: [e], t0: app.t0 || Date.now(), undoUsed: !!app.undoUsed });
+}
+function resumeData() {
+  const d = store.get("resume", null);
+  return d && d.mode && Array.isArray(d.history) && d.history.length && (d.mode === "classic" ? !!d.history[0].t : !!d.history[0].phase) ? d : null;
+}
+function resumeGame() {
+  const d = resumeData();
+  if (!d) return;
+  if (app.learn) endLearn();
+  cancelBot();
+  homeHere();
+  app.mode = d.mode;
+  app.bot = d.botId ? BOTS[d.mode].find(b => b.id === d.botId) || null : null;
+  app.side = d.side === 2 ? 2 : 1;
+  app.history = d.history;
+  app.gameId++; app.t0 = d.t0; app.undoUsed = d.undoUsed; uiMode = null; flash = null;
+  $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = ""; cardInfoSet(null);
+  syncTalkClass();
+  show(d.mode === "classic" ? "classic" : "x02");
+  drawGrids();
+  render(null);
+  kickBot();
 }
 
 // ---------------- newcomer: a gift for the first visit ----------------
@@ -3301,7 +3617,7 @@ function startGame(mode, botId) {
   app.bot = botId ? BOTS[mode].find(b => b.id === botId) || null : null;
   app.gameId++;
   uiMode = null; flash = null;
-  $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = "";
+  $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = ""; cardInfoSet(null);
   app.undoUsed = false; app.chance = false; app.chanceUsed = false; app.t0 = Date.now();
   // "Нет" gives one chance every 10 games after 1000 losses, until it is beaten once
   // "Попробуй" makes one real mistake every 2–3 games, "Зря" every 5–7
@@ -3331,6 +3647,7 @@ function startGame(mode, botId) {
     if (app.screen !== "classic") show("classic");
     renderClassic(null);
   }
+  saveResume();
   kickBot();
 }
 function actorOf(e) {
@@ -3375,6 +3692,9 @@ function grantReward(r) {
 }
 function onGameEnd(r) {
   if (app.learn) return;
+  store.set("resume", null);
+  cardInfoSet(cardFromGame(r));
+  askWrite();
   recordResult(r);
   clearTimeout(slowTimer);
   if (app.bot) {
@@ -3415,7 +3735,7 @@ async function doMain(a) {
     const b = ((a % 100) / 9) | 0;
     if (g.owner[b] === 0 && (n.owner[b] === 1 || n.owner[b] === 2)) { flyToMain(b, n.owner[b]); await sleep(800); }
   }
-  if (n.result) onGameEnd(n.result);
+  if (n.result) onGameEnd(n.result); else saveResume();
   return true;
 }
 function doPrelude(i) {
@@ -3426,6 +3746,7 @@ function doPrelude(i) {
   if (app.bot && (t.result === 1 || t.result === 2)) botSay(isBot(t.result) ? "good" : "bad", 0.9);
   app.history.push(Object.assign({}, e, { t }));
   renderX02({ prelude: true });
+  saveResume();
   return true;
 }
 function doClassic(i) {
@@ -3437,7 +3758,7 @@ function doClassic(i) {
     botSay(isBot(mover) ? "good" : "bad", 0.5);
   app.history.push({ t });
   renderClassic({ played: true });
-  if (t.result) onGameEnd(t.result);
+  if (t.result) onGameEnd(t.result); else saveResume();
   return true;
 }
 function startMainFromPrelude() {
@@ -3447,6 +3768,7 @@ function startMainFromPrelude() {
   else g = E.newMain(e.coin || 1, e.golden ? { [e.coin]: 1 } : null);
   app.history.push({ phase: "main", g });
   renderX02(null);
+  saveResume();
   kickBot();
 }
 
@@ -4274,6 +4596,14 @@ function onlineEnd(v, quiet) {
   }
   showRematch();
   setTimeout(syncProfile, 700);
+  if (!quiet) {
+    const mainCells = s.g ? s.g.owner.map(o => o === 1 || o === 2 ? o : 0) : [];
+    cardInfoSet(won ? { opp: oppName(), mode: s.mode, me: playerInfo().first, sym: app.side,
+      cells: classic ? s.t.b.slice() : (mainCells.some(Boolean) ? mainCells : (s.t ? s.t.b.slice() : [])), line: classic ? s.t.line : (s.g ? s.g.winLine : null),
+      moves: classic ? s.t.b.filter(Boolean).length : (s.g ? s.g.moves : 0) } : null);
+    askWrite();
+    if (s.refPaid && s.refPaid[app.side]) toast(t("refPaidToast", s.refPaid[app.side]));
+  }
 }
 function showRematch() {
   const o = app.online;
@@ -4603,6 +4933,11 @@ function bind() {
     else if (a === "update") checkUpdate();
     else if (a === "welcomeLearn") welcomeClose(true);
     else if (a === "welcomeLater") welcomeClose(false);
+    else if (a === "shareCard") shareCard(false);
+    else if (a === "shareStory") shareCard(true);
+    else if (a === "install") doInstall();
+    else if (a === "closeInstall") closeInstall();
+    else if (a === "copyGame") { try { navigator.clipboard.writeText(GAME_URL); toast(t("copied")); } catch (e) {} }
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "resign") onlineResign();
@@ -4632,6 +4967,8 @@ function bind() {
       if (act === "learn") startLearn();
       else if (act === "invite") shareGameInvite();
       else if (act === "login") { openScreen("settings"); setTimeout(showLoginWidget, 50); }
+      else if (act === "resume") resumeGame();
+      else if (act === "install") doInstall();
       else if (act.startsWith("og:")) { homeHere(); joinOnline(act.slice(3)); }
     }
   });
@@ -4656,6 +4993,8 @@ function bind() {
     if (hp) { store.set("haptics", hp.dataset.haptics === "1"); renderSettings(); haptic("light"); }
     const ph = ev.target.closest("[data-phrase]");
     if (ph) sayPhrase(+ph.dataset.phrase);
+    const fp = ev.target.closest("[data-fplay]");
+    if (fp) playFriend(fp.dataset.fplay, fp.dataset.fname);
     const og = ev.target.closest("[data-og]");
     if (og) { homeHere(); joinOnline(og.dataset.og); }
   });
@@ -4670,6 +5009,7 @@ function bind() {
   $("rulesSheet").addEventListener("click", ev => { if (ev.target === $("rulesSheet")) closeRules(); });
   document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !$("rulesSheet").hidden) closeRules(); });
   $("welcomeSheet").addEventListener("click", ev => { if (ev.target === $("welcomeSheet")) welcomeClose(false); });
+  $("installSheet").addEventListener("click", ev => { if (ev.target === $("installSheet")) closeInstall(); });
 
   boardEl.addEventListener("click", async ev => {
     const btn = ev.target.closest(".cell");
@@ -4750,8 +5090,9 @@ function snapshot() {
 }
 function boot(data) {
   tgInit();
-  const gid = gameFromLink();
-  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else maybeWelcome(); });
+  const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
+  app.linkVisit = !!(gid || cid);
+  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else maybeWelcome(); });
   buildDOM();
   applyStatic();
   buildMenu();
