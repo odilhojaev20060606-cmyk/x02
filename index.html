@@ -611,15 +611,215 @@ aside.notes { display: grid; gap: 22px; }
 @keyframes faceTalk { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-6deg) translateY(-1px); } 70% { transform: rotate(5deg); } }
 @keyframes blinkAnt { 50% { opacity: .2; } }
 
+/* =====================================================================
+   v13: game-style menu — cover, mode ladders, online, profile, settings, about, tutorial
+   ===================================================================== */
+.ico { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.in-tg .app { padding-top: calc(14px + var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)); padding-bottom: calc(40px + var(--tg-safe-area-inset-bottom, 0px)); }
+@media (display-mode: standalone) { .app { padding-top: calc(14px + env(safe-area-inset-top, 0px)); } }
+
+.screen.menu.active { display: block; }
+.cover { max-width: 480px; margin: 0 auto; display: grid; gap: 12px; }
+.cover-top { display: flex; justify-content: flex-end; align-items: center; gap: 10px; min-height: 40px; }
+.wallet-btn { appearance: none; border: 0; background: none; padding: 0; display: flex; gap: 8px; cursor: pointer; font: inherit; }
+.wpill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 4px 3px 8px; border: 1.5px solid var(--pen); border-radius: 999px; background: var(--paper); box-shadow: 2px 2px 0 var(--pen); color: var(--pen); font-weight: 600; font-variant-numeric: tabular-nums; }
+.wpill svg { width: 18px; height: 18px; }
+.wpill .plus { width: 19px; height: 19px; border-radius: 50%; background: #1f8a4c; color: #fff; font: 700 15px/19px var(--font-body); text-align: center; font-style: normal; }
+.wallet-btn:active .wpill { transform: translate(1px,1px); box-shadow: 1px 1px 0 var(--pen); }
+
+.pcard { appearance: none; width: 100%; display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left; padding: 10px 12px;
+  border: 2px solid var(--pen); border-radius: 6px 14px 7px 15px; background: var(--paper); box-shadow: 3px 3px 0 var(--pen); cursor: pointer; font: inherit; color: inherit; transition: transform .08s, box-shadow .08s; }
+.pcard:active, .mbtn:active, .lnode:active, .fr:active, .cbanner:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--pen); }
+.pcard .pf-ava { width: 52px; height: 52px; }
+.pc-id { display: grid; min-width: 0; }
+.pc-name { font: 700 27px/1.05 var(--font-hand); color: var(--pen); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-sub { font-size: 13px; color: var(--pencil-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pc-friends { display: flex; align-items: center; padding-left: 8px; }
+.pc-friends .mini-ava { width: 28px; height: 28px; margin-left: -9px; border: 2px solid var(--paper); box-shadow: 0 0 0 1.5px var(--pen); }
+.pc-friends .mini-ava span { font-size: 15px; }
+.pc-plus { width: 28px; height: 28px; margin-left: 4px; border-radius: 50%; border: 1.5px dashed var(--pen); display: grid; place-items: center; font: 600 17px/1 var(--font-body); color: var(--pen); }
+
+.cbanner { appearance: none; width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; padding: 9px 12px; cursor: pointer;
+  border: 1.5px solid #1f8a4c; border-radius: 5px 11px 6px 12px; background: #e9f6ee; color: #17643a; box-shadow: 2px 2px 0 #1f8a4c; font: 500 14px/1.3 var(--font-body); }
+.cbanner[hidden] { display: none; }
+.cbanner .cb-ic { font: 700 22px/1 var(--font-hand); }
+.cbanner .cb-t { flex: 1; min-width: 0; }
+.cbanner b { font: 700 21px/1 var(--font-hand); white-space: nowrap; }
+.cbanner.turn { border-color: var(--ink-o); background: #fffbe0; color: var(--ink-o); box-shadow: 2px 2px 0 var(--ink-o); }
+.cbanner.info { border-color: var(--pen); background: var(--paper); color: var(--pen); box-shadow: 2px 2px 0 var(--pen); }
+
+.cover-hero { display: flex; align-items: center; justify-content: center; gap: 4px; }
+.cover-hero .logo { width: min(58%, 250px); }
+.cover-bot { appearance: none; border: 0; background: none; padding: 0; display: grid; justify-items: center; gap: 3px; cursor: pointer; font: inherit; }
+.cover-bot .bot-face, .welcome-bot .bot-face { width: 58px; height: 58px; }
+.cover-say { font: 700 19px/1.1 var(--font-hand); color: var(--pen); border: 1.5px solid var(--pen); border-radius: 10px 12px 10px 3px; padding: 2px 8px 3px; background: var(--paper); max-width: 132px; }
+.cover-bot .cover-say:empty { display: none; }
+
+.cover-modes { display: grid; gap: 12px; }
+.mbtn { appearance: none; width: 100%; display: grid; grid-template-columns: 46px minmax(0, 1fr); align-items: center; gap: 12px; text-align: left; padding: 9px 14px 10px;
+  border: 2px solid var(--pen); border-radius: 6px 14px 8px 15px; background: var(--paper); box-shadow: 4px 4px 0 var(--pen); cursor: pointer; color: var(--pen); font: inherit; transition: transform .08s, box-shadow .08s; }
+.mbtn.mx { border-color: var(--ink-x); box-shadow: 4px 4px 0 var(--ink-x); }
+.mbtn.mc { border-color: var(--ink-o); box-shadow: 4px 4px 0 var(--ink-o); }
+.mbtn.mx:active { box-shadow: 1px 1px 0 var(--ink-x); } .mbtn.mc:active { box-shadow: 1px 1px 0 var(--ink-o); }
+.mb-ic { font: 700 46px/1 var(--font-hand); text-align: center; display: grid; place-items: center; }
+.mx .mb-ic { color: var(--ink-x); } .mc .mb-ic { color: var(--ink-o); }
+.mb-ic svg { width: 34px; height: 34px; }
+.mb-t { display: grid; min-width: 0; }
+.mb-t b { font: 700 32px/1.02 var(--font-hand); color: var(--pen); }
+.mb-t b .x { color: var(--ink-x); } .mb-t b .o { color: var(--ink-o); }
+.mb-t > span { font-size: 13px; color: var(--pencil-soft); }
+.badge { display: inline-block; margin-left: 8px; min-width: 20px; padding: 0 6px; border-radius: 10px; background: var(--ink-o); color: #fff; font: 600 12px/19px var(--font-body); text-align: center; vertical-align: 7px; }
+.badge[hidden] { display: none; }
+
+.cover-icons { display: flex; justify-content: center; gap: 36px; padding-top: 2px; }
+.rbtn { appearance: none; border: 0; background: none; padding: 0; display: grid; justify-items: center; gap: 4px; cursor: pointer; font: 500 12.5px var(--font-body); color: var(--pencil); }
+.rb-ic { width: 50px; height: 50px; border-radius: 50% 46% 52% 48%; border: 1.8px solid var(--pen); box-shadow: 2px 3px 0 var(--pen); display: grid; place-items: center; background: var(--paper); color: var(--pen); transition: transform .08s, box-shadow .08s; }
+.rb-ic svg { width: 25px; height: 25px; }
+.rbtn:active .rb-ic { transform: translate(1px,2px); box-shadow: 1px 1px 0 var(--pen); }
+
+/* sub screens */
+.sub-screen.active { display: grid; gap: 12px; max-width: 560px; margin: 0 auto; align-content: start; }
+.sub-bar { display: flex; align-items: center; gap: 12px; }
+.sub-title { margin: 0; font: 700 36px/1 var(--font-hand); color: var(--pen); }
+.sub-title .x { color: var(--ink-x); } .sub-title .o { color: var(--ink-o); }
+.lbl { margin: 6px 0 -4px; font-size: 13px; color: var(--pencil-soft); }
+.learn-btn { appearance: none; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 14px; cursor: pointer; text-align: left;
+  border: 1.5px dashed var(--ink-x); border-radius: 6px 12px 7px 13px; background: #eef3ff; color: var(--ink-x); font: 600 15px var(--font-body); }
+.learn-btn b { font: 700 21px/1 var(--font-hand); color: #1f8a4c; }
+.ladder { display: grid; }
+.opp.lnode { grid-template-columns: 46px minmax(0, 1fr) auto; gap: 2px 10px; padding: 8px 12px; }
+.lnode .ln-face { grid-row: 1 / span 2; }
+.lnode .ln-face .bot-face { width: 46px; height: 46px; }
+.lnode .opp-name { grid-column: 2; }
+.lnode .opp-line { grid-column: 2; }
+.lnode .ln-rw { grid-column: 3; grid-row: 1 / span 2; font: 700 20px/1 var(--font-hand); color: #1f8a4c; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px; }
+.lnode .ln-rw svg { width: 16px; height: 16px; }
+.lnode .ln-rw.gold { color: var(--gold); }
+.lnode.done { border-color: #1f8a4c; box-shadow: 2px 2px 0 #1f8a4c; }
+.lnode.done .opp-line { color: #1f8a4c; }
+.lnode.next { background: #eef3ff; border-color: var(--ink-x); box-shadow: 3px 3px 0 var(--ink-x); }
+.lnode.next .opp-line { color: var(--ink-x); font-weight: 600; }
+.ln-link { display: block; width: 2px; height: 12px; background: var(--pen); margin-left: 34px; opacity: .45; }
+.friend-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opp.fbtn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 10px; }
+.opp.fbtn .opp-name { font-size: 25px; }
+.bridge { appearance: none; display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; text-align: left; border: 1.5px dashed var(--pen); border-radius: 6px 12px 7px 13px; background: var(--paper); font: 500 15px var(--font-body); color: var(--pen); }
+.bridge[hidden] { display: none; }
+.bridge .bot-face { width: 38px; height: 38px; }
+.bridge b { color: var(--ink-x); font: 700 22px/1 var(--font-hand); }
+.btn.big { width: 100%; padding: 13px 16px; font-size: 15.5px; }
+.online-new { display: grid; gap: 10px; }
+.online-new .btn { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.sub-screen .online-games { animation: none; }
+.sub-screen .og-list { grid-template-columns: 1fr; }
+.empty-note { margin: 0; color: var(--pencil-soft); font-size: 14px; }
+.empty-note[hidden] { display: none; }
+.me-head { display: flex; gap: 14px; align-items: center; }
+.me-head .pf-id { min-width: 0; }
+.pf-ava.big { width: 72px; height: 72px; }
+.pf-ava.big .pf-initial { font-size: 44px; }
+.me-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.ms { border: 1.5px dashed var(--grid-strong); border-radius: 10px; padding: 8px 6px; text-align: center; background: var(--paper); }
+.ms b { display: block; font: 700 32px/1 var(--font-hand); color: var(--pen); }
+.ms span { font-size: 12px; color: var(--pencil-soft); }
+.me-bots { display: grid; }
+.mbr { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 6px 2px; border-bottom: 1px dashed var(--grid-strong); font-size: 14px; }
+.mbr b { font: 700 21px/1 var(--font-hand); color: var(--pen); }
+.mbr span:last-child { color: var(--pencil-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.friends { display: grid; gap: 8px; }
+.fr { appearance: none; width: 100%; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; text-align: left; font: inherit; color: inherit;
+  border: 1.5px solid var(--pen); border-radius: 5px 11px 6px 12px; background: var(--paper); box-shadow: 2px 2px 0 var(--pen); }
+.fr.turn { background: #fffbe0; }
+.fr-id { display: grid; min-width: 0; }
+.fr-name { font: 700 22px/1.05 var(--font-hand); color: var(--pen); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fr-sub { font-size: 12.5px; color: var(--pencil-soft); }
+.fr .btn { padding: 7px 10px; font-size: 13px; }
+.fr.turn .btn { background: var(--pen); color: var(--paper); }
+.fr-score { font: 700 20px/1 var(--font-hand); color: var(--pen); white-space: nowrap; }
+.set-list { display: grid; gap: 14px; }
+.set-list .pf-row > span { font-size: 15px; }
+.set-list .seg { font-size: 21px; padding: 4px 16px 6px; }
+.set-list .seg.lang { font-size: 13px; padding: 8px 11px; }
+.seg[data-sound][aria-pressed="true"], .seg[data-haptics][aria-pressed="true"], .seg[data-talk][aria-pressed="true"] { background: var(--pen); color: var(--paper); }
+.set-acc { display: grid; gap: 6px; padding-top: 4px; border-top: 1px dashed var(--grid-strong); }
+.set-acc-t { font-size: 15px; padding-top: 10px; }
+.set-acc-v { font-size: 13px; color: var(--pencil-soft); }
+.set-acc-v:empty { display: none; }
+.set-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.set-ver { margin: 0; font-size: 13px; color: var(--pencil-soft); }
+details.acc { border: 1.5px solid var(--pen); border-radius: 5px 11px 6px 12px; background: var(--paper); box-shadow: 2px 2px 0 var(--pen); }
+details.acc summary { cursor: pointer; padding: 11px 14px; font: 700 25px/1 var(--font-hand); color: var(--pen); list-style: none; display: flex; justify-content: space-between; }
+details.acc summary::-webkit-details-marker { display: none; }
+details.acc summary::after { content: "+"; font-family: var(--font-body); font-weight: 500; }
+details.acc[open] summary::after { content: "–"; }
+.acc-body { padding: 0 14px 12px; font-size: 14px; }
+.acc-body p { margin: 0 0 8px; }
+.acc-body ol { margin: 0; padding-left: 1.4em; display: grid; gap: 7px; }
+.acc-body li::marker { font-family: var(--font-hand); font-size: 1.25em; color: var(--ink-o); }
+.acc-body h3 { font-family: var(--font-hand); font-size: 26px; margin: 14px 0 4px; color: var(--pen); }
+.acc-body li.mystery { color: var(--pencil-soft); font-style: italic; }
+.ab-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: center; padding: 6px 0; }
+.ab-row .bot-face { width: 44px; height: 44px; }
+.ab-row b { font: 700 22px/1 var(--font-hand); color: var(--pen); display: block; }
+.ab-row span { font-size: 13px; color: var(--pencil-soft); }
+
+/* newcomer */
+.welcome-card { text-align: center; display: grid; gap: 10px; max-width: 360px; justify-items: center; }
+.welcome-title { margin: 0; }
+.welcome-bot { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.welcome-gift { margin: 0 !important; }
+.welcome-sum { font: 700 46px/1 var(--font-hand); color: #1f8a4c; display: inline-flex; align-items: center; gap: 6px; }
+.welcome-sum svg { width: 32px; height: 32px; }
+
+/* tutorial */
+.learn-card { margin: -6px 0 14px; padding: 12px 14px; display: grid; gap: 8px; color: var(--pen);
+  border: 2px solid var(--ink-x); border-radius: 6px 12px 7px 13px; background: #eef3ff; box-shadow: 3px 3px 0 var(--ink-x); animation: fadeUp .3s both; }
+.learn-card[hidden] { display: none; }
+.lc-step { font: 600 12px/1 var(--font-body); color: var(--ink-x); letter-spacing: .04em; text-transform: uppercase; }
+.lc-text { font-size: 15.5px; line-height: 1.42; }
+.lc-text b { color: var(--pen); }
+.lc-reward { font: 700 34px/1 var(--font-hand); color: #1f8a4c; }
+.lc-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.lc-actions .link-btn { margin-left: auto; }
+.in-learn .prelude-actions, .in-learn .coin-stage, .in-learn .buttons, .in-learn .score-chip, .in-learn .log-wrap, .in-learn .phrases { display: none !important; }
+@keyframes learnIn { 50% { box-shadow: inset 0 0 0 3px rgba(31,63,168,.25); } }
+@keyframes learnOut { 50% { box-shadow: 0 0 0 4px rgba(31,63,168,.25), 2px 2px 0 var(--pen); } }
+.cell.learn-target, .tcell.learn-target { background: rgba(31,63,168,.16) !important; box-shadow: inset 0 0 0 3px var(--ink-x); animation: learnIn 1s ease-in-out infinite; }
+.sub.learn-target { box-shadow: 0 0 0 3px var(--ink-x); animation: learnOut 1s ease-in-out infinite; z-index: 4; }
+.btn.learn-target { box-shadow: 0 0 0 4px var(--ink-x), 2px 2px 0 var(--pen); animation: learnOut 1s ease-in-out infinite; }
+
+@media (max-width: 600px) {
+  .cover-bot .bot-face, .welcome-bot .bot-face { width: 54px; height: 54px; }
+  .lnode .ln-face .bot-face { width: 44px; height: 44px; }
+  .ab-row .bot-face { width: 42px; height: 42px; }
+  .sub-title { font-size: 32px; }
+}
+@media (max-width: 380px) {
+  .mb-t b { font-size: 28px; }
+  .cover-icons { gap: 26px; }
+}
+.btn.primary .ico-link { stroke: #fff; }
+.online-new .ico-link { width: 20px; height: 20px; }
+
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ================= MENU ================= -->
+  <!-- ================= MENU (cover) ================= -->
   <section class="screen menu active" id="scr-menu" aria-labelledby="logoTitle">
-    <div class="menu-top">
-      <div class="menu-hero">
+    <div class="cover">
+      <div class="cover-top">
+        <button class="wallet-btn" type="button" data-act="shop" id="menuWallet"></button>
+        <button class="icon-btn" type="button" data-act="settings" id="gearBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.6 7.6 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6c-.1.5-.1 1-.1 1.5s0 1 .1 1.5l-2 1.6 2 3.4 2.4-1c.8.6 1.6 1.1 2.6 1.5l.4 2.5h4l.4-2.5c1-.4 1.8-.9 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
+      </div>
+      <button class="pcard" type="button" data-go="me" id="pcard">
+        <span class="pf-ava" id="cAva"></span>
+        <span class="pc-id"><span class="pc-name" id="cName"></span><span class="pc-sub" id="cSub"></span></span>
+        <span class="pc-friends" id="cFriends"></span>
+      </button>
+      <button class="cbanner" type="button" id="coverBanner" hidden></button>
+      <div class="cover-hero">
         <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
           <title id="logoTitle">X02.0</title>
           <path class="stroke lx s1" pathLength="1" d="M22 28 Q 60 72 104 122"/>
@@ -630,60 +830,103 @@ aside.notes { display: grid; gap: 22px; }
           <path class="stroke lv s6" pathLength="1" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
           <path class="underline" pathLength="1" d="M18 142 C 140 133 300 147 424 137"/>
         </svg>
-        <p class="tagline" data-i18n-html="tagline"></p>
+        <button class="cover-bot" type="button" id="coverBot" data-go="modex02"><span class="bot-face" id="coverFace"></span><span class="cover-say" id="coverSay"></span></button>
       </div>
-      <section class="profile" aria-labelledby="pfName">
-        <div class="pf-top">
-          <div class="pf-ava" id="pfAva"></div>
-          <div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div>
-          <button class="icon-btn" type="button" id="soundBtn" data-act="sound"></button>
-        </div>
-        <div class="wallet pf-wallet" id="menuWallet"></div>
-        <div class="pf-stats" id="pfStats"></div>
-        <div class="pf-row"><span data-i18n="sidePick"></span>
-          <div class="seg-group" role="group" aria-label="За кого играть с ботом">
-            <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
-            <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
-          </div>
-        </div>
-        <div class="pf-row"><span data-i18n="langPick"></span>
-          <div class="seg-group lang-group" role="group" aria-label="Language">
-            <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
-            <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
-            <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
-          </div>
-        </div>
-        <div class="pf-row"><span data-i18n="talkPick"></span>
-          <div class="seg-group" role="group"><button class="seg lang" type="button" data-talk="1" data-i18n="talkOn"></button><button class="seg lang" type="button" data-talk="0" data-i18n="talkOff"></button></div>
-        </div>
-        <div class="tg-login" id="tgLogin"></div>
-      </section>
+      <div class="cover-modes">
+        <button class="mbtn mx" type="button" data-go="modex02"><span class="mb-ic">X</span><span class="mb-t"><b><span class="x">X</span><span class="o">0</span>2.0</b><span data-i18n="mbX02"></span></span></button>
+        <button class="mbtn mc" type="button" data-go="modeclassic"><span class="mb-ic">0</span><span class="mb-t"><b data-i18n="classicName"></b><span data-i18n="mbClassic"></span></span></button>
+        <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
+      </div>
+      <nav class="cover-icons">
+        <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
+        <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
+        <!-- reserved places: "Задания" and "Рейтинг" appear here when they are ready -->
+      </nav>
     </div>
+  </section>
 
-    <section class="online-games" id="onlineGames" hidden></section>
+  <!-- ================= MODE: X02.0 ================= -->
+  <section class="screen sub-screen" id="scr-modex02" aria-labelledby="mxTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="mxTitle"><span class="x">X</span><span class="o">0</span>2.0</h2></header>
+    <button class="learn-btn" type="button" data-act="learn" id="learnBtnX"></button>
+    <p class="lbl" data-i18n="withBot"></p>
+    <div class="ladder" data-mode="x02"></div>
+    <p class="lbl" data-i18n="withFriend"></p>
+    <div class="friend-row" data-mode="x02"></div>
+  </section>
 
-    <div class="modes">
-      <article class="mode-card">
-        <header>
-          <h2><span class="x">X</span><span class="o">0</span>2.0</h2>
-          <p data-i18n="modeX02Desc"></p>
-        </header>
-        <div class="opponents" data-mode="x02"></div>
-      </article>
-      <article class="mode-card">
-        <header>
-          <h2 data-i18n="classicName"></h2>
-          <p data-i18n="classicDesc"></p>
-        </header>
-        <div class="opponents" data-mode="classic"></div>
-      </article>
+  <!-- ================= MODE: NOSTALGIA ================= -->
+  <section class="screen sub-screen" id="scr-modeclassic" aria-labelledby="mcTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title ink-o" id="mcTitle" data-i18n="classicName"></h2></header>
+    <p class="lbl" data-i18n="withBot"></p>
+    <div class="ladder" data-mode="classic"></div>
+    <p class="lbl" data-i18n="withFriend"></p>
+    <div class="friend-row" data-mode="classic"></div>
+    <button class="bridge" type="button" id="bridge" data-go="modex02" hidden></button>
+  </section>
+
+  <!-- ================= ONLINE ================= -->
+  <section class="screen sub-screen" id="scr-online" aria-labelledby="onTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="onTitle" data-i18n="mbOnline"></h2></header>
+    <div class="online-new">
+      <button class="btn primary big opp-link" type="button" data-online="x02" id="newX02"></button>
+      <button class="btn big opp-link" type="button" data-online="classic" id="newClassic"></button>
     </div>
+    <p class="lbl" data-i18n="yourGames"></p>
+    <section class="online-games" id="onlineGames"></section>
+    <p class="empty-note" id="onlineEmpty" hidden></p>
+    <!-- reserved place: tournaments and a random opponent -->
+  </section>
 
-    <div class="menu-foot">
-      <button class="btn primary" type="button" data-act="shop" data-i18n="shop"></button>
-      <button class="btn" type="button" data-act="rules" data-i18n="rules"></button>
-      <small data-i18n="footNote"></small>
+  <!-- ================= PROFILE AND FRIENDS ================= -->
+  <section class="screen sub-screen" id="scr-me" aria-labelledby="meTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="meTitle" data-i18n="meTitle"></h2></header>
+    <div class="me-head"><div class="pf-ava big" id="pfAva"></div><div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div></div>
+    <div class="me-stats" id="pfStats"></div>
+    <div class="me-bots" id="meBots"></div>
+    <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
+    <p class="lbl" data-i18n="friendsTitle"></p>
+    <div class="friends" id="friendsList"></div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section class="screen sub-screen" id="scr-settings" aria-labelledby="setTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="setTitle" data-i18n="settings"></h2></header>
+    <div class="set-list">
+      <div class="pf-row"><span data-i18n="setSound"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-sound="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-sound="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="setHaptics"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-haptics="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-haptics="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="talkPick"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-talk="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-talk="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="sidePick"></span>
+        <div class="seg-group" role="group">
+          <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
+          <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
+        </div></div>
+      <div class="pf-row"><span data-i18n="langPick"></span>
+        <div class="seg-group lang-group" role="group" aria-label="Language">
+          <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
+          <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
+          <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div></div>
+      <div class="set-acc"><span class="set-acc-t" data-i18n="setAccount"></span><span class="set-acc-v" id="accLine"></span><div class="tg-login" id="tgLogin"></div></div>
+      <div class="set-links">
+        <button class="btn" type="button" data-go="about" data-i18n="about"></button>
+        <button class="btn" type="button" data-act="support" data-i18n="support"></button>
+      </div>
+      <p class="set-ver"><span id="verLine"></span> · <button class="link-btn" type="button" data-act="update" data-i18n="checkUpdate"></button></p>
     </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="screen sub-screen" id="scr-about" aria-labelledby="abTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="abTitle" data-i18n="about"></h2></header>
+    <button class="btn primary big" type="button" data-act="learn" id="learnBtnA"></button>
+    <details class="acc"><summary data-i18n="rules"></summary><div class="acc-body rules-text" id="aboutRules"></div></details>
+    <details class="acc"><summary data-i18n="aboutBots"></summary><div class="acc-body" id="aboutBots"></div></details>
+    <details class="acc"><summary data-i18n="privacy"></summary><div class="acc-body" data-i18n-html="privacyHTML"></div></details>
+    <button class="btn" type="button" data-act="support" data-i18n="support"></button>
   </section>
 
   <!-- ================= X02.0 ================= -->
@@ -698,6 +941,7 @@ aside.notes { display: grid; gap: 22px; }
       <span class="score-chip" id="x02Score" hidden></span>
       <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
     </header>
+    <div class="learn-card" id="learnCard" aria-live="polite" hidden></div>
 
     <div class="game-grid">
       <div class="board-wrap">
@@ -776,7 +1020,7 @@ aside.notes { display: grid; gap: 22px; }
         </div>
         <div class="phrases" hidden></div>
 
-        <div class="main-only">
+        <div class="main-only log-wrap">
           <p class="label" data-i18n="labelLog"></p>
           <ol class="log" id="log"></ol>
         </div>
@@ -856,7 +1100,7 @@ aside.notes { display: grid; gap: 22px; }
   <!-- ================= SHOP ================= -->
   <section class="screen" id="scr-shop" aria-labelledby="shopTitle">
     <header class="game-bar">
-      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
+      <button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button>
       <div class="bar-title"><span class="mini-logo" id="shopTitle" data-i18n="shop"></span></div>
       <span class="wallet" id="shopWallet"></span>
     </header>
@@ -883,6 +1127,17 @@ aside.notes { display: grid; gap: 22px; }
       <button class="btn small" type="button" data-act="closeOnline" data-i18n="close"></button>
     </div>
     <div id="onlineBody"></div>
+  </div>
+</div>
+
+<div class="sheet" id="welcomeSheet" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+  <div class="sheet-card welcome-card">
+    <h2 class="welcome-title" id="welcomeTitle" data-i18n="welcomeTitle"></h2>
+    <div class="welcome-bot"><span class="bot-face" id="welcomeFace"></span><span class="cover-say" data-i18n="welcomeBot"></span></div>
+    <p class="welcome-gift" data-i18n="welcomeGift"></p>
+    <div class="welcome-sum" id="welcomeSum"></div>
+    <button class="btn primary big" type="button" data-act="welcomeLearn" data-i18n="welcomeLearn"></button>
+    <button class="btn big" type="button" data-act="welcomeLater" data-i18n="later"></button>
   </div>
 </div>
 
@@ -1570,6 +1825,44 @@ function ENGINE() {
 const ruPl = (n, one, few, many) => { const a = Math.abs(n) % 100, b = a % 10; return a > 10 && a < 20 ? many : b === 1 ? one : b >= 2 && b <= 4 ? few : many; };
 const I18N = {
 ru: {
+  // ---- v13: game-style menu
+  settings: 'Настройки', about: 'Об игре', backBtn: '← Назад', segOn: 'Вкл', segOff: 'Выкл',
+  mbX02: '81 клетка, звёзды, удары', mbClassic: 'Классика 3×3', mbOnline: 'Онлайн', mbOnlineSub: 'С друзьями по ссылке',
+  withBot: 'С ботом', withFriend: 'С другом', nearby: 'Рядом', byLink: 'По ссылке',
+  ladDone: s => `Пройден · ${s}`, ladNext: 'Следующий соперник', rwGold: '2 золотые',
+  bridgeText: 'Слишком просто? Попробуй <b>X02.0</b>', learnBtn: 'Как играть · обучение',
+  cardWins: n => `${n} ${ruPl(n, 'победа', 'победы', 'побед')}`, cardFriends: n => `${n} ${ruPl(n, 'друг', 'друга', 'друзей')}`,
+  guestCard: 'Гость · войди через Telegram',
+  bnLearn: 'Пройди обучение за 2 минуты', bnTurn: n => `Твой ход против ${n}`, bnLogin: 'Войди через Telegram, чтобы не потерять прогресс', bnInvite: 'Позови друга сыграть',
+  newOnline: m => `Новая партия · ${m}`, yourGames: 'Твои партии', onlineEmpty: 'Пока нет партий. Создай новую и отправь ссылку другу.',
+  meTitle: 'Профиль и друзья', stW: 'победы', stL: 'поражения', stD: 'ничьи', meOnline: 'Онлайн с друзьями',
+  inviteBtn: 'Позвать друга в игру', inviteGame: 'Сыграй со мной в X02.0 — крестики-нолики 2.0',
+  friendsTitle: 'Друзья', friendsEmpty: 'Здесь появятся друзья, с которыми ты сыграешь онлайн.', friendsLogin: 'Войди через Telegram — и здесь появятся твои друзья.',
+  frOnline: 'в сети', frTurn: 'ждёт твой ход', frTheir: 'ход соперника', frGo: 'Ходить', frOpen: 'Открыть',
+  ago: m => m < 1 ? 'только что' : m < 60 ? `${m} мин назад` : m < 1440 ? `${Math.floor(m / 60)} ч назад` : m < 2880 ? 'вчера' : `${Math.floor(m / 1440)} дн назад`,
+  setSound: 'Звуки', setHaptics: 'Вибрация', setAccount: 'Аккаунт', accTg: u => `Telegram${u ? ' · ' + u : ''}`,
+  support: 'Поддержка', checkUpdate: 'проверить обновление', version: v => `Версия ${v}`, upToDate: 'У тебя последняя версия', updating: 'Обновляю…',
+  aboutBots: 'Кто такие боты', privacy: 'Конфиденциальность',
+  privacyHTML: '<p>Что мы храним: твой Telegram ID, имя, @username и ссылку на фото — чтобы показывать профиль и друзей; результаты партий, скрепки, монеты и покупки — чтобы сохранять прогресс.</p><p>Покупки проходят через Telegram Stars: данные карт мы не видим. Мы не продаём и не передаём данные третьим лицам. Чтобы удалить свои данные, напиши в поддержку через бота @xo_version2bot.</p>',
+  welcomeTitle: 'Добро пожаловать!', welcomeBot: n => `${n} уже ждёт.`, welcomeGift: 'Подарок за первый вход', welcomeLearn: 'Пройти обучение · ещё +30', later: 'Позже',
+  bonusGot: n => `+${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}`,
+  learnStep: n => `Обучение · шаг ${n} из 5`, learnExit: 'Выйти из обучения', learnNext: 'Дальше', learnTap: 'Нажми на подсвеченное место',
+  learnPlay: n => `Сыграть с ${n}`, learnAgain: 'Обучение пройдено',
+  l1a: 'Сначала <b>разминка</b> — обычные крестики-нолики 3×3. Победитель получит ★ на старт, проигравший начнёт главную игру. Поставь X в подсвеченную клетку и выиграй.',
+  l1b: 'Есть! Ты выиграл разминку и получил <b>★</b>. Соперник проиграл — поэтому он ходит первым в главной игре.',
+  l2a: 'Это <b>главное поле</b>: 9 маленьких полей по 9 клеток. Смотри, куда сходит соперник…',
+  l2b: 'Соперник поставил 0 в <b>клетку №3</b> — поэтому ты играешь в <b>поле №3</b>, оно подсвечено. Номер клетки решает, где ходит соперник. Поставь X в центр поля №3 — и соперник пойдёт в центральное поле.',
+  l2c: 'Видишь? Ты сходил в центр — соперник попал в центральное поле. Он поставил 0 в клетку №1, значит, ты теперь в поле №1.',
+  l3a: 'Новая позиция. <b>Три в ряд в маленьком поле</b> — и поле твоё навсегда. Поставь X в подсвеченную клетку.',
+  l3b: 'Поле №7 твоё: X встал на главное поле, а за выигранное поле ты получил <b>★</b>. Соперник проиграл поле, поэтому у него <b>свободный ход</b> — в любое поле.',
+  l4a: 'Соперник сходил в клетку №5 — ты в поле №5. Здесь пригодится <b>★ Навигатор</b> (1★): ставишь звезду вместо знака и сам выбираешь, куда отправить соперника. Нажми «★ Навигатор».',
+  l4b: 'Поставь звезду в подсвеченную клетку — она закроет ряд соперника.',
+  l4c: 'Теперь выбери, куда отправить соперника. Отправь его в <b>поле №9</b> — там пусто, и выиграть ему негде.',
+  l4d: 'Отлично: соперник пошёл туда, куда решил ты.',
+  l5a: 'Новая позиция: у тебя <b>2★</b>, а соперник почти собрал три в ряд в поле №4. <b>✕ Удар</b> (2★) снимает чужой знак. Нажми «✕ Удар».',
+  l5b: 'Сними подсвеченный 0.',
+  l5c: 'Знак снят! Теперь соперник идёт в <b>поле №2</b> — по номеру снятой клетки.',
+  l6: 'Готово! Цель игры — собрать <b>три своих поля в ряд</b> на главном поле. Остальное узнаешь в бою.',
   q: s => `«${s}»`,
   tagline: 'Крестики-нолики, версия 2.0. <em>Обновление, о котором никто не просил.</em>',
   sidePick: 'С ботом играю за', langPick: 'Язык',
@@ -1736,6 +2029,44 @@ ru: {
 },
 
 uz: {
+  // ---- v13: game-style menu
+  settings: 'Sozlamalar', about: "O'yin haqida", backBtn: '← Orqaga', segOn: 'Ha', segOff: "Yo'q",
+  mbX02: '81 katak, yulduzlar, zarbalar', mbClassic: 'Klassika 3×3', mbOnline: 'Onlayn', mbOnlineSub: "Do'stlar bilan havola orqali",
+  withBot: 'Bot bilan', withFriend: "Do'st bilan", nearby: 'Yonimda', byLink: 'Havola orqali',
+  ladDone: s => `Yengilgan · ${s}`, ladNext: 'Keyingi raqib', rwGold: '2 ta oltin',
+  bridgeText: "Juda osonmi? <b>X02.0</b> ni sinab ko'ring", learnBtn: "Qanday o'ynaladi · o'rgatish",
+  cardWins: n => `${n} g'alaba`, cardFriends: n => `${n} do'st`,
+  guestCard: 'Mehmon · Telegram orqali kiring',
+  bnLearn: "2 daqiqalik o'rgatishdan o'ting", bnTurn: n => `${n} bilan o'yinda sizning navbat`, bnLogin: "Progress yo'qolmasligi uchun Telegram orqali kiring", bnInvite: "Do'stingizni o'ynashga chaqiring",
+  newOnline: m => `Yangi o'yin · ${m}`, yourGames: "Sizning o'yinlaringiz", onlineEmpty: "Hozircha o'yinlar yo'q. Yangisini yarating va havolani do'stingizga yuboring.",
+  meTitle: "Profil va do'stlar", stW: "g'alaba", stL: "mag'lubiyat", stD: 'durang', meOnline: "Do'stlar bilan onlayn",
+  inviteBtn: "Do'stni o'yinga chaqirish", inviteGame: "Men bilan X02.0 o'ynang — iks-nol 2.0",
+  friendsTitle: "Do'stlar", friendsEmpty: "Bu yerda onlayn o'ynagan do'stlaringiz paydo bo'ladi.", friendsLogin: "Telegram orqali kiring — bu yerda do'stlaringiz paydo bo'ladi.",
+  frOnline: 'tarmoqda', frTurn: 'navbatingizni kutmoqda', frTheir: 'raqib navbati', frGo: 'Yurish', frOpen: 'Ochish',
+  ago: m => m < 1 ? 'hozirgina' : m < 60 ? `${m} daqiqa oldin` : m < 1440 ? `${Math.floor(m / 60)} soat oldin` : m < 2880 ? 'kecha' : `${Math.floor(m / 1440)} kun oldin`,
+  setSound: 'Tovushlar', setHaptics: 'Tebranish', setAccount: 'Akkaunt', accTg: u => `Telegram${u ? ' · ' + u : ''}`,
+  support: "Yordam", checkUpdate: 'yangilanishni tekshirish', version: v => `Versiya ${v}`, upToDate: "Sizda eng so'nggi versiya", updating: 'Yangilanmoqda…',
+  aboutBots: 'Botlar kimlar', privacy: 'Maxfiylik',
+  privacyHTML: "<p>Biz nimani saqlaymiz: Telegram ID, ism, @username va rasm havolasi — profil va do'stlarni ko'rsatish uchun; o'yin natijalari, skrepkalar, tangalar va xaridlar — progressni saqlash uchun.</p><p>Xaridlar Telegram Stars orqali o'tadi: karta ma'lumotlarini biz ko'rmaymiz. Ma'lumotlarni sotmaymiz va uchinchi shaxslarga bermaymiz. Ma'lumotlaringizni o'chirish uchun @xo_version2bot boti orqali yordamga yozing.</p>",
+  welcomeTitle: 'Xush kelibsiz!', welcomeBot: n => `${n} allaqachon kutmoqda.`, welcomeGift: "Birinchi kirish uchun sovg'a", welcomeLearn: "O'rgatishdan o'tish · yana +30", later: 'Keyinroq',
+  bonusGot: n => `+${n} skrepka`,
+  learnStep: n => `O'rgatish · ${n}-qadam (5 tadan)`, learnExit: "O'rgatishdan chiqish", learnNext: 'Davom etish', learnTap: 'Belgilangan joyni bosing',
+  learnPlay: n => `${n} bilan o'ynash`, learnAgain: "O'rgatishdan o'tilgan",
+  l1a: "Avval <b>razminka</b> — oddiy 3×3 iks-nol. G'olib boshlanishiga ★ oladi, yutqazgan asosiy o'yinni boshlaydi. X ni belgilangan katakka qo'ying va yuting.",
+  l1b: "Zo'r! Razminkada yutdingiz va <b>★</b> oldingiz. Raqib yutqazdi — shuning uchun asosiy o'yinda u birinchi yuradi.",
+  l2a: "Bu <b>asosiy maydon</b>: 9 tadan katakli 9 ta kichik maydon. Raqib qayerga yurishini kuzating…",
+  l2b: "Raqib 0 ni <b>3-katakka</b> qo'ydi — shuning uchun siz <b>3-maydonda</b> o'ynaysiz, u belgilangan. Katak raqami raqib qayerda yurishini hal qiladi. X ni 3-maydonning markaziga qo'ying — raqib markaziy maydonga boradi.",
+  l2c: "Ko'rdingizmi? Siz markazga yurdingiz — raqib markaziy maydonga tushdi. U 0 ni 1-katakka qo'ydi, demak endi siz 1-maydondasiz.",
+  l3a: "Yangi holat. <b>Kichik maydonda uchta qatorda</b> — va maydon abadiy sizniki. X ni belgilangan katakka qo'ying.",
+  l3b: "7-maydon sizniki: X asosiy maydonga chiqdi, yutilgan maydon uchun esa <b>★</b> oldingiz. Raqib maydonni yutqazdi, shuning uchun unda <b>erkin yurish</b> — istalgan maydonga.",
+  l4a: "Raqib 5-katakka yurdi — siz 5-maydondasiz. Bu yerda <b>★ Navigator</b> (1★) asqotadi: belgi o'rniga yulduz qo'yasiz va raqibni qayerga yuborishni o'zingiz tanlaysiz. «★ Navigator» ni bosing.",
+  l4b: "Yulduzni belgilangan katakka qo'ying — u raqibning qatorini yopadi.",
+  l4c: "Endi raqibni qayerga yuborishni tanlang. Uni <b>9-maydonga</b> yuboring — u yerda bo'sh, yutishga joy yo'q.",
+  l4d: "Ajoyib: raqib siz tanlagan joyga bordi.",
+  l5a: "Yangi holat: sizda <b>2★</b>, raqib esa 4-maydonda uchtani qatorga tera boshladi. <b>✕ Zarba</b> (2★) raqib belgisini olib tashlaydi. «✕ Zarba» ni bosing.",
+  l5b: "Belgilangan 0 ni olib tashlang.",
+  l5c: "Belgi olib tashlandi! Endi raqib <b>2-maydonga</b> boradi — olib tashlangan katak raqami bo'yicha.",
+  l6: "Tayyor! O'yin maqsadi — asosiy maydonda <b>o'zingizning uchta maydoningizni qatorga</b> terish. Qolganini jangda bilib olasiz.",
   q: s => `«${s}»`,
   tagline: "Iks-nol, 2.0 versiya. <em>Hech kim so'ramagan yangilanish.</em>",
   sidePick: "Bot bilan o'ynaganda men:", langPick: 'Til',
@@ -1902,6 +2233,44 @@ uz: {
 },
 
 en: {
+  // ---- v13: game-style menu
+  settings: 'Settings', about: 'About', backBtn: '← Back', segOn: 'On', segOff: 'Off',
+  mbX02: '81 cells, stars, strikes', mbClassic: 'Classic 3×3', mbOnline: 'Online', mbOnlineSub: 'With friends by link',
+  withBot: 'With a bot', withFriend: 'With a friend', nearby: 'Nearby', byLink: 'By link',
+  ladDone: s => `Beaten · ${s}`, ladNext: 'Next opponent', rwGold: '2 golds',
+  bridgeText: 'Too easy? Try <b>X02.0</b>', learnBtn: 'How to play · tutorial',
+  cardWins: n => n === 1 ? '1 win' : `${n} wins`, cardFriends: n => n === 1 ? '1 friend' : `${n} friends`,
+  guestCard: 'Guest · log in with Telegram',
+  bnLearn: 'Take the 2-minute tutorial', bnTurn: n => `Your move against ${n}`, bnLogin: 'Log in with Telegram to keep your progress', bnInvite: 'Invite a friend to play',
+  newOnline: m => `New game · ${m}`, yourGames: 'Your games', onlineEmpty: 'No games yet. Create one and send the link to a friend.',
+  meTitle: 'Profile and friends', stW: 'wins', stL: 'losses', stD: 'draws', meOnline: 'Online with friends',
+  inviteBtn: 'Invite a friend to the game', inviteGame: 'Play X02.0 with me — tic-tac-toe 2.0',
+  friendsTitle: 'Friends', friendsEmpty: 'Friends you play online with will show up here.', friendsLogin: 'Log in with Telegram and your friends will show up here.',
+  frOnline: 'online', frTurn: 'waiting for your move', frTheir: 'their move', frGo: 'Move', frOpen: 'Open',
+  ago: m => m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.floor(m / 60)} h ago` : m < 2880 ? 'yesterday' : `${Math.floor(m / 1440)} days ago`,
+  setSound: 'Sounds', setHaptics: 'Vibration', setAccount: 'Account', accTg: u => `Telegram${u ? ' · ' + u : ''}`,
+  support: 'Support', checkUpdate: 'check for updates', version: v => `Version ${v}`, upToDate: 'You have the latest version', updating: 'Updating…',
+  aboutBots: 'Meet the bots', privacy: 'Privacy',
+  privacyHTML: '<p>What we store: your Telegram ID, name, @username and photo link — to show your profile and friends; game results, paperclips, coins and purchases — to keep your progress.</p><p>Purchases go through Telegram Stars: we never see card details. We do not sell or share data with third parties. To delete your data, write to support via the @xo_version2bot bot.</p>',
+  welcomeTitle: 'Welcome!', welcomeBot: n => `${n} is already waiting.`, welcomeGift: 'A gift for your first visit', welcomeLearn: 'Take the tutorial · +30 more', later: 'Later',
+  bonusGot: n => `+${n} ${n === 1 ? 'paperclip' : 'paperclips'}`,
+  learnStep: n => `Tutorial · step ${n} of 5`, learnExit: 'Leave the tutorial', learnNext: 'Next', learnTap: 'Tap the highlighted spot',
+  learnPlay: n => `Play ${n}`, learnAgain: 'Tutorial completed',
+  l1a: 'First, a <b>warm-up</b>: classic 3×3 tic-tac-toe. The winner gets a ★ to start with, the loser opens the main game. Put X in the highlighted cell and win.',
+  l1b: 'Nice! You won the warm-up and got a <b>★</b>. Your opponent lost, so they move first in the main game.',
+  l2a: 'This is the <b>main board</b>: 9 small boards of 9 cells. Watch where your opponent moves…',
+  l2b: 'Your opponent put 0 in <b>cell 3</b>, so you play in <b>board 3</b> — it is highlighted. The cell number decides where your opponent plays next. Put X in the centre of board 3, and your opponent will go to the centre board.',
+  l2c: 'See? You moved to the centre, so your opponent landed in the centre board. They put 0 in cell 1, so now you are in board 1.',
+  l3a: 'A new position. <b>Three in a row in a small board</b> and that board is yours for good. Put X in the highlighted cell.',
+  l3b: 'Board 7 is yours: X moved up to the main board, and you got a <b>★</b> for winning a board. Your opponent lost a board, so they get a <b>free move</b> — anywhere.',
+  l4a: 'Your opponent played cell 5, so you are in board 5. Time for the <b>★ Navigator</b> (1★): you place a star instead of a mark and choose where to send your opponent yourself. Tap “★ Navigator”.',
+  l4b: 'Put the star in the highlighted cell — it blocks your opponent’s row.',
+  l4c: 'Now choose where to send your opponent. Send them to <b>board 9</b>: it is empty, so they have nowhere to win.',
+  l4d: 'Great: your opponent went where you decided.',
+  l5a: 'A new position: you have <b>2★</b>, and your opponent almost has three in a row in board 4. The <b>✕ Strike</b> (2★) removes an opponent’s mark. Tap “✕ Strike”.',
+  l5b: 'Remove the highlighted 0.',
+  l5c: 'Mark removed! Now your opponent goes to <b>board 2</b> — the number of the removed cell.',
+  l6: 'Done! The goal is <b>three of your boards in a row</b> on the main board. You will learn the rest in battle.',
   q: s => `“${s}”`,
   tagline: 'Tic-tac-toe, version 2.0. <em>The update nobody asked for.</em>',
   sidePick: 'Against a bot I play', langPick: 'Language',
@@ -2085,8 +2454,10 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const haptic = kind => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
-const hapticResult = ok => { try { if (TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
+const APP_VERSION = "v13";
+const hapticsOn = () => store.get("haptics", true) !== false;
+const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
+const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
 const store = {
   get(k, d) { try { const v = localStorage.getItem("x02." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem("x02." + k, JSON.stringify(v)); } catch (e) {} }
@@ -2185,7 +2556,7 @@ function applyStatic() {
   document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll("[data-i18n-html]").forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
   $("rulesBody").innerHTML = t("rulesHTML");
-  document.querySelectorAll(".seg.lang").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+  document.querySelectorAll(".seg[data-lang]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
 }
 function setLang(l) {
   if (!LANGS.includes(l) || l === lang) return;
@@ -2194,7 +2565,7 @@ function setLang(l) {
 }
 
 const app = {
-  screen: "menu", mode: null, bot: null, gameId: 0, history: [],
+  screen: "menu", mode: null, bot: null, gameId: 0, history: [], nav: [], home: "menu", learn: null,
   side: store.get("side", 1) === 2 ? 2 : 1,
   scores: store.get("scores", {}) || {}
 };
@@ -2263,7 +2634,7 @@ function loadProfile() {
     clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
-    cc: p.cc || {}, cnext: p.cnext || {}
+    cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : []
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -2275,8 +2646,8 @@ async function apiCall(path, body) {
   return Object.assign({ status: r.status }, j);
 }
 function refreshWalletViews() {
-  if (app.screen === "menu") buildMenu();
-  else if (app.screen === "shop") renderShop();
+  if (app.screen === "shop") renderShop();
+  else if (isMenuScreen(app.screen)) buildMenu();
 }
 // server profile is the source of truth when signed in
 function applyProfile(p) {
@@ -2288,6 +2659,7 @@ function applyProfile(p) {
   if (typeof p.netLosses === "number") profile.netLosses = p.netLosses;
   if (typeof p.netBeaten === "boolean") profile.netBeaten = p.netBeaten;
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
+  if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
   skinRev++; saveProfile(); refreshWalletViews();
   return true;
 }
@@ -2298,7 +2670,7 @@ async function syncProfile() {
   try {
     await flushPending();
     const p = await apiCall("/api/profile", linked ? {} : { local: {
-      clips: profile.clips, owned: profile.owned, equip: profile.equip, scores: app.scores, netLosses: profile.netLosses, netBeaten: profile.netBeaten } });
+      clips: profile.clips, owned: profile.owned, equip: profile.equip, scores: app.scores, netLosses: profile.netLosses, netBeaten: profile.netBeaten, bonus: profile.bonus } });
     if (p.status === 401 && !TG) { session = null; store.set("session", null); refreshWalletViews(); return false; }
     if (applyProfile(p)) { store.set("linked", uid); return true; }
   } catch (e) {}
@@ -2345,40 +2717,17 @@ const SILHOUETTE = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 1
 function playerInfo() {
   if (TG) {
     const u = (TG.initDataUnsafe && TG.initDataUnsafe.user) || {};
-    return { name: [u.first_name, u.last_name].filter(Boolean).join(" ") || "Telegram", user: u.username ? "@" + u.username : "", photo: u.photo_url || "", logged: true };
+    const full = [u.first_name, u.last_name].filter(Boolean).join(" ") || "Telegram";
+    return { name: full, first: u.first_name || full, user: u.username ? "@" + u.username : "", photo: u.photo_url || "", logged: true };
   }
   if (session && session.token) {
     const nm = session.name || "";
-    return { name: session.first || nm || "Telegram", user: session.user ? "@" + session.user : (nm[0] === "@" ? nm : ""), photo: session.photo || "", logged: true };
+    const full = session.first || nm || "Telegram";
+    return { name: full, first: session.fn || full.split(" ")[0], user: session.user ? "@" + session.user : (nm[0] === "@" ? nm : ""), photo: session.photo || "", logged: true };
   }
-  return { name: t("guest"), user: t("guestSub"), photo: "", logged: false };
+  return { name: t("guest"), first: t("guest"), user: t("guestSub"), photo: "", logged: false };
 }
-function renderProfile() {
-  const info = playerInfo(), ava = $("pfAva");
-  if (!ava) return;
-  const initial = (info.name || "?").trim().charAt(0).toUpperCase() || "?";
-  const key = `${info.logged}|${info.photo}|${initial}`;
-  if (ava.dataset.k !== key) {
-    ava.dataset.k = key;
-    ava.classList.toggle("guest", !info.logged);
-    ava.innerHTML = info.photo ? `<img src="${esc(info.photo)}" alt="" referrerpolicy="no-referrer">` : info.logged ? `<span class="pf-initial">${esc(initial)}</span>` : SILHOUETTE;
-    const img = ava.querySelector("img");
-    if (img) img.addEventListener("error", () => { ava.innerHTML = `<span class="pf-initial">${esc(initial)}</span>`; }, { once: true });
-  }
-  $("pfName").textContent = info.name;
-  $("pfSub").textContent = info.user;
-  let w = 0, l = 0, d = 0;
-  for (const id of [...BOTS.x02, ...BOTS.classic].map(b => b.id).concat(["fx", "fc"])) { const s = scoreOf(id); w += s.me; l += s.bot; d += s.draw; }
-  $("pfStats").innerHTML = w + l + d ? t("pfStats", w, l, d) : t("pfNoGames");
-  $("menuWallet").innerHTML = walletHTML();
-  const sb = $("soundBtn");
-  sb.innerHTML = ICON_SOUND(SND.on);
-  sb.setAttribute("aria-pressed", String(SND.on));
-  sb.setAttribute("aria-label", SND.on ? t("soundOff") : t("soundOn"));
-  sb.title = sb.getAttribute("aria-label");
-  document.querySelectorAll("[data-talk]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.talk === "1") === talkOn())));
-  renderLogin();
-}
+function renderProfile() { renderCover(); renderMe(); renderSettings(); }
 function showLoginWidget() {
   const w = $("tgWidget");
   if (!w || w.childElementCount) return;
@@ -2400,7 +2749,7 @@ async function handleLoginReturn() {
   try {
     const r = await fetch(API_BASE + "/api/login", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tg }) });
     const j = await r.json();
-    if (j.session) { session = { token: j.session, name: j.name, first: [tg.first_name, tg.last_name].filter(Boolean).join(" "), user: tg.username || "", photo: tg.photo_url || "" }; store.set("session", session); refreshWalletViews(); }
+    if (j.session) { session = { token: j.session, name: j.name, first: [tg.first_name, tg.last_name].filter(Boolean).join(" "), fn: tg.first_name || "", user: tg.username || "", photo: tg.photo_url || "" }; store.set("session", session); refreshWalletViews(); }
   } catch (e) {}
 }
 function logout() {
@@ -2517,57 +2866,426 @@ function buildDOM() {
 
 // ---------------- menu ----------------
 function scoreOf(id) { return app.scores[id] || { me: 0, bot: 0, draw: 0 }; }
-function buildMenu() {
-  for (const mode of ["x02", "classic"]) {
-    const box = document.querySelector(`.opponents[data-mode="${mode}"]`);
-    let h = `<button class="opp" type="button" data-mode="${mode}" data-bot="">
-      <span class="opp-name">${t("friend")}</span><span class="opp-line">${t("friendLine")}</span>
-      <span class="opp-meta"><span class="opp-score">${t("xVsO")}</span></span></button>
-      <button class="opp opp-link" type="button" data-online="${mode}">
-      <span class="opp-name">${t("friendLink")}</span><span class="opp-line">${t("friendLinkLine")}</span>
-      <span class="opp-meta">${ICON_LINK}</span></button>`;
-    for (const b of BOTS[mode]) {
-      const s = scoreOf(b.id), played = s.me + s.bot + s.draw;
-      const pips = [1, 2, 3].map(n => `<span class="pip${n <= b.level ? " on" : ""}"></span>`).join("");
-      h += `<button class="opp" type="button" data-mode="${mode}" data-bot="${b.id}" aria-label="${t("playVs", t("q", bt(b.id, "name")), bt(b.id, "line"))}">
-        <span class="opp-name">${t("q", bt(b.id, "name"))}</span><span class="opp-line">${bt(b.id, "line")}</span>
-        <span class="opp-meta"><span class="pips" aria-hidden="true">${pips}</span>
-        <span class="opp-score">${played ? t("scoreMenu", s.me, s.bot, s.draw) : t("notPlayed")}</span></span></button>`;
-    }
-    box.innerHTML = h;
+// ---------------- menu (v13): cover + sub screens ----------------
+const MENU_SCREENS = ["menu", "modex02", "modeclassic", "online", "me", "settings", "about", "shop"];
+const ALL_SCREENS = ["menu", "x02", "classic", "shop", "wait", "modex02", "modeclassic", "online", "me", "settings", "about"];
+const isMenuScreen = s => MENU_SCREENS.includes(s);
+const inGame = () => app.screen === "x02" || app.screen === "classic";
+let coverLine = { id: "", text: "" };
+let friendsCache = { at: 0, list: [], busy: false, ok: false };
+function avatarHTML(info) {
+  const initial = (info.name || "?").trim().charAt(0).toUpperCase() || "?";
+  return info.photo ? `<img src="${esc(info.photo)}" alt="" referrerpolicy="no-referrer" data-i="${esc(initial)}">`
+    : info.logged ? `<span class="pf-initial">${esc(initial)}</span>` : SILHOUETTE;
+}
+function paintAvatar(el, info) {
+  if (!el) return;
+  const key = `${info.logged}|${info.photo}|${info.name}`;
+  if (el.dataset.k === key) return;
+  el.dataset.k = key;
+  el.classList.toggle("guest", !info.logged);
+  el.innerHTML = avatarHTML(info);
+  const img = el.querySelector("img");
+  if (img) img.addEventListener("error", () => { el.innerHTML = `<span class="pf-initial">${esc(img.dataset.i || "?")}</span>`; }, { once: true });
+}
+function totals() {
+  let w = 0, l = 0, d = 0;
+  for (const id of [...BOTS.x02, ...BOTS.classic].map(b => b.id).concat(["fx", "fc"])) { const s = scoreOf(id); w += s.me; l += s.bot; d += s.draw; }
+  return { w, l, d };
+}
+const played = id => { const s = scoreOf(id); return s.me + s.bot + s.draw; };
+// the next opponent on a ladder: the weakest bot you have not beaten yet
+function nextBot(mode) { const b = BOTS[mode].find(x => scoreOf(x.id).me === 0); return b ? b.id : ""; }
+function myTurnGames() { return (ogCache.games || []).filter(g => g.myTurn && g.status !== "waiting"); }
+const learnPaid = () => (profile.bonus || []).includes("learn");
+const learnDone = () => !!store.get("learnDone", false) || learnPaid();
+
+function coverBanner() {
+  const turn = myTurnGames()[0];
+  if (turn) return { cls: "turn", ic: "!", text: t("bnTurn", esc(turn.opp ? turn.opp.name : "…")), act: "og:" + turn.id };
+  if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
+  if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
+  return { cls: "info", ic: "+", text: t("bnInvite"), act: "invite" };
+}
+function renderCover() {
+  const info = playerInfo(), w = $("menuWallet");
+  w.innerHTML = `<span class="wpill" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b><i class="plus" aria-hidden="true">+</i></span>` +
+    `<span class="wpill" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b><i class="plus" aria-hidden="true">+</i></span>`;
+  w.setAttribute("aria-label", `${t("shop")}: ${profile.clips} ${t("clipsWord", profile.clips)}, ${profile.coins} ${t("coinsWord", profile.coins)}`);
+  $("gearBtn").setAttribute("aria-label", t("settings"));
+  $("gearBtn").title = t("settings");
+  paintAvatar($("cAva"), info);
+  $("cName").textContent = info.first || info.name;
+  const tot = totals(), fr = friendsCache.list.length;
+  $("cSub").textContent = !info.logged ? t("guestSub") : [t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
+  $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
+  const bn = coverBanner(), be = $("coverBanner");
+  be.hidden = false;
+  be.className = "cbanner" + (bn.cls ? " " + bn.cls : "");
+  be.dataset.bn = bn.act;
+  be.innerHTML = `<span class="cb-ic" aria-hidden="true">${bn.ic}</span><span class="cb-t">${bn.text}</span>${bn.right ? `<b>${bn.right}</b>` : ""}`;
+  // the bot on the cover is whoever you play next in X02.0
+  const id = nextBot("x02") || "x3";
+  if (coverLine.id !== id || coverLine.lang !== lang) {
+    const arr = ((t("botTalk") || {})[id] || {}).start || [];
+    coverLine = { id, lang, text: arr.length ? arr[(Math.random() * arr.length) | 0] : "" };
   }
-  document.querySelectorAll(".seg[data-side]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.side === app.side)));
-  renderProfile();
+  const face = $("coverFace");
+  if (face.dataset.k !== id) { face.dataset.k = id; face.innerHTML = faceSVG(id, FACE_IDLE[id] || "idle"); }
+  $("coverSay").textContent = coverLine.text;
+  $("coverBot").setAttribute("aria-label", t("playVs", t("q", bt(id, "name")), bt(id, "line")));
+  const n = myTurnGames().length, badge = $("onlineBadge");
+  badge.hidden = !n; badge.textContent = n;
+}
+function rewardChip(id) {
+  if (id === "c3") return `<span class="ln-rw gold">${t("rwGold")}</span>`;
+  const n = REWARD[id] || 0;
+  return n ? `<span class="ln-rw">+${n}${ICON_CLIP}</span>` : "";
+}
+function renderLadder(mode) {
+  const box = document.querySelector(`.ladder[data-mode="${mode}"]`);
+  if (!box) return;
+  const nb = nextBot(mode);
+  box.innerHTML = [...BOTS[mode]].reverse().map((b, i) => {
+    const s = scoreOf(b.id), pl = played(b.id), score = t("scoreMenu", s.me, s.bot, s.draw);
+    const done = s.me > 0, next = b.id === nb;
+    const line = done ? t("ladDone", score) : next ? t("ladNext") + (pl ? " · " + score : "") : pl ? score : bt(b.id, "line");
+    return (i ? '<i class="ln-link" aria-hidden="true"></i>' : "") +
+      `<button class="opp lnode${done ? " done" : ""}${next ? " next" : ""}" type="button" data-mode="${mode}" data-bot="${b.id}" aria-label="${t("playVs", t("q", bt(b.id, "name")), bt(b.id, "line"))}">
+        <span class="ln-face"><span class="bot-face">${faceSVG(b.id, FACE_IDLE[b.id] || "idle")}</span></span>
+        <span class="opp-name">${t("q", bt(b.id, "name"))}</span><span class="opp-line">${line}</span>${rewardChip(b.id)}</button>`;
+  }).join("");
+  document.querySelector(`.friend-row[data-mode="${mode}"]`).innerHTML =
+    `<button class="opp fbtn" type="button" data-mode="${mode}" data-bot=""><span class="opp-name">${t("nearby")}</span></button>` +
+    `<button class="opp fbtn opp-link" type="button" data-online="${mode}">${ICON_LINK}<span class="opp-name">${t("byLink")}</span></button>`;
+}
+function renderBridge() {     // after a few easy wins in Nostalgia, nudge towards the main game
+  const cw = BOTS.classic.reduce((a, b) => a + scoreOf(b.id).me, 0);
+  const xp = BOTS.x02.reduce((a, b) => a + played(b.id), 0) + played("fx");
+  const el = $("bridge");
+  el.hidden = !(cw >= 3 && xp < 3);
+  if (!el.hidden) el.innerHTML = `<span class="bot-face">${faceSVG("c2", "smug")}</span><span>${t("bridgeText")}</span>`;
+}
+function renderMe() {
+  const info = playerInfo();
+  paintAvatar($("pfAva"), info);
+  $("pfName").textContent = info.name;
+  $("pfSub").textContent = info.user;
+  const tot = totals();
+  $("pfStats").innerHTML = [[tot.w, t("stW")], [tot.l, t("stL")], [tot.d, t("stD")]].map(([n, l]) => `<div class="ms"><b>${n}</b><span>${l}</span></div>`).join("");
+  const row = (name, s) => { const pl = s.me + s.bot + s.draw; return `<div class="mbr"><b>${name}</b><span>${pl ? t("scoreMenu", s.me, s.bot, s.draw) : t("notPlayed")}</span></div>`; };
+  const fx = scoreOf("fx"), fc = scoreOf("fc");
+  $("meBots").innerHTML = [...BOTS.x02, ...BOTS.classic].map(b => row(t("q", bt(b.id, "name")), scoreOf(b.id))).join("") +
+    row(t("meOnline"), { me: fx.me + fc.me, bot: fx.bot + fc.bot, draw: fx.draw + fc.draw });
+  renderFriends();
+}
+function renderFriends() {
+  const box = $("friendsList");
+  if (!box) return;
+  if (!serverOn()) {
+    box.innerHTML = `<p class="empty-note">${t("friendsLogin")}</p>` + (!TG && API_OK ? `<div><button class="btn small tg-btn" type="button" data-act="loginTop">${ICON_TG}${t("login")}</button></div>` : "");
+    return;
+  }
+  const list = friendsCache.list;
+  if (!list.length) { box.innerHTML = `<p class="empty-note">${friendsCache.ok ? t("friendsEmpty") : "…"}</p>`; return; }
+  const now = Date.now();
+  box.innerHTML = list.map(f => {
+    const g = f.game, turn = !!(g && g.myTurn), mins = Math.max(0, Math.floor((now - (f.seen || 0)) / 60000));
+    const sub = g ? (turn ? t("frTurn") : t("frTheir")) : (mins < 5 ? t("frOnline") : t("ago", mins));
+    const right = g ? `<button class="btn" type="button" data-og="${esc(g.id)}">${turn ? t("frGo") : t("frOpen")}</button>`
+      : `<span class="fr-score">${f.w | 0} : ${f.l | 0}</span>`;
+    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}</span></span>${right}</div>`;
+  }).join("");
+}
+function fetchFriends(force) {
+  if (!serverOn() || friendsCache.busy) return;
+  if (!force && Date.now() - friendsCache.at < 20000) return;
+  friendsCache.busy = true;
+  apiCall("/api/friends", {}).then(r => {
+    const ok = Array.isArray(r.friends);
+    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok };
+    if (app.screen === "menu") renderCover(); else if (app.screen === "me") renderMe();
+  }).catch(() => { friendsCache.busy = false; friendsCache.at = Date.now(); });
+}
+function renderSettings() {
+  const press = (sel, on) => document.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
+  press("[data-sound]", b => (b.dataset.sound === "1") === SND.on);
+  press("[data-haptics]", b => (b.dataset.haptics === "1") === hapticsOn());
+  press("[data-talk]", b => (b.dataset.talk === "1") === talkOn());
+  press(".seg[data-side]", b => +b.dataset.side === app.side);
+  press(".seg[data-lang]", b => b.dataset.lang === lang);
+  const info = playerInfo();
+  $("accLine").textContent = info.logged ? t("accTg", info.user || info.name) : (API_OK ? "" : t("guestSub"));
+  renderLogin();
+  $("verLine").textContent = t("version", APP_VERSION.indexOf("__") === 0 ? "dev" : APP_VERSION);
+}
+function renderAbout() {
+  $("aboutRules").innerHTML = t("rulesHTML");
+  $("aboutBots").innerHTML = [...BOTS.x02, ...BOTS.classic].map(b => `<div class="ab-row"><span class="bot-face">${faceSVG(b.id, FACE_IDLE[b.id] || "idle")}</span><span><b>${t("q", bt(b.id, "name"))}</b><span>${bt(b.id, "line")}</span></span></div>`).join("");
+  const lb = `<span>${t("learnBtn")}</span>` + (learnPaid() ? "<span>✓</span>" : "<b>+30</b>");
+  $("learnBtnA").innerHTML = lb;
+  $("learnBtnX").innerHTML = lb;
+}
+function buildMenu() {
+  renderCover();
+  renderLadder("x02"); renderLadder("classic"); renderBridge();
+  renderMe(); renderSettings(); renderAbout();
   renderOnlineList();
+  fetchFriends();
 }
 function show(screen) {
   app.screen = screen;
-  for (const id of ["menu", "x02", "classic", "shop", "wait"]) $("scr-" + id).classList.toggle("active", id === screen);
+  for (const id of ALL_SCREENS) $("scr-" + id).classList.toggle("active", id === screen);
   window.scrollTo(0, 0);
   tgBack();
 }
+// menu navigation: a small stack, so "Back" always returns to where you came from
+function openScreen(s) {
+  if (!s || s === app.screen) return;
+  if (s === "shop") { openShop(); return; }
+  if (isMenuScreen(app.screen)) app.nav.push(app.screen);
+  else app.nav = s === "menu" ? [] : ["menu"];
+  if (s === "online") ogCache.at = 0;
+  if (s === "me") fetchFriends(true);
+  buildMenu();
+  show(s);
+}
+function goBack() {
+  const p = app.nav.pop() || "menu";
+  buildMenu();
+  show(p);
+}
+function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
+function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden; }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
-  try { if (app.screen === "menu" && $("rulesSheet").hidden && $("onlineSheet").hidden) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
+  try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
 }
 function tgInit() {
   if (!TG) return;
   document.documentElement.classList.add("in-tg");
   try { TG.ready(); } catch (e) {}
   try { TG.expand(); } catch (e) {}
-  try { if (TG.disableVerticalSwipes) TG.disableVerticalSwipes(); } catch (e) {}   // a swipe down must not close the game mid-move
+  const v = x => { try { return !!(TG.isVersionAtLeast && TG.isVersionAtLeast(x)); } catch (e) { return false; } };
+  // full screen on phones: no Telegram header, it looks like a real game
+  try { if (v("8.0") && ["android", "ios"].includes(TG.platform)) { TG.requestFullscreen(); if (TG.lockOrientation) TG.lockOrientation(); } } catch (e) {}
+  try { if (v("7.7") && TG.disableVerticalSwipes) TG.disableVerticalSwipes(); } catch (e) {}   // a swipe down must not close the game mid-move
   try { if (TG.setHeaderColor) TG.setHeaderColor("#f6f7f2"); if (TG.setBackgroundColor) TG.setBackgroundColor("#f6f7f2"); } catch (e) {}
-  try { TG.BackButton.onClick(() => { if (!$("rulesSheet").hidden) closeRules(); else if (!$("onlineSheet").hidden) closeOnlineSheet(); else if (app.screen !== "menu") goMenu(); }); } catch (e) {}
+  try { if (v("7.0") && TG.SettingsButton) { TG.SettingsButton.show(); TG.SettingsButton.onClick(() => { if (inGame() || app.screen === "wait") goMenu(); openScreen("settings"); }); } } catch (e) {}
+  try {
+    TG.BackButton.onClick(() => {
+      if (!$("rulesSheet").hidden) closeRules();
+      else if (!$("onlineSheet").hidden) closeOnlineSheet();
+      else if (!$("welcomeSheet").hidden) welcomeClose(false);
+      else if (inGame() || app.screen === "wait") goMenu();
+      else if (app.screen !== "menu") goBack();
+    });
+  } catch (e) {}
   tgBack();
 }
+// from a game back to where it was started: the ladder, the online screen or the cover
 function goMenu() {
+  if (app.learn) endLearn();
   cancelBot();
   clearTimeout(slowTimer);
   if (app.online) stopOnline();
   document.body.classList.remove("is-bot");
   uiMode = null;
+  const home = isMenuScreen(app.home) && app.home !== "shop" ? app.home : "menu";
+  app.nav = home === "menu" ? [] : ["menu"];
   buildMenu();
-  show("menu");
+  show(home);
+}
+function shareGameInvite() {
+  const text = t("inviteGame"), share = "https://t.me/share/url?url=" + encodeURIComponent(BOT_LINK) + "&text=" + encodeURIComponent(text);
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
+  if (navigator.share) { navigator.share({ text, url: BOT_LINK }).catch(() => {}); return; }
+  window.open(share, "_blank", "noopener");
+}
+function openSupport() {
+  const url = "https://t.me/" + BOT_NAME + "?start=support";
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(url); return; } } catch (e) {}
+  window.open(url, "_blank", "noopener");
+}
+async function checkUpdate() {
+  toast(t("updating"));
+  try {
+    const reg = navigator.serviceWorker && await navigator.serviceWorker.getRegistration();
+    if (reg) await reg.update();
+    const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" });
+    const m = /const APP_VERSION = "([^"]+)"/.exec(await r.text());
+    if (m && m[1] !== APP_VERSION) { setTimeout(() => location.reload(), 600); return; }
+  } catch (e) {}
+  toast(t("upToDate"));
+}
+
+// ---------------- newcomer: a gift for the first visit ----------------
+const BONUS = { welcome: 20, learn: 30 };    // must match worker.js
+function maybeWelcome() {
+  if (store.get("welcomed", false)) return;
+  const tot = totals();
+  if (tot.w + tot.l + tot.d > 0 || (profile.bonus || []).includes("welcome")) { store.set("welcomed", true); return; }
+  if (app.screen !== "menu" || anySheet()) return;
+  $("welcomeFace").innerHTML = faceSVG("c3", "idle");
+  $("welcomeSheet").querySelector(".cover-say").textContent = t("welcomeBot", t("q", bt("c3", "name")));
+  $("welcomeSum").innerHTML = `+${BONUS.welcome} ${ICON_CLIP}`;
+  $("welcomeSheet").hidden = false;
+  tgBack();
+}
+async function claimBonus(kind) {
+  if ((profile.bonus || []).includes(kind)) return 0;
+  if (serverOn()) {
+    try { const p = await apiCall("/api/bonus", { kind }); if (applyProfile(p)) return p.paid | 0; } catch (e) {}
+  }
+  profile.clips += BONUS[kind] || 0;
+  profile.bonus = [...(profile.bonus || []), kind];
+  saveProfile(); refreshWalletViews();
+  return BONUS[kind] || 0;
+}
+function welcomeClose(learn) {
+  $("welcomeSheet").hidden = true;
+  store.set("welcomed", true);
+  tgBack();
+  claimBonus("welcome").then(n => { if (n) toast(t("bonusGot", n)); });
+  if (learn) startLearn();
+}
+
+// ---------------- tutorial: 5 short steps on a real board ----------------
+const LEARN_ABORT = { abort: true };
+let learnSeq = 0;
+function learnAlive(id) { if (!app.learn || app.learn.id !== id) throw LEARN_ABORT; }
+function mainFrom(spec) {           // a hand-made position for a tutorial step
+  const g = E.newMain(spec.turn || 1);
+  for (const [p, list] of [[1, spec.x || []], [2, spec.o || []]]) for (const i of list) { g.cells[i] = p; g.filled[(i / 9) | 0]++; }
+  for (const i of spec.star || []) g.star[i] = 1;
+  for (const [b, p] of spec.owner || []) g.owner[b] = p;
+  g.stars = [0, spec.sx || 0, spec.so || 0];
+  g.active = spec.active == null ? -1 : spec.active;
+  return g;
+}
+function learnCard(step, html, buttons) {
+  const c = $("learnCard");
+  c.hidden = false;
+  c.innerHTML = `<div class="lc-step">${t("learnStep", step)}</div><div class="lc-text">${html}</div>
+    <div class="lc-actions">${buttons || ""}<button class="link-btn" type="button" data-act="learnExit">${t("learnExit")}</button></div>`;
+}
+function learnMark(els) {
+  document.querySelectorAll(".learn-target").forEach(el => el.classList.remove("learn-target"));
+  const list = (els || []).filter(Boolean);
+  list.forEach(el => el.classList.add("learn-target"));
+  const el = list[0];
+  if (el && el.getBoundingClientRect) {
+    const r = el.getBoundingClientRect();
+    if (r.top < 60 || r.bottom > innerHeight - 20) el.scrollIntoView({ block: "center", behavior: reduce() ? "auto" : "smooth" });
+  }
+}
+function learnWait(id, allow, btn) {      // waits for one of the allowed moves (or a press on the star / strike button)
+  learnAlive(id);
+  return new Promise(res => { Object.assign(app.learn, { allow: allow ? new Set(allow) : null, btn: btn || null, done: res }); });
+}
+function learnNextWait(id) {
+  learnAlive(id);
+  return new Promise(res => { Object.assign(app.learn, { allow: null, btn: null, next: res }); });
+}
+function learnResolve(kind, v) {
+  const L = app.learn;
+  if (!L) return;
+  if (kind === "next" && L.next) { const f = L.next; L.next = null; f(v); }
+  else if (kind === "move" && L.done) { const f = L.done; Object.assign(L, { done: null, allow: null, btn: null }); f(v); }
+}
+const learnAllows = a => !!(app.learn && app.learn.allow && app.learn.allow.has(a));
+async function learnBot(id, a) {
+  learnAlive(id);
+  setFace("think", true);
+  await sleep(950);
+  learnAlive(id);
+  setFace(null);
+  await doMain(a);
+  learnAlive(id);
+}
+async function learnScript(id) {
+  const next = `<button class="btn primary small" type="button" data-act="learnNext">${t("learnNext")}</button>`;
+  const push = spec => { app.history.push({ phase: "main", g: mainFrom(spec) }); renderX02(null); };
+  // 1. warm-up: win a small 3×3
+  learnCard(1, t("l1a")); learnMark([pCells[8]]);
+  await learnWait(id, [8]);
+  learnMark([]); learnCard(1, t("l1b"), next);
+  await learnNextWait(id);
+  // 2. the cell decides the board
+  push({ turn: 2, sx: 1 });
+  learnCard(2, t("l2a")); learnMark([]);
+  await sleep(1300);
+  await learnBot(id, 38);
+  learnCard(2, t("l2b")); learnMark([cellEls[22]]);
+  await learnWait(id, [22]);
+  learnMark([]);
+  await learnBot(id, 36);
+  learnCard(2, t("l2c"), next);
+  await learnNextWait(id);
+  // 3. three in a row wins a small board: a star for you, a free move for the loser
+  push({ turn: 1, sx: 1, x: [22, 54, 58, 13], o: [38, 36, 60, 70, 12], active: 6 });
+  learnCard(3, t("l3a")); learnMark([cellEls[62]]);
+  await learnWait(id, [62]);
+  learnMark([]); learnCard(3, t("l3b"));
+  await sleep(2200);
+  await learnBot(id, 40);
+  // 4. navigator: a star instead of a mark, then you choose the opponent's board
+  learnCard(4, t("l4a")); learnMark([$("starBtn")]);
+  await learnWait(id, null, "star");
+  learnCard(4, t("l4b")); learnMark([cellEls[44]]);
+  await learnWait(id, [144]);
+  learnCard(4, t("l4c")); learnMark([subEls[8]]);
+  await learnWait(id, [308]);
+  learnMark([]);
+  await learnBot(id, 72);
+  learnCard(4, t("l4d"), next);
+  await learnNextWait(id);
+  // 5. strike: remove an opponent's mark
+  push({ turn: 1, sx: 2, x: [22, 54, 58, 62, 13, 44, 31], star: [44], o: [38, 36, 60, 70, 40, 72, 27, 28], owner: [[6, 1]], active: 3 });
+  learnCard(5, t("l5a")); learnMark([$("strikeBtn")]);
+  await learnWait(id, null, "strike");
+  learnCard(5, t("l5b")); learnMark([cellEls[28]]);
+  await learnWait(id, [228]);
+  learnMark([]); learnCard(5, t("l5c"), next);
+  await learnNextWait(id);
+  await learnBot(id, 9);
+  const paid = await claimBonus("learn");
+  learnAlive(id);
+  store.set("learnDone", true);
+  learnCard(5, t("l6") + (paid ? `<div class="lc-reward">${t("bonusGot", paid)}</div>` : `<div class="lc-step">${t("learnAgain")}</div>`),
+    `<button class="btn primary small" type="button" data-act="learnPlay">${t("learnPlay", t("q", bt("x1", "name")))}</button><button class="btn small" type="button" data-act="menu">${t("toMenu")}</button>`);
+  if (paid) { SND.play("win", 0.4); hapticResult(true); }
+}
+async function startLearn() {
+  if (app.learn) endLearn();
+  cancelBot(); clearTimeout(slowTimer);
+  if (app.online) stopOnline();
+  if (!$("onlineSheet").hidden) closeOnlineSheet();
+  if (!$("rulesSheet").hidden) closeRules();
+  homeHere();
+  const id = ++learnSeq;
+  app.learn = { id, prevSide: app.side, allow: null, btn: null, done: null, next: null };
+  app.side = 1; app.mode = "x02"; app.bot = BOTS.x02[0]; app.gameId++;
+  uiMode = null; flash = null; app.undoUsed = false; app.chance = false;
+  $("bannerReward").innerHTML = ""; $("banner").classList.remove("show");
+  document.body.classList.remove("is-bot");
+  document.querySelectorAll(".phrases").forEach(el => { el.hidden = true; });
+  for (const b of ["bubble", "cBubble"]) $(b).hidden = true;
+  $("scr-x02").classList.add("in-learn");
+  app.history = [{ phase: "prelude", t: { b: [1, 2, 0, 0, 1, 0, 2, 0, 0], turn: 1, result: 0, line: null, last: -1 }, coin: 0, golden: 0, goal: "win" }];
+  show("x02");
+  document.querySelectorAll(".hand-grid").forEach(gEl => { gEl.classList.remove("drawn"); void gEl.getBoundingClientRect(); gEl.classList.add("drawn"); });
+  renderX02(null);
+  try { await learnScript(id); } catch (e) { if (e !== LEARN_ABORT) console.error(e); }
+}
+function endLearn() {
+  const L = app.learn;
+  if (!L) return;
+  app.learn = null;
+  app.side = L.prevSide;
+  $("scr-x02").classList.remove("in-learn");
+  $("learnCard").hidden = true; $("learnCard").innerHTML = "";
+  learnMark([]);
 }
 
 // ---------------- game flow ----------------
@@ -2576,6 +3294,7 @@ function newPrelude() {
   return { phase: "prelude", t: E.newTTT(1), coin: 0, golden: 0, goal };
 }
 function startGame(mode, botId) {
+  if (app.learn) endLearn();
   cancelBot();
   if (app.online) stopOnline();
   app.mode = mode;
@@ -2655,6 +3374,7 @@ function grantReward(r) {
   return n ? { clips: n } : null;
 }
 function onGameEnd(r) {
+  if (app.learn) return;
   recordResult(r);
   clearTimeout(slowTimer);
   if (app.bot) {
@@ -2834,7 +3554,7 @@ async function searchDeep(g, ms, job) {
 }
 function cancelBot() { botJob++; if (pending.size) killPool(); }
 async function kickBot() {
-  if (!app.bot || app.screen === "menu" || activeJob === botJob) return;
+  if (!app.bot || app.learn || !inGame() || activeJob === botJob) return;
   const job = botJob;
   activeJob = job;
   try {
@@ -3338,7 +4058,7 @@ function syncFace() {
   if (app.bot && !(faceEl().dataset.k || "").startsWith(app.bot.id)) setFace(null);
 }
 function botSay(ev, prob) {
-  if (!app.bot) return;
+  if (!app.bot || app.learn) return;
   const id = app.bot.id;
   if (EMO[ev] && EMO[ev][id]) setFace(EMO[ev][id], ev === "win" || ev === "lose" || ev === "draw" || ev === "beaten");
   if (!talkOn()) return;
@@ -3354,10 +4074,10 @@ function botSay(ev, prob) {
 }
 function armSlow() {
   clearTimeout(slowTimer);
-  if (!app.bot || app.online) return;
+  if (!app.bot || app.online || app.learn) return;
   const e = cur();
   slowTimer = setTimeout(() => {
-    if (app.bot && cur() === e && app.screen !== "menu" && actorOf(e) === app.side) botSay("slow", 1);
+    if (app.bot && !app.learn && cur() === e && inGame() && actorOf(e) === app.side) botSay("slow", 1);
   }, 22000);
 }
 function syncTalkClass() { document.body.classList.toggle("is-bot", !!app.bot && !app.online && talkOn()); }
@@ -3403,6 +4123,7 @@ function gameFromLink() {
 
 // create a game: pick the time per move, then invite
 function openOnlineSheet(mode) {
+  homeHere();
   app.pendingMode = mode;
   renderOnlineSheet();
   $("onlineSheet").hidden = false;
@@ -3450,6 +4171,7 @@ async function joinOnline(id) {
   } catch (e) { toast(t("netError")); }
 }
 function enterOnline(v) {
+  if (app.learn) endLearn();
   cancelBot();
   if (app.online) stopOnline();
   app.online = { id: v.id, mode: v.mode, minutes: v.minutes, ver: 0, status: v.status, state: null, players: v.players || {}, deadline: 0, offset: 0,
@@ -3686,18 +4408,22 @@ function showBubbleText(text, name, mine) {
 }
 // menu: games with friends that are still going
 function renderOnlineList() {
-  const box = $("onlineGames");
+  const box = $("onlineGames"), empty = $("onlineEmpty");
   if (!box) return;
-  if (!serverOn()) { box.hidden = true; return; }
+  $("newX02").innerHTML = ICON_LINK + esc(t("newOnline", "X02.0"));
+  $("newClassic").innerHTML = ICON_LINK + esc(t("newOnline", t("classicName")));
+  if (!serverOn()) { box.innerHTML = ""; empty.hidden = false; empty.textContent = API_OK ? t("onlineNeedLogin") : t("onlineNoServer"); return; }
   if (Date.now() - ogCache.at > 8000 && !ogCache.busy) {
     ogCache.busy = true;
-    apiCall("/api/g/list", {}).then(r => { ogCache = { at: Date.now(), games: r.games || [], busy: false }; if (app.screen === "menu") renderOnlineList(); })
-      .catch(() => { ogCache.busy = false; ogCache.at = Date.now(); });
+    apiCall("/api/g/list", {}).then(r => {
+      ogCache = { at: Date.now(), games: r.games || [], busy: false };
+      if (app.screen === "menu") renderCover(); else if (app.screen === "online") renderOnlineList();
+    }).catch(() => { ogCache.busy = false; ogCache.at = Date.now(); });
   }
   const games = ogCache.games;
-  box.hidden = !games.length;
-  if (!games.length) { box.innerHTML = ""; return; }
-  box.innerHTML = `<h3>${t("onlineGames")}</h3><div class="og-list">` + games.map(g => {
+  empty.hidden = !!games.length;
+  empty.textContent = t("onlineEmpty");
+  box.innerHTML = !games.length ? "" : `<div class="og-list">` + games.map(g => {
     const flag = g.status === "waiting" ? t("waitingFlag") : g.myTurn ? t("yourMoveFlag") : t("theirMoveFlag");
     return `<button class="og${g.myTurn ? " my-turn" : ""}" type="button" data-og="${esc(g.id)}">${miniAva(g.opp)}
       <span><span class="og-name">${g.opp ? esc(g.opp.name) : t("waitingName")}</span><span class="og-sub">${esc(MODE_NAME(g.mode))} · ⏱ ${t("minShort", g.minutes)}</span></span>
@@ -3714,7 +4440,11 @@ function walletHTML() {
     `<span class="cur" title="${t("coins")}">${ICON_COIN}<b>${profile.coins}</b> <span class="cur-name">${t("coinsWord", profile.coins)}</span></span>`;
 }
 let shopNote = null, justBought = null, shopBusy = false;
-function openShop() { cancelBot(); shopNote = null; show("shop"); renderShop(); syncProfile(); }
+function openShop() {
+  cancelBot(); shopNote = null;
+  if (isMenuScreen(app.screen) && app.screen !== "shop") app.nav.push(app.screen); else if (app.screen !== "shop") app.nav = ["menu"];
+  show("shop"); renderShop(); syncProfile();
+}
 function itemName(id) { return I18N[lang].items[id]; }
 function previewSkin(it) {
   const e = profile.equip;
@@ -3862,6 +4592,17 @@ function bind() {
     if (!act) return;
     const a = act.dataset.act;
     if (a === "menu") goMenu();
+    else if (a === "back") goBack();
+    else if (a === "settings") openScreen("settings");
+    else if (a === "learn") startLearn();
+    else if (a === "learnNext") learnResolve("next");
+    else if (a === "learnExit") goMenu();
+    else if (a === "learnPlay") startGame("x02", "x1");
+    else if (a === "invite") shareGameInvite();
+    else if (a === "support") openSupport();
+    else if (a === "update") checkUpdate();
+    else if (a === "welcomeLearn") welcomeClose(true);
+    else if (a === "welcomeLater") welcomeClose(false);
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "resign") onlineResign();
@@ -3871,25 +4612,35 @@ function bind() {
     else if (a === "cancelGame") cancelOnline();
     else if (a === "closeOnline") closeOnlineSheet();
     else if (a === "createOnline") createOnline();
-    else if (a === "loginTop") { closeOnlineSheet(); goMenu(); setTimeout(showLoginWidget, 50); }
+    else if (a === "loginTop") { closeOnlineSheet(); openScreen("settings"); setTimeout(showLoginWidget, 50); }
     else if (a === "undo") undo();
     else if (a === "shop") openShop();
     else if (a === "login") showLoginWidget();
     else if (a === "logout") logout();
-    else if (a === "sound") { SND.toggle(); renderProfile(); }
   });
-  document.querySelector(".modes").addEventListener("click", ev => {
-    const o = ev.target.closest(".opp");
-    if (!o) return;
-    if (o.dataset.online) openOnlineSheet(o.dataset.online);
-    else startGame(o.dataset.mode, o.dataset.bot);
+  // menu: screens, opponents, the cover banner
+  document.addEventListener("click", ev => {
+    const go = ev.target.closest("[data-go]");
+    if (go) { openScreen(go.dataset.go); return; }
+    const on = ev.target.closest("[data-online]");
+    if (on) { openOnlineSheet(on.dataset.online); return; }
+    const o = ev.target.closest(".opp[data-mode]");
+    if (o) { homeHere(); startGame(o.dataset.mode, o.dataset.bot); return; }
+    const bn = ev.target.closest("#coverBanner");
+    if (bn) {
+      const act = bn.dataset.bn || "";
+      if (act === "learn") startLearn();
+      else if (act === "invite") shareGameInvite();
+      else if (act === "login") { openScreen("settings"); setTimeout(showLoginWidget, 50); }
+      else if (act.startsWith("og:")) { homeHere(); joinOnline(act.slice(3)); }
+    }
   });
   document.querySelectorAll(".seg[data-side]").forEach(b => b.addEventListener("click", () => {
     app.side = +b.dataset.side;
     store.set("side", app.side);
-    document.querySelectorAll(".seg[data-side]").forEach(x => x.setAttribute("aria-pressed", String(+x.dataset.side === app.side)));
+    renderSettings();
   }));
-  document.querySelectorAll(".seg.lang").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
+  document.querySelectorAll(".seg[data-lang]").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
   $("rulesClose").addEventListener("click", closeRules);
   $("onlineSheet").addEventListener("click", ev => {
     if (ev.target === $("onlineSheet")) { closeOnlineSheet(); return; }
@@ -3898,11 +4649,15 @@ function bind() {
   });
   document.addEventListener("click", ev => {
     const tk = ev.target.closest("[data-talk]");
-    if (tk) { store.set("botTalk", tk.dataset.talk === "1"); renderProfile(); }
+    if (tk) { store.set("botTalk", tk.dataset.talk === "1"); renderSettings(); }
+    const sd = ev.target.closest("[data-sound]");
+    if (sd) { if ((sd.dataset.sound === "1") !== SND.on) SND.toggle(); renderSettings(); }
+    const hp = ev.target.closest("[data-haptics]");
+    if (hp) { store.set("haptics", hp.dataset.haptics === "1"); renderSettings(); haptic("light"); }
     const ph = ev.target.closest("[data-phrase]");
     if (ph) sayPhrase(+ph.dataset.phrase);
     const og = ev.target.closest("[data-og]");
-    if (og) joinOnline(og.dataset.og);
+    if (og) { homeHere(); joinOnline(og.dataset.og); }
   });
   document.addEventListener("error", ev => {      // a friend's photo failed to load: show the first letter instead
     const img = ev.target;
@@ -3914,6 +4669,7 @@ function bind() {
   $("shopBody").addEventListener("click", shopAction);
   $("rulesSheet").addEventListener("click", ev => { if (ev.target === $("rulesSheet")) closeRules(); });
   document.addEventListener("keydown", ev => { if (ev.key === "Escape" && !$("rulesSheet").hidden) closeRules(); });
+  $("welcomeSheet").addEventListener("click", ev => { if (ev.target === $("welcomeSheet")) welcomeClose(false); });
 
   boardEl.addEventListener("click", async ev => {
     const btn = ev.target.closest(".cell");
@@ -3924,6 +4680,7 @@ function bind() {
     if (g.result || isBot(g.turn)) return;
     const i = +btn.dataset.i, b = (i / 9) | 0;
     const a = g.choosing ? 300 + b : uiMode === "strike" ? 200 + i : uiMode === "star" ? 100 + i : i;
+    if (app.learn && !learnAllows(a)) { flash = t("learnTap"); renderX02(null); flash = null; return; }
     if (!E.isLegal(g, a)) {
       const al = E.allowed(g);
       flash = g.choosing ? t("fNoFree")
@@ -3938,6 +4695,7 @@ function bind() {
     inputBusy = true;
     haptic("light");
     try { await doMain(a); } finally { inputBusy = false; }
+    if (app.learn) { learnResolve("move", a); return; }
     kickBot();
   });
   $("preludeGrid").addEventListener("click", ev => {
@@ -3945,6 +4703,7 @@ function bind() {
     const e = cur();
     if (!btn || !e || e.phase !== "prelude" || e.t.result || isBot(e.t.turn)) return;
     if (app.online) { onlineMove(+btn.dataset.i); return; }
+    if (app.learn) { if (learnAllows(+btn.dataset.i) && doPrelude(+btn.dataset.i)) { haptic("light"); learnResolve("move", +btn.dataset.i); } return; }
     if (doPrelude(+btn.dataset.i)) { haptic("light"); kickBot(); }
   });
   $("tttBoard").addEventListener("click", ev => {
@@ -3954,8 +4713,14 @@ function bind() {
     if (app.online) { onlineMove(+btn.dataset.i); return; }
     if (doClassic(+btn.dataset.i)) { haptic("light"); kickBot(); }
   });
-  $("starBtn").addEventListener("click", () => { uiMode = uiMode === "star" ? null : "star"; renderX02(null); });
-  $("strikeBtn").addEventListener("click", () => { uiMode = uiMode === "strike" ? null : "strike"; renderX02(null); });
+  $("starBtn").addEventListener("click", () => {
+    if (app.learn) { if (app.learn.btn === "star") { uiMode = "star"; renderX02(null); learnResolve("move", "star"); } return; }
+    uiMode = uiMode === "star" ? null : "star"; renderX02(null);
+  });
+  $("strikeBtn").addEventListener("click", () => {
+    if (app.learn) { if (app.learn.btn === "strike") { uiMode = "strike"; renderX02(null); learnResolve("move", "strike"); } return; }
+    uiMode = uiMode === "strike" ? null : "strike"; renderX02(null);
+  });
   $("preludeStart").addEventListener("click", startMainFromPrelude);
   $("coinStart").addEventListener("click", startMainFromPrelude);
   $("preludeSkip").addEventListener("click", () => {
@@ -3980,13 +4745,13 @@ function bind() {
 
 // ---------------- boot ----------------
 function snapshot() {
-  if (app.online) return {};
+  if (app.online || app.learn) return {};
   return { screen: app.screen, mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: app.history, gameId: app.gameId };
 }
 function boot(data) {
   tgInit();
   const gid = gameFromLink();
-  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); });
+  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else maybeWelcome(); });
   buildDOM();
   applyStatic();
   buildMenu();
