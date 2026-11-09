@@ -1,0 +1,145 @@
+# v13: new cover menu, mode ladders, online/profile/settings/about screens, newcomer gift and the tutorial
+import asyncio, subprocess, time, pathlib, json, urllib.request
+from playwright.async_api import async_playwright
+root = pathlib.Path(__file__).resolve().parent.parent / 'x02-flat'
+shots = pathlib.Path(__file__).resolve().parent.parent / 'shots'; shots.mkdir(exist_ok=True)
+api = subprocess.Popen(['node', str(pathlib.Path(__file__).parent / 'fake_server.mjs')], stderr=subprocess.DEVNULL)
+srv = subprocess.Popen(['python3', '-m', 'http.server', '8769', '--bind', '127.0.0.1'], cwd=root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+time.sleep(1.2)
+get = lambda p: urllib.request.urlopen('http://127.0.0.1:8770' + p).read().decode()
+def mock(uid, name):
+    return """window.Telegram = { WebApp: { initData: %s, initDataUnsafe: { user: { id: %d, first_name: '%s', last_name: 'Одилхужайев', username: '%s', language_code: 'ru' } },
+  ready(){}, expand(){}, disableVerticalSwipes(){}, setHeaderColor(){}, setBackgroundColor(){}, openTelegramLink(u){ window.__opened = u; },
+  BackButton: { onClick(f){ window.__back = f; }, show(){}, hide(){} }, HapticFeedback: { impactOccurred(){}, notificationOccurred(){} }, openInvoice(){} } };""" % (json.dumps(get('/initdata?id=%d&name=%s' % (uid, name))), uid, name, name.lower())
+fails = []
+def check(c, m):
+    print(('ok  ' if c else 'FAIL') + ' ' + m)
+    if not c: fails.append(m)
+async def main():
+    async with async_playwright() as p:
+        b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+        ctx = await b.new_context(viewport={'width': 390, 'height': 844}, device_scale_factor=2)
+        await ctx.add_init_script(mock(42, 'Abd'))
+        pg = await ctx.new_page(); errs = []; pg.on('pageerror', lambda e: errs.append(str(e)))
+        await pg.goto('http://127.0.0.1:8769/'); await pg.wait_for_timeout(1800)
+        # newcomer gift
+        check(await pg.is_visible('#welcomeSheet'), 'newcomer sees the welcome window')
+        await pg.screenshot(path=str(shots / 'v13_welcome.png'))
+        before = json.loads(get('/kv')).get('clips', 0)
+        await pg.click('[data-act="welcomeLater"]'); await pg.wait_for_timeout(900)
+        kv = json.loads(get('/kv'))
+        check(kv.get('clips', 0) == before + 20 and 'welcome' in kv.get('bonus', []), 'welcome gift +20 on the server (%s -> %s)' % (before, kv.get('clips')))
+        check(not await pg.is_visible('#welcomeSheet'), 'welcome window closed')
+        # cover fits one phone screen
+        h = await pg.evaluate('[document.scrollingElement.scrollHeight, innerHeight]')
+        check(h[0] <= h[1] + 2, 'cover fits the phone screen without scrolling (%d <= %d)' % (h[0], h[1]))
+        check(await pg.inner_text('#cName') == 'Abd', 'cover card shows the first name only')
+        check(len(await pg.query_selector_all('.cover-modes .mbtn')) == 3, 'three big mode buttons')
+        check('обучение' in (await pg.inner_text('#coverBanner')).lower(), 'banner suggests the tutorial: ' + (await pg.inner_text('#coverBanner')).replace('\n', ' '))
+        await pg.wait_for_timeout(1200)
+        await pg.screenshot(path=str(shots / 'v13_cover.png'))
+        # mode ladder
+        await pg.click('.mbtn.mx'); await pg.wait_for_timeout(500)
+        names = await pg.eval_on_selector_all('#scr-modex02 .lnode .opp-name', 'e => e.map(x => x.textContent)')
+        check(names == ['«Конец»', '«Уже нет»', '«Лёгкий?»'], 'X02.0 ladder from strongest to weakest: %s' % names)
+        check(await pg.get_attribute('#scr-modex02 .lnode.next', 'data-bot') == 'x1', 'the next opponent is «Лёгкий?»')
+        await pg.screenshot(path=str(shots / 'v13_ladder_x02.png'))
+        await pg.click('#scr-modex02 [data-act="back"]'); await pg.wait_for_timeout(300)
+        check(await pg.evaluate('document.querySelector("#scr-menu").classList.contains("active")'), 'Back returns to the cover')
+        await pg.click('.mbtn.mc'); await pg.wait_for_timeout(400)
+        check(await pg.inner_text('#scr-modeclassic .lnode .ln-rw.gold') == '2 золотые', 'Nostalgia: «Нет» promises both golds')
+        await pg.click('#scr-modeclassic .lnode[data-bot="c1"]'); await pg.wait_for_timeout(500)
+        check(await pg.evaluate('document.querySelector("#scr-classic").classList.contains("active")'), 'a ladder button starts the game')
+        await pg.evaluate('document.querySelector("#scr-classic .game-bar [data-act=menu]").click()'); await pg.wait_for_timeout(400)
+        check(await pg.evaluate('document.querySelector("#scr-modeclassic").classList.contains("active")'), '"Menu" in a game returns to the ladder it was started from')
+        await pg.click('#scr-modeclassic [data-act="back"]'); await pg.wait_for_timeout(300)
+        # v14: an unfinished game waits on the cover
+        bt = await pg.inner_text('#coverBanner')
+        check('Продолжить партию с «Попробуй»' in bt, 'unfinished game: banner offers to continue: ' + bt.replace('\n', ' '))
+        await pg.click('#coverBanner'); await pg.wait_for_timeout(600)
+        check(await pg.evaluate('document.querySelector("#scr-classic").classList.contains("active")'), 'the banner brings the game back')
+        await pg.evaluate('document.querySelector("#scr-classic .game-bar [data-act=menu]").click()'); await pg.wait_for_timeout(400)
+        # tutorial from the mode screen
+        c0 = json.loads(get('/kv')).get('clips', 0)
+        await pg.click('.mbtn.mx'); await pg.wait_for_timeout(400)
+        await pg.click('#learnBtnX'); await pg.wait_for_timeout(700)
+        check(await pg.is_visible('#learnCard'), '"How to play" opens the tutorial')
+        await pg.screenshot(path=str(shots / 'v13_learn_1.png'))
+        steps = []
+        for i in range(40):
+            if await pg.is_visible('[data-act="learnPlay"]'): break
+            st = (await pg.inner_text('#learnCard .lc-step')).strip()
+            if not steps or steps[-1] != st: steps.append(st)
+            if await pg.is_visible('[data-act="learnNext"]'):
+                await pg.click('[data-act="learnNext"]')
+            else:
+                tg = await pg.query_selector('.learn-target')
+                if tg and await tg.is_visible():
+                    if 'шаг 4' in st and i % 3 == 0: await pg.screenshot(path=str(shots / 'v13_learn_4.png'))
+                    await tg.click()
+            await pg.wait_for_timeout(1500)
+        check(await pg.is_visible('[data-act="learnPlay"]'), 'tutorial finished: %d step labels seen' % len(steps))
+        await pg.screenshot(path=str(shots / 'v13_learn_done.png'))
+        kv = json.loads(get('/kv'))
+        check(kv.get('clips', 0) == c0 + 30 and 'learn' in kv.get('bonus', []), 'tutorial reward +30 on the server (%s -> %s)' % (c0, kv.get('clips')))
+        await pg.click('#learnCard [data-act="menu"]'); await pg.wait_for_timeout(500)
+        check(await pg.evaluate('!document.querySelector("#scr-x02").classList.contains("in-learn")') and await pg.evaluate('document.querySelector("#scr-modex02").classList.contains("active")'), 'after the tutorial: back to the mode screen, tutorial mode off')
+        await pg.click('#scr-modex02 [data-act="back"]'); await pg.wait_for_timeout(300)
+        check('обучение' not in (await pg.inner_text('#coverBanner')).lower(), 'banner moved on after the tutorial: ' + (await pg.inner_text('#coverBanner')).replace('\n', ' '))
+        # profile and friends / settings / about / online
+        await pg.click('#pcard'); await pg.wait_for_timeout(700)
+        check(await pg.inner_text('#pfName') == 'Abd Одилхужайев', 'profile screen shows the full name')
+        await pg.screenshot(path=str(shots / 'v13_profile.png'))
+        await pg.click('#scr-me [data-act="back"]'); await pg.wait_for_timeout(300)
+        await pg.click('#gearBtn'); await pg.wait_for_timeout(400)
+        await pg.click('#scr-settings [data-haptics="0"]'); await pg.wait_for_timeout(100)
+        check(await pg.evaluate('localStorage.getItem("x02.haptics")') == 'false', 'vibration can be switched off')
+        await pg.click('#scr-settings [data-lang="en"]'); await pg.wait_for_timeout(200)
+        check(await pg.inner_text('#setTitle') == 'Settings', 'language switch works on the settings screen')
+        await pg.screenshot(path=str(shots / 'v13_settings.png'))
+        await pg.click('#scr-settings [data-lang="ru"]'); await pg.wait_for_timeout(200)
+        await pg.click('#scr-settings [data-go="about"]'); await pg.wait_for_timeout(300)
+        await pg.click('#scr-about details:nth-of-type(2) summary'); await pg.wait_for_timeout(200)
+        check(len(await pg.query_selector_all('#aboutBots .ab-row')) == 6, 'About: all six bots listed')
+        await pg.click('#scr-about [data-act="back"]'); await pg.wait_for_timeout(300)
+        check(await pg.evaluate('document.querySelector("#scr-settings").classList.contains("active")'), 'Back from About returns to Settings')
+        await pg.evaluate('window.__back()'); await pg.wait_for_timeout(300)
+        check(await pg.evaluate('document.querySelector("#scr-menu").classList.contains("active")'), 'Telegram Back button walks back to the cover')
+        await pg.click('.mbtn.mo'); await pg.wait_for_timeout(900)
+        check(await pg.is_visible('#newX02') and await pg.is_visible('#onlineEmpty'), 'online screen: new game buttons and an empty note')
+        await pg.screenshot(path=str(shots / 'v13_online.png'))
+        await pg.click('#newX02'); await pg.wait_for_timeout(300)
+        check(await pg.is_visible('#onlineSheet'), 'new online game opens the time picker')
+        await pg.evaluate('window.__back()'); await pg.wait_for_timeout(200)
+        # a friend game shows up in the friends list and on the cover banner
+        await pg.click('[data-act="createOnline"]') if await pg.is_visible('[data-act="createOnline"]') else None
+        await pg.click('#newX02'); await pg.wait_for_timeout(300); await pg.click('[data-act="createOnline"]'); await pg.wait_for_timeout(900)
+        gid = await pg.evaluate('app_online_id = (document.querySelector("#waitLink") || {}).textContent || ""')
+        gid = gid.strip().split('g_')[-1] if 'g_' in gid else ''
+        check(bool(gid), 'online game created from the online screen (%s)' % gid)
+        ctx2 = await b.new_context(viewport={'width': 390, 'height': 844})
+        await ctx2.add_init_script(mock(77, 'Ali').replace("initData: ", "initData: ") )
+        await ctx2.add_init_script("localStorage.setItem('x02.welcomed','true')")
+        pg2 = await ctx2.new_page()
+        sp = get('/initdata?id=77&name=Ali&sp=g_' + gid)
+        await ctx2.add_init_script("window.Telegram.WebApp.initData = %s; window.Telegram.WebApp.initDataUnsafe.start_param = 'g_%s';" % (json.dumps(sp), gid))
+        await pg2.goto('http://127.0.0.1:8769/'); await pg2.wait_for_timeout(2500)
+        await pg.wait_for_timeout(2500)
+        await pg.evaluate('document.querySelector("#scr-x02 .game-bar [data-act=menu]") && document.querySelector(".screen.active [data-act=menu]").click()'); await pg.wait_for_timeout(600)
+        await pg.evaluate('window.__back && null'); 
+        scr = await pg.evaluate('document.querySelector(".screen.active").id')
+        check(scr == 'scr-online', 'after leaving the online game you are back on the online screen (%s)' % scr)
+        await pg.evaluate('document.querySelector("#scr-online [data-act=back]").click()'); await pg.wait_for_timeout(300)
+        await pg.click('#pcard'); await pg.wait_for_timeout(1200)
+        fr = await pg.inner_text('#friendsList')
+        check('Ali' in fr, 'friends list shows Ali: ' + fr.replace('\n', ' | '))
+        check(errs == [], 'no page errors: %s' % errs[:3])
+        # desktop look
+        d = await b.new_context(viewport={'width': 1280, 'height': 860})
+        await d.add_init_script(mock(42, 'Abd')); dp = await d.new_page()
+        await dp.goto('http://127.0.0.1:8769/'); await dp.wait_for_timeout(1800)
+        await dp.screenshot(path=str(shots / 'v13_desktop.png'))
+        await b.close()
+    print('FAILED:', fails) if fails else print('ALL V13 UI CHECKS PASSED')
+try: asyncio.run(main())
+finally: api.terminate(); srv.terminate()

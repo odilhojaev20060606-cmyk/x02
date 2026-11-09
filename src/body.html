@@ -1,0 +1,349 @@
+<div class="app">
+
+  <!-- ================= MENU (cover) ================= -->
+  <section class="screen menu active" id="scr-menu" aria-labelledby="logoTitle">
+    <div class="cover">
+      <div class="cover-top">
+        <button class="wallet-btn" type="button" data-act="shop" id="menuWallet"></button>
+        <button class="icon-btn" type="button" data-act="settings" id="gearBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.6 7.6 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6c-.1.5-.1 1-.1 1.5s0 1 .1 1.5l-2 1.6 2 3.4 2.4-1c.8.6 1.6 1.1 2.6 1.5l.4 2.5h4l.4-2.5c1-.4 1.8-.9 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
+      </div>
+      <button class="pcard" type="button" data-go="me" id="pcard">
+        <span class="pf-ava" id="cAva"></span>
+        <span class="pc-id"><span class="pc-name" id="cName"></span><span class="pc-sub" id="cSub"></span></span>
+        <span class="pc-friends" id="cFriends"></span>
+      </button>
+      <button class="cbanner" type="button" id="coverBanner" hidden></button>
+      <div class="cover-hero">
+        <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
+          <title id="logoTitle">X02.0</title>
+          <path class="stroke lx s1" pathLength="1" d="M22 28 Q 60 72 104 122"/>
+          <path class="stroke lx s2" pathLength="1" d="M102 26 Q 66 74 20 122"/>
+          <path class="stroke lo s3" pathLength="1" d="M168 24 C 196 24 205 62 203 86 C 201 112 186 127 164 125 C 141 123 130 99 132 72 C 134 45 147 25 170 27"/>
+          <path class="stroke lv s4" pathLength="1" d="M234 52 C 237 27 279 22 285 47 C 291 71 254 93 231 121 L 293 119"/>
+          <circle class="dot" cx="315" cy="116" r="7.5"/>
+          <path class="stroke lv s6" pathLength="1" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
+          <path class="underline" pathLength="1" d="M18 142 C 140 133 300 147 424 137"/>
+        </svg>
+        <button class="cover-bot" type="button" id="coverBot" data-go="modex02"><span class="bot-face" id="coverFace"></span><span class="cover-say" id="coverSay"></span></button>
+      </div>
+      <div class="cover-modes">
+        <button class="mbtn mx" type="button" data-go="modex02"><span class="mb-ic">X</span><span class="mb-t"><b><span class="x">X</span><span class="o">0</span>2.0</b><span data-i18n="mbX02"></span></span></button>
+        <button class="mbtn mc" type="button" data-go="modeclassic"><span class="mb-ic">0</span><span class="mb-t"><b data-i18n="classicName"></b><span data-i18n="mbClassic"></span></span></button>
+        <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
+      </div>
+      <nav class="cover-icons">
+        <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
+        <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
+        <!-- reserved places: "Задания" and "Рейтинг" appear here when they are ready -->
+      </nav>
+    </div>
+  </section>
+
+  <!-- ================= MODE: X02.0 ================= -->
+  <section class="screen sub-screen" id="scr-modex02" aria-labelledby="mxTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="mxTitle"><span class="x">X</span><span class="o">0</span>2.0</h2></header>
+    <button class="learn-btn" type="button" data-act="learn" id="learnBtnX"></button>
+    <p class="lbl" data-i18n="withBot"></p>
+    <div class="ladder" data-mode="x02"></div>
+    <p class="lbl" data-i18n="withFriend"></p>
+    <div class="friend-row" data-mode="x02"></div>
+  </section>
+
+  <!-- ================= MODE: NOSTALGIA ================= -->
+  <section class="screen sub-screen" id="scr-modeclassic" aria-labelledby="mcTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title ink-o" id="mcTitle" data-i18n="classicName"></h2></header>
+    <p class="lbl" data-i18n="withBot"></p>
+    <div class="ladder" data-mode="classic"></div>
+    <p class="lbl" data-i18n="withFriend"></p>
+    <div class="friend-row" data-mode="classic"></div>
+    <button class="bridge" type="button" id="bridge" data-go="modex02" hidden></button>
+  </section>
+
+  <!-- ================= ONLINE ================= -->
+  <section class="screen sub-screen" id="scr-online" aria-labelledby="onTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="onTitle" data-i18n="mbOnline"></h2></header>
+    <div class="online-new">
+      <button class="btn primary big opp-link" type="button" data-online="x02" id="newX02"></button>
+      <button class="btn big opp-link" type="button" data-online="classic" id="newClassic"></button>
+    </div>
+    <p class="lbl" data-i18n="yourGames"></p>
+    <section class="online-games" id="onlineGames"></section>
+    <p class="empty-note" id="onlineEmpty" hidden></p>
+    <!-- reserved place: tournaments and a random opponent -->
+  </section>
+
+  <!-- ================= PROFILE AND FRIENDS ================= -->
+  <section class="screen sub-screen" id="scr-me" aria-labelledby="meTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="meTitle" data-i18n="meTitle"></h2></header>
+    <div class="me-head"><div class="pf-ava big" id="pfAva"></div><div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div></div>
+    <div class="me-stats" id="pfStats"></div>
+    <div class="me-bots" id="meBots"></div>
+    <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
+    <p class="ref-line" id="refLine"></p>
+    <p class="lbl" data-i18n="friendsTitle"></p>
+    <div class="friends" id="friendsList"></div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section class="screen sub-screen" id="scr-settings" aria-labelledby="setTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="setTitle" data-i18n="settings"></h2></header>
+    <div class="set-list">
+      <div class="pf-row"><span data-i18n="setSound"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-sound="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-sound="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="setHaptics"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-haptics="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-haptics="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="talkPick"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-talk="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-talk="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="sidePick"></span>
+        <div class="seg-group" role="group">
+          <button class="seg" type="button" data-side="1" aria-pressed="true">X</button>
+          <button class="seg" type="button" data-side="2" aria-pressed="false">O</button>
+        </div></div>
+      <div class="pf-row"><span data-i18n="langPick"></span>
+        <div class="seg-group lang-group" role="group" aria-label="Language">
+          <button class="seg lang" type="button" data-lang="ru" aria-pressed="false">RU</button>
+          <button class="seg lang" type="button" data-lang="uz" aria-pressed="false">UZ</button>
+          <button class="seg lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div></div>
+      <div class="pf-row" id="installRow" hidden><span id="installLabel"></span><button class="btn small" type="button" data-act="install" id="installBtn"></button></div>
+      <div class="set-acc"><span class="set-acc-t" data-i18n="setAccount"></span><span class="set-acc-v" id="accLine"></span><div class="tg-login" id="tgLogin"></div></div>
+      <div class="set-links">
+        <button class="btn" type="button" data-go="about" data-i18n="about"></button>
+        <button class="btn" type="button" data-act="support" data-i18n="support"></button>
+      </div>
+      <p class="set-ver"><span id="verLine"></span> · <button class="link-btn" type="button" data-act="update" data-i18n="checkUpdate"></button></p>
+    </div>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="screen sub-screen" id="scr-about" aria-labelledby="abTitle">
+    <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="abTitle" data-i18n="about"></h2></header>
+    <button class="btn primary big" type="button" data-act="learn" id="learnBtnA"></button>
+    <details class="acc"><summary data-i18n="rules"></summary><div class="acc-body rules-text" id="aboutRules"></div></details>
+    <details class="acc"><summary data-i18n="aboutBots"></summary><div class="acc-body" id="aboutBots"></div></details>
+    <details class="acc"><summary data-i18n="privacy"></summary><div class="acc-body" data-i18n-html="privacyHTML"></div></details>
+    <button class="btn" type="button" data-act="support" data-i18n="support"></button>
+  </section>
+
+  <!-- ================= X02.0 ================= -->
+  <section class="screen" id="scr-x02" aria-label="Партия X02.0">
+    <header class="game-bar">
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
+      <div class="bar-title">
+        <span class="bot-face" id="x02Face" hidden></span>
+        <span class="bt-text"><span class="mini-logo"><span class="x">X</span><span class="o">0</span>2.0</span>
+        <span class="vs" id="x02Vs"></span></span>
+      </div>
+      <span class="score-chip" id="x02Score" hidden></span>
+      <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
+    </header>
+    <div class="learn-card" id="learnCard" aria-live="polite" hidden></div>
+
+    <div class="game-grid">
+      <div class="board-wrap">
+        <div class="prelude" id="prelude" hidden>
+          <div class="prelude-head">
+            <h2 class="prelude-title" data-i18n="preludeTitle"></h2>
+            <p data-i18n="preludeDesc"></p>
+          </div>
+          <div class="ttt" id="preludeGrid" role="grid" aria-label="Разминка"></div>
+          <div class="prelude-actions">
+            <button class="btn primary" id="preludeStart" type="button" hidden data-i18n="startMatch"></button>
+            <button class="btn" id="preludeSkip" type="button" data-i18n="skipPrelude"></button>
+          </div>
+          <div class="coin-stage" id="coinStage" hidden aria-live="polite">
+            <h2 class="coin-title" data-i18n="coinTitle"></h2>
+            <div class="coin-zone">
+              <div class="coin-shadow" id="coinShadow"></div>
+              <div class="coin" id="coin" aria-hidden="true"><div class="face fx" id="faceX"></div><div class="face fo" id="faceO"></div></div>
+            </div>
+            <p class="coin-result" id="coinText">Кто выпадет, тот ходит первым</p>
+            <div class="coin-actions">
+              <button class="btn primary" id="coinBtn" type="button" data-i18n="coinToss"></button>
+              <button class="btn primary" id="coinStart" type="button" hidden data-i18n="startMatch"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="board" id="board" role="grid" aria-label="Игровое поле"></div>
+        <div class="bubble" id="bubble" aria-live="polite" hidden></div>
+
+        <div class="banner" id="banner" role="dialog" aria-live="polite" aria-labelledby="bannerTitle">
+          <div class="banner-card">
+            <div class="banner-title" id="bannerTitle"></div>
+            <div class="taunt" id="bannerTaunt"></div>
+            <div class="banner-text" id="bannerText"></div>
+            <div class="banner-reward" id="bannerReward"></div>
+            <div class="rematch-note" id="rematchNote" hidden></div>
+            <div class="banner-share" id="bannerShare" hidden></div>
+            <div class="banner-actions">
+              <button class="btn primary" type="button" data-act="again" data-i18n="again"></button>
+              <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="notes">
+        <div class="turn">
+          <svg id="turnMark" viewBox="0 0 100 100" aria-hidden="true"></svg>
+          <div>
+            <div class="turn-who" id="turnWho"></div>
+            <div class="turn-where" id="turnWhere"></div>
+          </div>
+        </div>
+        <div class="clock" id="clock" hidden></div>
+        <div class="status" id="status" aria-live="polite"></div>
+
+        <div class="main-only">
+          <p class="label" data-i18n="labelStars"></p>
+          <div class="stars">
+            <button class="btn star-btn" id="starBtn" type="button" aria-pressed="false" data-i18n="starBtn"></button>
+            <button class="btn strike-btn" id="strikeBtn" type="button" aria-pressed="false" data-i18n="strikeBtn"></button>
+            <span class="stars-count" id="starsCount"></span>
+          </div>
+        </div>
+
+        <div class="main-only">
+          <p class="label" data-i18n="labelMain"></p>
+          <div class="main-board" id="mainBoard" aria-label="Главное поле"></div>
+        </div>
+
+        <div class="buttons">
+          <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online" type="button" data-act="again" data-i18n="newGame"></button>
+          <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
+          <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
+        </div>
+        <div class="phrases" hidden></div>
+
+        <div class="main-only log-wrap">
+          <p class="label" data-i18n="labelLog"></p>
+          <ol class="log" id="log"></ol>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= НОСТАЛЬГИЯ ================= -->
+  <section class="screen" id="scr-classic" aria-label="Ностальгия">
+    <header class="game-bar">
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
+      <div class="bar-title">
+        <span class="bot-face" id="cFace" hidden></span>
+        <span class="bt-text"><span class="mini-logo" data-i18n="classicName"></span>
+        <span class="vs" id="cVs"></span></span>
+      </div>
+      <span class="score-chip" id="cScore" hidden></span>
+      <button class="btn small" type="button" data-act="rules" data-i18n="rules"></button>
+    </header>
+    <div class="classic-grid">
+      <div class="classic-wrap">
+        <div class="ttt" id="tttBoard" role="grid" aria-label="Поле 3×3"></div>
+        <div class="bubble" id="cBubble" aria-live="polite" hidden></div>
+        <div class="banner" id="cBanner" role="dialog" aria-live="polite" aria-labelledby="cBannerTitle">
+          <div class="banner-card">
+            <div class="banner-title" id="cBannerTitle"></div>
+            <div class="taunt" id="cBannerTaunt"></div>
+            <div class="banner-reward" id="cBannerReward"></div>
+            <div class="rematch-note" id="cRematchNote" hidden></div>
+            <div class="banner-share" id="cBannerShare" hidden></div>
+            <div class="banner-actions">
+              <button class="btn primary" type="button" data-act="again" data-i18n="classicAgain"></button>
+              <button class="btn" type="button" data-act="menu" data-i18n="toMenu"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="notes">
+        <div class="turn">
+          <svg id="cTurnMark" viewBox="0 0 100 100" aria-hidden="true"></svg>
+          <div>
+            <div class="turn-who" id="cTurnWho"></div>
+            <div class="turn-where" id="cTurnWhere"></div>
+          </div>
+        </div>
+        <div class="clock" id="cClock" hidden></div>
+        <div class="status" id="cStatus" aria-live="polite"></div>
+        <div class="buttons">
+          <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online" type="button" data-act="again" data-i18n="classicAgain"></button>
+          <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
+          <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
+        </div>
+        <div class="phrases" hidden></div>
+      </aside>
+    </div>
+  </section>
+  <!-- ================= WAITING FOR A FRIEND ================= -->
+  <section class="screen" id="scr-wait" aria-labelledby="waitTitle">
+    <header class="game-bar">
+      <button class="btn small" type="button" data-act="menu" data-i18n="menuBtn"></button>
+      <div class="bar-title"><span class="mini-logo" id="waitMode"></span></div>
+    </header>
+    <div class="wait-card">
+      <div class="wait-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <h2 class="wait-title" id="waitTitle" data-i18n="waitTitle"></h2>
+      <p class="wait-text" data-i18n="waitText"></p>
+      <p class="wait-meta" id="waitMeta"></p>
+      <div class="wait-link" id="waitLink"></div>
+      <div class="wait-actions">
+        <button class="btn primary" type="button" data-act="share" data-i18n="shareTg"></button>
+        <button class="btn" type="button" data-act="copy" id="copyBtn" data-i18n="copyLink"></button>
+      </div>
+      <button class="link-btn" type="button" data-act="cancelGame" data-i18n="cancelGame"></button>
+    </div>
+  </section>
+
+  <!-- ================= SHOP ================= -->
+  <section class="screen" id="scr-shop" aria-labelledby="shopTitle">
+    <header class="game-bar">
+      <button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button>
+      <div class="bar-title"><span class="mini-logo" id="shopTitle" data-i18n="shop"></span></div>
+      <span class="wallet" id="shopWallet"></span>
+    </header>
+    <div id="shopBody" class="shop-body"></div>
+  </section>
+</div>
+
+<!-- ================= RULES ================= -->
+<div class="sheet" id="rulesSheet" role="dialog" aria-modal="true" aria-labelledby="rulesTitle" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head">
+      <h2 id="rulesTitle" data-i18n="rules"></h2>
+      <button class="btn small" type="button" id="rulesClose" data-i18n="close"></button>
+    </div>
+    <h3><span style="color: var(--ink-x)">X</span><span style="color: var(--ink-o)">0</span>2.0</h3>
+    <div id="rulesBody"></div>
+  </div>
+</div>
+
+<div class="sheet" id="onlineSheet" role="dialog" aria-modal="true" aria-labelledby="onlineTitle" hidden>
+  <div class="sheet-card online-card">
+    <div class="sheet-head">
+      <h2 id="onlineTitle" data-i18n="onlineTitle"></h2>
+      <button class="btn small" type="button" data-act="closeOnline" data-i18n="close"></button>
+    </div>
+    <div id="onlineBody"></div>
+  </div>
+</div>
+
+<div class="sheet" id="welcomeSheet" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" hidden>
+  <div class="sheet-card welcome-card">
+    <h2 class="welcome-title" id="welcomeTitle" data-i18n="welcomeTitle"></h2>
+    <div class="welcome-bot"><span class="bot-face" id="welcomeFace"></span><span class="cover-say" data-i18n="welcomeBot"></span></div>
+    <p class="welcome-gift" data-i18n="welcomeGift"></p>
+    <div class="welcome-sum" id="welcomeSum"></div>
+    <button class="btn primary big" type="button" data-act="welcomeLearn" data-i18n="welcomeLearn"></button>
+    <button class="btn big" type="button" data-act="welcomeLater" data-i18n="later"></button>
+  </div>
+</div>
+
+<div class="sheet" id="installSheet" role="dialog" aria-modal="true" aria-labelledby="installTitle" hidden>
+  <div class="sheet-card">
+    <div class="sheet-head"><h2 id="installTitle" data-i18n="installTitle"></h2><button class="btn small" type="button" data-act="closeInstall" data-i18n="close"></button></div>
+    <div id="installBody"></div>
+  </div>
+</div>
+
+<canvas id="confetti" aria-hidden="true"></canvas>

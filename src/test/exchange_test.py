@@ -1,0 +1,26 @@
+import asyncio, pathlib
+from playwright.async_api import async_playwright
+URL = 'file://' + str(pathlib.Path(__file__).resolve().parent.parent / 'index.html')
+async def main():
+    async with async_playwright() as p:
+        b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+        page = await b.new_page(viewport={'width': 1280, 'height': 1000})
+        errs = []; page.on('pageerror', lambda e: errs.append(str(e)))
+        await page.add_init_script("localStorage.setItem('x02.welcomed','true')")
+        await page.goto(URL); await page.wait_for_timeout(400)
+        await page.evaluate('document.querySelector(`.seg.lang[data-lang="ru"]`).click()')
+        await page.click('[data-act="shop"]'); await page.wait_for_timeout(200)
+        await page.click('[data-buy="x_plus"]'); await page.wait_for_timeout(100)
+        print('hint:', await page.inner_text('.shop-note'))
+        await page.click('[data-exchange="0"]'); await page.wait_for_timeout(100)
+        print('no coins:', await page.inner_text('.shop-note'))
+        await page.click('[data-coins="100"]'); await page.wait_for_timeout(100)
+        await page.click('[data-exchange="1"]'); await page.wait_for_timeout(100)
+        print('exchange:', await page.inner_text('.shop-note'), '|', (await page.inner_text('#shopWallet')).replace('\n', ' '))
+        await page.click('[data-buy="x_plus"]'); await page.wait_for_timeout(200)
+        print('buy:', await page.inner_text('.shop-note'), '|', (await page.inner_text('#shopWallet')).replace('\n', ' '))
+        sec = await page.query_selector('.shop-sec:nth-last-child(2)')
+        await sec.screenshot(path='shots/exchange.png')
+        print('errors', errs or 'none')
+        await b.close()
+asyncio.run(main())

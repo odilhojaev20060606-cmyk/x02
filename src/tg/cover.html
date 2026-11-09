@@ -1,0 +1,48 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: Caveat; font-weight: 700; src: url(caveat-latin-700-normal.woff2); unicode-range: U+0000-00FF; }
+@font-face { font-family: Caveat; font-weight: 700; src: url(caveat-cyrillic-700-normal.woff2); unicode-range: U+0400-045F; }
+@font-face { font-family: Golos; font-weight: 500; src: url(golos-text-latin-500-normal.woff2); unicode-range: U+0000-00FF; }
+@font-face { font-family: Golos; font-weight: 500; src: url(golos-text-cyrillic-500-normal.woff2); unicode-range: U+0400-045F; }
+html, body { margin: 0; }
+body { width: 640px; height: 360px; overflow: hidden; background-color: #f6f7f2;
+  background-image: linear-gradient(to right, transparent 38px, rgba(196,54,47,.45) 38px, rgba(196,54,47,.45) 40px, transparent 40px),
+  linear-gradient(#cfdcea 1px, transparent 1px), linear-gradient(90deg, #cfdcea 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px, 20px 20px; position: relative; font-family: Golos, sans-serif; }
+.logo { position: absolute; left: 56px; top: 70px; width: 290px; }
+.logo path { fill: none; stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+.tag { position: absolute; left: 62px; top: 192px; white-space: nowrap; font: 700 27px/1.05 Caveat, cursive; color: #2b3a55; }
+.tag small { display: block; margin-top: 8px; font: 500 14px/1.3 Golos, sans-serif; color: #6b707a; }
+.board { position: absolute; right: 34px; top: 62px; width: 214px; height: 214px; transform: rotate(3deg); background: #2b3a55; padding: 4px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; box-shadow: 0 10px 24px -12px rgba(43,58,85,.6); }
+.sub { background: #f6f7f2; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); }
+.sub.hl::before { content: ""; position: absolute; inset: 3px; background: #fff09a; border-radius: 5px 2px 7px 3px; transform: skew(-2deg) rotate(-.6deg); }
+.c { position: relative; border-right: 1px solid #9fb6cf; border-bottom: 1px solid #9fb6cf; }
+.c:nth-child(3n) { border-right: 0; } .c:nth-last-child(-n+3) { border-bottom: 0; }
+.c svg { position: absolute; inset: 15%; width: 70%; height: 70%; overflow: visible; }
+.x path { stroke: #1f3fa8; } .o path { stroke: #c4362f; } .c path { fill: none; stroke-width: 11; stroke-linecap: round; }
+.big { position: absolute; inset: 6%; width: 88%; height: 88%; opacity: .25; overflow: visible; }
+.big path { fill: none; stroke-width: 8; stroke-linecap: round; }
+</style></head><body>
+<svg class="logo" viewBox="0 0 440 150">
+  <path stroke="#1f3fa8" d="M22 28 Q 60 72 104 122"/><path stroke="#1f3fa8" d="M102 26 Q 66 74 20 122"/>
+  <path stroke="#c4362f" d="M168 24 C 196 24 205 62 203 86 C 201 112 186 127 164 125 C 141 123 130 99 132 72 C 134 45 147 25 170 27"/>
+  <path stroke="#2b3a55" d="M234 52 C 237 27 279 22 285 47 C 291 71 254 93 231 121 L 293 119"/>
+  <circle cx="315" cy="116" r="7.5" fill="#2b3a55"/>
+  <path stroke="#2b3a55" d="M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27"/>
+  <path stroke="#c4362f" stroke-width="4" opacity=".55" d="M18 142 C 140 133 300 147 424 137"/>
+</svg>
+<div class="tag">Крестики-нолики, версия 2.0<small>81 клетка · звёзды · удары · боты</small></div>
+<div class="board" id="b"></div>
+<script>
+const X = '<svg viewBox="0 0 100 100" class="x"><path d="M14 16 Q 50 50 86 86"/><path d="M86 14 Q 52 50 14 86"/></svg>';
+const O = '<svg viewBox="0 0 100 100" class="o"><path d="M50 13 C 84 12 90 60 62 84 C 38 96 8 76 12 44 C 14 22 34 10 60 16"/></svg>';
+const boards = [
+  'X..O.X...', '.O..X..O.', 'XXX.OO.O.', '..O.X....', 'O.X.O..X.', '.X...O...', '...X.O..X', 'O...X.O..', '.X.O.....'];
+let h = '';
+boards.forEach((bd, i) => {
+  h += `<div class="sub${i === 4 ? ' hl' : ''}">`;
+  for (const ch of bd) h += `<div class="c">${ch === 'X' ? X : ch === 'O' ? O : ''}</div>`;
+  if (i === 2) h += '<svg class="big x" viewBox="0 0 100 100"><path d="M12 14 Q 50 48 88 86"/><path d="M86 12 Q 52 50 14 88"/></svg>';
+  h += '</div>';
+});
+document.getElementById('b').innerHTML = h;
+</script></body></html>
