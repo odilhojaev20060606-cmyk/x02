@@ -771,6 +771,18 @@ function cardInfoSet(info) {
       (TG && tgv("7.8") && TG.shareToStory && serverOn() ? `<button class="btn small" type="button" data-act="shareStory">${t("shareStory")}</button>` : "");
   }
 }
+function dareSet() {        // lost to a bot: dare a friend to do better
+  for (const id of ["bannerShare", "cBannerShare"]) {
+    const el = $(id); el.hidden = false;
+    el.innerHTML = `<button class="btn small primary" type="button" data-act="dare">${t("dareBtn")}</button>`;
+  }
+}
+function shareDare() {
+  const link = inviteLink(), text = t("dareText", botQ()), share = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
+  if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
+  window.open(share, "_blank", "noopener");
+}
 function wob(ctx, pts, w, color, k) {         // a hand-drawn line through points
   ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = "round"; ctx.lineJoin = "round";
   ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
@@ -1194,6 +1206,7 @@ function onGameEnd(r) {
   if (app.learn) return;
   store.set("resume", null);
   cardInfoSet(cardFromGame(r));
+  if (app.bot && r !== 3 && r !== app.side) dareSet();
   askWrite();
   recordResult(r);
   clearTimeout(slowTimer);
@@ -2167,7 +2180,7 @@ function onlineEnd(v, quiet) {
   if (classic) $("cBannerTaunt").textContent = reason;
   else { $("bannerTaunt").textContent = ""; if (reason) $("bannerText").textContent = reason; }
   $(classic ? "cBannerReward" : "bannerReward").innerHTML = v.reward ? `<span class="reward-pop">${t("reward", v.reward)} ${curIcon("clips")}</span>` : "";
-  banner.querySelectorAll('[data-act="again"]').forEach(b => { b.textContent = t("rematch"); });
+  banner.querySelectorAll('[data-act="again"]').forEach(b => { b.textContent = r !== 3 && !won ? t("revengeBtn") : t("rematch"); });
   if (!banner.classList.contains("show")) banner.classList.add("show");
   if (!quiet) {
     SND.play(r === 3 ? "draw" : won ? "win" : "lose", 0.4);
@@ -2516,6 +2529,7 @@ function bind() {
     else if (a === "welcomeLater") welcomeClose(false);
     else if (a === "shareCard") shareCard(false);
     else if (a === "shareStory") shareCard(true);
+    else if (a === "dare") shareDare();
     else if (a === "install") doInstall();
     else if (a === "closeInstall") closeInstall();
     else if (a === "copyGame") { try { navigator.clipboard.writeText(GAME_URL); toast(t("copied")); } catch (e) {} }

@@ -733,7 +733,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> против <b>${b}</b> — партия ${m} идёт…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> победил в партии ${m}!` : `🤝 Ничья в партии ${m}.`, chMore: "▶ Сыграть тоже",
     cardTitle: "🏆 Моя последняя победа", cardDesc: "Отправить картинку с победой",
-    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться",
+    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться", revenge: "🔥 Отомстить", rematchBtn: "🔁 Реванш", wantsRematch: n => `🔥 <b>${n}</b> хочет реванша! Принимаешь?`,
     link: c => `Ссылка для канала «${c}»:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}\n\nВсех, кто придёт по ней, увидишь в /stats.`,
     newPlayer: (n, u, s) => `🆕 Новый игрок: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -757,7 +757,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> va <b>${b}</b> — ${m} o'yini ketmoqda…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> ${m} o'yinida g'alaba qozondi!` : `🤝 ${m} o'yinida durang.`, chMore: "▶ Men ham o'ynayman",
     cardTitle: "🏆 Oxirgi g'alabam", cardDesc: "G'alaba rasmini yuborish",
-    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish",
+    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish", revenge: "🔥 O'ch olish", rematchBtn: "🔁 Revansh", wantsRematch: n => `🔥 <b>${n}</b> revansh xohlaydi! Qabul qilasanmi?`,
     link: c => `«${c}» kanali uchun havola:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 Yangi o'yinchi: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -781,7 +781,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> vs <b>${b}</b> — a ${m} game is on…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> won the ${m} game!` : `🤝 The ${m} game ended in a draw.`, chMore: "▶ I want to play too",
     cardTitle: "🏆 My latest win", cardDesc: "Send the victory picture",
-    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share",
+    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share", revenge: "🔥 Take revenge", rematchBtn: "🔁 Rematch", wantsRematch: n => `🔥 <b>${n}</b> wants a rematch! Are you in?`,
     link: c => `Link for the "${c}" channel:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 New player: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -1098,7 +1098,9 @@ async function settle(env, g) {
       const row = await env.DB.prepare("SELECT lang FROM players WHERE id = ?").bind(uid).first();
       const t = TEXT[lang(row && row.lang)], other = (cards[3 - side] || {}).name || "?";
       const text = s.result === 3 ? t.resDraw(other) : s.result === side ? t.resWin(other, s.mode === "x02" && s.g ? s.g.moves : 0) : t.resLose(other);
-      await tg(env, "sendMessage", { chat_id: uid, text, reply_markup: { inline_keyboard: [[{ text: t.share, switch_inline_query: "" }], [{ text: t.play, web_app: { url: GAME_URL } }]] } });
+      const kb = [[{ text: t.share, switch_inline_query: "" }], [{ text: t.play, web_app: { url: GAME_URL } }]];
+      if (s.result !== side) kb.unshift([{ text: s.result === 3 ? t.rematchBtn : t.revenge, url: `${BOT_LINK}?startapp=g_${g.id}` }]);
+      await tg(env, "sendMessage", { chat_id: uid, text, reply_markup: { inline_keyboard: kb } });
     } catch (e) {}
   }
 }
@@ -1316,6 +1318,13 @@ async function gameApi(env, path, body, user) {
         await env.DB.prepare("INSERT INTO games (id, mode, minutes, host, guest, host_side, status, state, chat, ver, created, updated, deadline, seen_h, seen_g, notified, next) VALUES (?, ?, ?, ?, NULL, ?, 'waiting', ?, '[]', 1, ?, ?, 0, ?, 0, 0, NULL)")
           .bind(ng.id, g.mode, g.minutes, uid, ng.hostSide, JSON.stringify(st), now, now, now).run();
         g.next = ng.id; changed = true;
+        try {   // tell the other player, who may have closed the game already
+          const other = uidOfSide(g, 3 - side), cards = await playerCards(env, g);
+          const row = other && await env.DB.prepare("SELECT lang FROM players WHERE id = ?").bind(other).first();
+          if (other) { const t = TEXT[lang(row && row.lang)];
+            await tg(env, "sendMessage", { chat_id: other, parse_mode: "HTML", text: t.wantsRematch(escHtml((cards[side] || {}).name || "?")),
+              reply_markup: { inline_keyboard: [[{ text: t.rematchBtn, url: `${BOT_LINK}?startapp=g_${g.id}` }]] } }); }
+        } catch (e) {}
       }
     }
     if (err && err !== "turn") return json({ error: err, ...(await viewOf(env, g, uid)) }, 409);

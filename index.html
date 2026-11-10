@@ -1874,6 +1874,7 @@ ru: {
   hooks: ['🧠 Думаешь, ты умный? Попробуй игру сложнее шахмат.', '♟ Шахматы — для разминки. Сыграешь в X02.0?', '🔥 Почти все сдаются на третьем ходу. Проверь себя.', '⚔️ Обыграй меня, если сможешь.'],
   cardHook: 'Думаешь, ты умный? Обыграй меня:',
   fxWin: 'Победа!', fxWinSym: s => `Победа ${s}!`, fxLose: 'Поражение', fxDraw: 'Ничья', fxCapture: 'Доска взята!', fxCombo: n => `Комбо ×${n}!`,
+  dareBtn: '😏 Спорим, друг не обыграет?', dareText: n => `Я не смог обыграть ${n} в X02.0 — игре сложнее шахмат. Спорим, ты тоже не сможешь? 😏`, revengeBtn: '🔥 Отомстить',
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
   refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
   frPlay: 'Сыграть', frCalled: n => `${n} получил приглашение. Ждём…`, frNotSent: 'Не получилось написать другу — отправь ему ссылку.',
@@ -2095,6 +2096,7 @@ uz: {
   hooks: ["🧠 O'zingni aqlli deb o'ylaysanmi? Shaxmatdan ham qiyin o'yinni sinab ko'r.", "♟ Shaxmat — bu shunchaki razminka. X02.0 o'ynaysanmi?", "🔥 Deyarli hamma uchinchi yurishda taslim bo'ladi. O'zingni sinab ko'r.", "⚔️ Meni yeng, agar qo'lingdan kelsa."],
   cardHook: "O'zingni aqlli deb o'ylaysanmi? Meni yeng:",
   fxWin: "G'alaba!", fxWinSym: s => `${s} g'alaba qildi!`, fxLose: "Mag'lubiyat", fxDraw: 'Durang', fxCapture: 'Doska olindi!', fxCombo: n => `Kombo ×${n}!`,
+  dareBtn: "😏 Do'sting ham yutolmaydi, garovmi?", dareText: n => `Men X02.0 da ${n} ni yengolmadim — bu shaxmatdan ham qiyin o'yin. Garov, sen ham yengolmaysan? 😏`, revengeBtn: "🔥 O'ch olish",
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
   refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
   frPlay: "O'ynash", frCalled: n => `${n} taklifni oldi. Kutamiz…`, frNotSent: "Do'stga yozib bo'lmadi — unga havola yuboring.",
@@ -2316,6 +2318,7 @@ en: {
   hooks: ['🧠 Think you\'re smart? Try a game harder than chess.', '♟ Chess is a warm-up. Up for X02.0?', '🔥 Almost everyone gives up by move three. Test yourself.', '⚔️ Beat me if you can.'],
   cardHook: 'Think you\'re smart? Beat me:',
   fxWin: 'Victory!', fxWinSym: s => `${s} wins!`, fxLose: 'Defeat', fxDraw: 'Draw', fxCapture: 'Board taken!', fxCombo: n => `Combo ×${n}!`,
+  dareBtn: '😏 Bet a friend can\'t win?', dareText: n => `I couldn't beat ${n} in X02.0, a game harder than chess. Bet you can't either? 😏`, revengeBtn: '🔥 Take revenge',
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
   refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
   frPlay: 'Play', frCalled: n => `${n} got your invitation. Waiting…`, frNotSent: "Couldn't message your friend — send them the link.",
@@ -2549,7 +2552,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v14.3";
+const APP_VERSION = "v14.4";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3307,6 +3310,18 @@ function cardInfoSet(info) {
       (TG && tgv("7.8") && TG.shareToStory && serverOn() ? `<button class="btn small" type="button" data-act="shareStory">${t("shareStory")}</button>` : "");
   }
 }
+function dareSet() {        // lost to a bot: dare a friend to do better
+  for (const id of ["bannerShare", "cBannerShare"]) {
+    const el = $(id); el.hidden = false;
+    el.innerHTML = `<button class="btn small primary" type="button" data-act="dare">${t("dareBtn")}</button>`;
+  }
+}
+function shareDare() {
+  const link = inviteLink(), text = t("dareText", botQ()), share = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
+  if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
+  window.open(share, "_blank", "noopener");
+}
 function wob(ctx, pts, w, color, k) {         // a hand-drawn line through points
   ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = "round"; ctx.lineJoin = "round";
   ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
@@ -3730,6 +3745,7 @@ function onGameEnd(r) {
   if (app.learn) return;
   store.set("resume", null);
   cardInfoSet(cardFromGame(r));
+  if (app.bot && r !== 3 && r !== app.side) dareSet();
   askWrite();
   recordResult(r);
   clearTimeout(slowTimer);
@@ -4703,7 +4719,7 @@ function onlineEnd(v, quiet) {
   if (classic) $("cBannerTaunt").textContent = reason;
   else { $("bannerTaunt").textContent = ""; if (reason) $("bannerText").textContent = reason; }
   $(classic ? "cBannerReward" : "bannerReward").innerHTML = v.reward ? `<span class="reward-pop">${t("reward", v.reward)} ${curIcon("clips")}</span>` : "";
-  banner.querySelectorAll('[data-act="again"]').forEach(b => { b.textContent = t("rematch"); });
+  banner.querySelectorAll('[data-act="again"]').forEach(b => { b.textContent = r !== 3 && !won ? t("revengeBtn") : t("rematch"); });
   if (!banner.classList.contains("show")) banner.classList.add("show");
   if (!quiet) {
     SND.play(r === 3 ? "draw" : won ? "win" : "lose", 0.4);
@@ -5052,6 +5068,7 @@ function bind() {
     else if (a === "welcomeLater") welcomeClose(false);
     else if (a === "shareCard") shareCard(false);
     else if (a === "shareStory") shareCard(true);
+    else if (a === "dare") shareDare();
     else if (a === "install") doInstall();
     else if (a === "closeInstall") closeInstall();
     else if (a === "copyGame") { try { navigator.clipboard.writeText(GAME_URL); toast(t("copied")); } catch (e) {} }
