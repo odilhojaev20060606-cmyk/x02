@@ -1,0 +1,17 @@
+plugins { id "com.android.application" }
+android {
+  namespace "uz.x02.game"
+  compileSdk 34
+  defaultConfig {
+    applicationId "uz.x02.game"
+    minSdk 24
+    targetSdk 34
+    versionCode (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+    versionName "17.0"
+  }
+  signingConfigs {
+    rel { storeFile file("x02.jks"); storePassword "x02game2026"; keyAlias "x02"; keyPassword "x02game2026" }
+  }
+  buildTypes { release { minifyEnabled false; signingConfig signingConfigs.rel } }
+  compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}

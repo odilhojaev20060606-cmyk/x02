@@ -1312,11 +1312,13 @@ function cardFromGame(r) {        // a win against a bot: what goes on the pictu
 }
 
 // ---- install / home screen
+const IN_APK = /X02App/.test(navigator.userAgent || "");      // our Android app (WebView) counts as installed
 let deferredInstall = null, homeStatus = "";
 window.addEventListener("beforeinstallprompt", ev => { ev.preventDefault(); deferredInstall = ev; try { renderSettings(); } catch (e) {} });
 window.addEventListener("appinstalled", () => { deferredInstall = null; installDone(); try { renderSettings(); } catch (e) {} });
 function installKind() {
   if (TG) return tgv("8.0") && TG.addToHomeScreen && (homeStatus === "missed" || homeStatus === "unknown") ? "tg" : "";
+  if (IN_APK) return "";
   try { if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) return ""; } catch (e) {}
   const ua = navigator.userAgent || "";
   if (/FBAN|FBAV|Instagram|Line\/|Snapchat|; wv\)/.test(ua)) return "inapp";
@@ -1363,6 +1365,7 @@ async function installDone() {
   const n = await claimBonus("install");
   if (n) { toast(t("instGot")); SND.play("coin", 0.4); hapticResult(true); }
 }
+if (IN_APK) setTimeout(() => { try { installDone(); } catch (e) {} }, 1500);
 function installNudge() {        // a good moment (first win, solved puzzle, day 2 of the streak): offer the shortcut once a day
   if (!installKind() || store.get("instDone", false) || store.get("instNudge", "") === tashDay(0)) return "";
   store.set("instNudge", tashDay(0));
