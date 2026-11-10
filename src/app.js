@@ -495,7 +495,7 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  renderMedal(); renderSig(); renderLogo();
+  renderMedal(); renderSig(); renderLogo(); renderInstallSticker();
   $("cSub").textContent = !info.logged ? "" : [streakNow() ? "🔥 " + streakNow() : "", tot.w ? t("cardWins", tot.w) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
@@ -715,7 +715,7 @@ function tgInit() {
   try {
     if (v("8.0") && TG.checkHomeScreenStatus) {
       TG.checkHomeScreenStatus(st => { homeStatus = st || ""; try { renderSettings(); if (app.screen === "menu") renderCover(); } catch (e) {} });
-      TG.onEvent("homeScreenAdded", () => { homeStatus = "added"; toast(t("homeAdded")); try { renderSettings(); renderCover(); } catch (e) {} });
+      TG.onEvent("homeScreenAdded", () => { homeStatus = "added"; installDone(); try { renderSettings(); renderCover(); } catch (e) {} });
     }
   } catch (e) {}   // a swipe down must not close the game mid-move
   try { if (TG.setHeaderColor) TG.setHeaderColor("#a8d3f1"); if (TG.setBackgroundColor) TG.setBackgroundColor("#a8d3f1"); } catch (e) {}
@@ -871,6 +871,7 @@ function dailyEnd(r) {
   if (r === app.side && !d.won && g) { d.won = true; d.moves = g.moves - app.daily.start; d.grid = g.owner.slice(); d.side = app.side; }
   store.set("daily", d);
   if (d.won) for (const id of ["bannerShare", "cBannerShare"]) { const el = $(id); el.hidden = false; el.innerHTML = `<button class="btn small primary" type="button" data-act="dailyShare">${t("dailyShareBtn")}</button>`; }
+  if (d.won && r === app.side) { const nd = installNudge(); if (nd) $("bannerReward").insertAdjacentHTML("beforeend", nd); }
 }
 function shareDaily() {
   const d = dailyState();
@@ -1285,7 +1286,7 @@ function cardFromGame(r) {        // a win against a bot: what goes on the pictu
 // ---- install / home screen
 let deferredInstall = null, homeStatus = "";
 window.addEventListener("beforeinstallprompt", ev => { ev.preventDefault(); deferredInstall = ev; try { renderSettings(); } catch (e) {} });
-window.addEventListener("appinstalled", () => { deferredInstall = null; try { renderSettings(); } catch (e) {} });
+window.addEventListener("appinstalled", () => { deferredInstall = null; installDone(); try { renderSettings(); } catch (e) {} });
 function installKind() {
   if (TG) return tgv("8.0") && TG.addToHomeScreen && (homeStatus === "missed" || homeStatus === "unknown") ? "tg" : "";
   try { if (matchMedia("(display-mode: standalone)").matches || navigator.standalone) return ""; } catch (e) {}
@@ -1304,6 +1305,39 @@ function doInstall() {
   box.innerHTML = k === "ios" ? `<p>${t("iosSteps")}</p>`
     : `<p>${t("inappSteps")}</p><div class="install-link">${esc(GAME_URL)}</div><div><button class="btn primary" type="button" data-act="copyGame">${t("copyLink")}</button></div>`;
   $("installSheet").hidden = false; tgBack();
+}
+// ---- the install sticker on the cover: tap it, it falls, Telegram offers to put the game on the home screen (+1 coin)
+function renderInstallSticker() {
+  const w = $("instWrap"); if (!w) return;
+  const done = !!store.get("instDone", false) || homeStatus === "added", k = installKind();
+  w.hidden = !(k || done);
+  w.classList.toggle("done", done);
+  if (!done) { $("instLab").style.removeProperty("visibility"); $("instTape").classList.remove("torn"); }
+}
+function installSticker() {
+  const lab = $("instLab");
+  if (!lab || $("instWrap").classList.contains("done") || lab.dataset.busy) return;
+  lab.dataset.busy = "1";
+  $("instTape").classList.add("torn");
+  const an = reduce() ? null : lab.animate([{ transform: "rotate(-4deg)" }, { transform: "rotate(10deg) translateY(10px)", offset: .25 }, { transform: "rotate(28deg) translate(30px, 420px)", opacity: .9 }], { duration: 850, easing: "cubic-bezier(.5,0,.75,0)", fill: "forwards" });
+  setTimeout(() => {
+    delete lab.dataset.busy;
+    doInstall();
+    if (installKind() !== "tg") setTimeout(() => { if (!store.get("instDone", false)) { if (an) an.cancel(); $("instTape").classList.remove("torn"); } }, 400);
+    else setTimeout(() => { if (!store.get("instDone", false)) { if (an) an.cancel(); $("instTape").classList.remove("torn"); } }, 6000);
+  }, reduce() ? 0 : 650);
+}
+async function installDone() {
+  if (store.get("instDone", false)) return;
+  store.set("instDone", true);
+  renderInstallSticker();
+  const n = await claimBonus("install");
+  if (n) { toast(t("instGot")); SND.play("coin", 0.4); hapticResult(true); }
+}
+function installNudge() {        // a good moment (first win, solved puzzle, day 2 of the streak): offer the shortcut once a day
+  if (!installKind() || store.get("instDone", false) || store.get("instNudge", "") === tashDay(0)) return "";
+  store.set("instNudge", tashDay(0));
+  return `<div class="bridge"><span>${t("instNudge")}</span><button class="btn small primary" type="button" data-act="installSticker">${t("instLabT")} · +1 🪙</button></div>`;
 }
 function closeInstall() { $("installSheet").hidden = true; tgBack(); }
 function renderInstallRow() {
@@ -1346,7 +1380,7 @@ function resumeGame() {
 }
 
 // ---------------- newcomer: a gift for the first visit ----------------
-const BONUS = { welcome: 20, learn: 30, sign: 20 };    // must match worker.js
+const BONUS = { welcome: 20, learn: 30, sign: 20, install: 1 };    // must match worker.js (install pays a coin, the rest paperclips)
 function maybeWelcome() {
   if (store.get("welcomed", false)) return;
   const tot = totals();
@@ -1363,7 +1397,7 @@ async function claimBonus(kind) {
   if (serverOn()) {
     try { const p = await apiCall("/api/bonus", { kind }); if (applyProfile(p)) return p.paid | 0; } catch (e) {}
   }
-  profile.clips += BONUS[kind] || 0;
+  if (kind === "install") profile.coins += BONUS.install; else profile.clips += BONUS[kind] || 0;
   profile.bonus = [...(profile.bonus || []), kind];
   saveProfile(); refreshWalletViews();
   return BONUS[kind] || 0;
@@ -1382,7 +1416,7 @@ function maybeStreak() {
   if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "streakSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
   const days = STREAK.map((v, i) => `<div class="sd${i < slot ? " got" : i === slot ? " now" : ""}"><span>${t("streakDay", i + 1)}</span><b>${i === 6 ? "🎁" : "+" + v}</b></div>`).join("");
   sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}</p><div class="sdays">${days}</div>
-    <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button></div>`;
+    <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button>${n === 2 ? installNudge() : ""}</div>`;
   sh.hidden = false;
 }
 async function streakTake() {
@@ -1633,6 +1667,7 @@ function onGameEnd(r) {
   rw.innerHTML = !g ? "" : g.gold
     ? `<span class="reward-pop gold-pop">${t("goldWon")}</span><span class="quote">${t("winQuote")}</span>`
     : `<span class="reward-pop">${t("reward", g.clips)} ${curIcon("clips")}</span>`;
+  if (app.bot && r === app.side && !app.daily) { const nd = totals().w <= 1 ? installNudge() : ""; if (nd) rw.insertAdjacentHTML("beforeend", nd); }
   if (app.mode === "classic" && app.bot && r === app.side && shouldBridge()) {
     store.set("bridgeShown", (store.get("bridgeShown", 0) | 0) + 1);
     rw.insertAdjacentHTML("beforeend", `<div class="bridge"><span>${t("bridgeText")}</span><button class="btn small primary" type="button" data-act="bridge">${t("bridgeBtn")}</button></div>`);
@@ -2985,6 +3020,7 @@ function bind() {
     else if (a === "undo") undo();
     else if (a === "shop") openShop();
     else if (a === "medal") toggleMedal();
+    else if (a === "installSticker") { if (app.screen !== "menu") { goMenu(); setTimeout(installSticker, 700); } else installSticker(); }
     else if (a === "sign") openSign();
     else if (a === "signSave") saveSign();
     else if (a === "signLater") { const sh = $("signSheet"); if (sh) sh.hidden = true; }
@@ -3133,6 +3169,7 @@ function boot(data) {
   const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
   app.linkVisit = !!(gid || cid);
   addMultTables(); document.body.classList.toggle("on-cover", app.screen === "menu");
+  try { const sp = TG && TG.initDataUnsafe && TG.initDataUnsafe.start_param; if (sp === "install") setTimeout(() => { if (app.screen === "menu" && installKind()) installSticker(); }, 1800); } catch (e) {}
   handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else { maybeWelcome(); setTimeout(maybeStreak, 700); } });
   buildDOM();
   applyStatic();

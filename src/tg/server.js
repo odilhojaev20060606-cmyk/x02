@@ -25,7 +25,7 @@ const BOTS = ["x1", "x2", "x3", "c1", "c2", "c3"];
 const MIN_MS = { x1: 20000, x2: 20000, x3: 20000, c1: 3000, c2: 3000, c3: 3000 };
 const DAILY_CLIPS = 500;
 const STREAK = [10, 15, 20, 25, 30, 40, 50];   // daily visits in a row; day 7 also gives a fire skin (or +100 if both are owned)
-const BONUS = { welcome: 20, learn: 30, sign: 20 };   // one-time gifts for newcomers: first visit, finished tutorial (outside the daily cap)
+const BONUS = { welcome: 20, learn: 30, sign: 20, install: 1 };   // install pays a coin, the rest paperclips   // one-time gifts for newcomers: first visit, finished tutorial (outside the daily cap)
 const REF_REWARD = 50;        // invite a friend: +50 for both once the friend has really played (outside the daily cap)
 const REF_DAILY = 20;         // paid invitations per inviter per day
 const REF_NEED = 3;           // "really played": one X02.0 game (counts 3) or three Nostalgia games (1 each)
@@ -789,7 +789,7 @@ async function api(request, env, path) {
       return json({ ...publicProfile(cur), paid: 0 });
     }
     p.bonus.push(kind);
-    p.clips += BONUS[kind];
+    if (kind === "install") p.coins += BONUS.install; else p.clips += BONUS[kind];
     await putProfile(env, user.id, p, metaOf(user));
     return json({ ...publicProfile(p), paid: BONUS[kind] });
   }
