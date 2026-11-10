@@ -833,6 +833,7 @@ details.acc[open] summary::after { content: "–"; }
 .mark.fire.fresh { animation: fireFlicker .4s ease-in-out 5 alternate, goldPop .5s cubic-bezier(.3,1.6,.5,1); }
 @keyframes fireFlicker { from { filter: drop-shadow(0 0 2px rgba(255,140,0,.6)); } to { filter: drop-shadow(0 -3px 7px rgba(255,80,0,.95)); } }
 .item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }
+.cbanner.daily { border-color: #6b3fa0; background: #f4eefc; color: #6b3fa0; box-shadow: 2px 2px 0 #6b3fa0; }
 
 </style>
 </head>
@@ -1875,6 +1876,8 @@ ru: {
   cardHook: 'Думаешь, ты умный?',
   fxWin: 'Победа!', fxWinSym: s => `Победа ${s}!`, fxLose: 'Поражение', fxDraw: 'Ничья', fxCapture: 'Доска взята!', fxCombo: n => `Комбо ×${n}!`,
   dareBtn: '😏 Спорим, друг не обыграет?', dareText: n => `Я не смог обыграть ${n} в X02.0 — игре сложнее шахмат. Спорим, ты тоже не сможешь? 😏`, revengeBtn: '🔥 Отомстить',
+  dailyBn: n => `Головоломка дня №${n}: одна позиция для всех`, dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
+  dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
   refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
   frPlay: 'Сыграть', frCalled: n => `${n} получил приглашение. Ждём…`, frNotSent: 'Не получилось написать другу — отправь ему ссылку.',
@@ -2097,6 +2100,8 @@ uz: {
   cardHook: "O'zingni aqlli deb o'ylaysanmi?",
   fxWin: "G'alaba!", fxWinSym: s => `${s} g'alaba qildi!`, fxLose: "Mag'lubiyat", fxDraw: 'Durang', fxCapture: 'Doska olindi!', fxCombo: n => `Kombo ×${n}!`,
   dareBtn: "😏 Do'sting ham yutolmaydi, garovmi?", dareText: n => `Men X02.0 da ${n} ni yengolmadim — bu shaxmatdan ham qiyin o'yin. Garov, sen ham yengolmaysan? 😏`, revengeBtn: "🔥 O'ch olish",
+  dailyBn: n => `Kun jumbog'i №${n}: hamma uchun bitta pozitsiya`, dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
+  dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
   refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
   frPlay: "O'ynash", frCalled: n => `${n} taklifni oldi. Kutamiz…`, frNotSent: "Do'stga yozib bo'lmadi — unga havola yuboring.",
@@ -2319,6 +2324,8 @@ en: {
   cardHook: 'Think you\'re smart?',
   fxWin: 'Victory!', fxWinSym: s => `${s} wins!`, fxLose: 'Defeat', fxDraw: 'Draw', fxCapture: 'Board taken!', fxCombo: n => `Combo ×${n}!`,
   dareBtn: '😏 Bet a friend can\'t win?', dareText: n => `I couldn't beat ${n} in X02.0, a game harder than chess. Bet you can't either? 😏`, revengeBtn: '🔥 Take revenge',
+  dailyBn: n => `Puzzle of the day #${n}: one position for everyone`, dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
+  dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
   refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
   frPlay: 'Play', frCalled: n => `${n} got your invitation. Waiting…`, frNotSent: "Couldn't message your friend — send them the link.",
@@ -2552,7 +2559,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v14.5";
+const APP_VERSION = "v14.6";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3015,6 +3022,8 @@ function coverBanner() {
   const rs = resumeData();
   if (rs) return { cls: "turn", ic: "▶", text: t("resumeBn", rs.botId ? t("q", bt(rs.botId, "name")) : ""), act: "resume" };
   if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
+  const dy = dailyState();
+  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : "", act: "daily" };
   if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
   const tt = totals();
   if (installKind() && !store.get("instAsked", false) && tt.w + tt.l + tt.d >= 3) return { cls: "info", ic: "⌂", text: t("bnHome"), act: "install" };
@@ -3310,6 +3319,56 @@ function cardInfoSet(info) {
       (TG && tgv("7.8") && TG.shareToStory && serverOn() ? `<button class="btn small" type="button" data-act="shareStory">${t("shareStory")}</button>` : "");
   }
 }
+// ---- puzzle of the day: the same X02.0 position for everyone, beat the bot from it in as few moves as you can
+const DAILY_EPOCH = Date.UTC(2026, 10, 10);
+function dailyNo() { return Math.floor((Date.now() + 5 * 3600000 - DAILY_EPOCH) / 86400000) + 1; }
+function dailyState() { const d = store.get("daily", null); return d && d.no === dailyNo() ? d : { no: dailyNo(), tries: 0, won: false }; }
+function dailyPosition(no, side) {        // generated for X; an O player gets the same position with the colours swapped
+  const g = dailyPositionX(no);
+  if (side === 2) { const sw = v => v === 1 ? 2 : v === 2 ? 1 : v; g.cells = g.cells.map(sw); g.owner = g.owner.map(sw); g.turn = 2; g.stars = [g.stars[0], g.stars[2], g.stars[1]]; }
+  return g;
+}
+function dailyPositionX(no) {
+  const side = 1;
+  for (let salt = 0; salt < 50; salt++) {
+    let x = (no * 7919 + salt * 104729) >>> 0;
+    const rnd = () => { x = (x + 0x6D2B79F5) >>> 0; let z = x; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    let g = E.newMain(1), placed = 0;
+    while (!g.result && (placed < 12 || g.turn !== side || g.choosing)) {
+      const acts = E.legal(g).filter(a => a < 81 || a >= 300);
+      if (!acts.length || placed > 20) break;
+      const a = acts[Math.floor(rnd() * acts.length)];
+      g = E.apply(g, a); if (a < 81) placed++;
+    }
+    if (!g.result && g.turn === side && !g.choosing && g.owner.filter(o => o === 1 || o === 2).length <= 1) { g.log = []; return g; }
+  }
+  return E.newMain(side);
+}
+function startDaily() {
+  startGame("x02", "x2");
+  const g = dailyPosition(dailyNo(), app.side);
+  app.daily = { no: dailyNo(), start: g.moves };
+  app.history = [{ phase: "main", g }];
+  renderX02(null); saveResume(); kickBot();
+}
+function dailyEnd(r) {
+  const d = dailyState(), g = cur() && cur().g;
+  d.tries++;
+  if (r === app.side && !d.won && g) { d.won = true; d.moves = g.moves - app.daily.start; d.grid = g.owner.slice(); d.side = app.side; }
+  store.set("daily", d);
+  if (d.won) for (const id of ["bannerShare", "cBannerShare"]) { const el = $(id); el.hidden = false; el.innerHTML = `<button class="btn small primary" type="button" data-act="dailyShare">${t("dailyShareBtn")}</button>`; }
+}
+function shareDaily() {
+  const d = dailyState();
+  if (!d.won) return;
+  const em = o => o === d.side ? "🟩" : o === 3 - d.side ? "🟥" : o === 3 ? "⬜" : "▫️";
+  const grid = [0, 3, 6].map(i => d.grid.slice(i, i + 3).map(em).join("")).join("\n");
+  const link = inviteLink(), text = t("dailyText", d.no, grid, d.moves, d.tries) + "\n" + t("dailyTry");
+  const share = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
+  if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
+  window.open(share, "_blank", "noopener");
+}
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
     const el = $(id); el.hidden = false;
@@ -3462,7 +3521,7 @@ function saveResume() {
   const e = cur();
   if (!e) return;
   const over = app.mode === "classic" ? !!e.t.result : (e.phase === "main" && !!e.g.result);
-  store.set("resume", over ? null : { mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: [e], t0: app.t0 || Date.now(), undoUsed: !!app.undoUsed });
+  store.set("resume", over ? null : { mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: [e], t0: app.t0 || Date.now(), undoUsed: !!app.undoUsed, daily: app.daily || null });
 }
 function resumeData() {
   const d = store.get("resume", null);
@@ -3478,7 +3537,7 @@ function resumeGame() {
   app.bot = d.botId ? BOTS[d.mode].find(b => b.id === d.botId) || null : null;
   app.side = d.side === 2 ? 2 : 1;
   app.history = d.history;
-  app.gameId++; app.t0 = d.t0; app.undoUsed = d.undoUsed; uiMode = null; flash = null;
+  app.gameId++; app.t0 = d.t0; app.undoUsed = d.undoUsed; uiMode = null; flash = null; app.daily = d.daily && d.daily.no === dailyNo() ? d.daily : null;
   $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = ""; cardInfoSet(null);
   syncTalkClass();
   show(d.mode === "classic" ? "classic" : "x02");
@@ -3663,6 +3722,7 @@ function newPrelude() {
 }
 function startGame(mode, botId) {
   if (app.learn) endLearn();
+  app.daily = null;
   cancelBot();
   if (app.online) stopOnline();
   app.mode = mode;
@@ -3747,6 +3807,7 @@ function onGameEnd(r) {
   store.set("resume", null);
   cardInfoSet(cardFromGame(r));
   if (app.bot && r !== 3 && r !== app.side) dareSet();
+  if (app.daily) dailyEnd(r);
   askWrite();
   recordResult(r);
   clearTimeout(slowTimer);
@@ -4280,7 +4341,7 @@ function statusMain(g) {
   }
   if (!last) {
     const who = g.turn;
-    let m = opp() ? (who === app.side ? t("youStart") : t("botStart", botQ())) : t("symStart", SYM[who]);
+    let m = app.daily ? t("dailyStart") : opp() ? (who === app.side ? t("youStart") : t("botStart", botQ())) : t("symStart", SYM[who]);
     if (g.stars[1] || g.stars[2]) m += t("startStar", g.stars[1] ? "X" : "O");
     return [m, ""];
   }
@@ -5074,7 +5135,8 @@ function bind() {
     else if (a === "closeInstall") closeInstall();
     else if (a === "copyGame") { try { navigator.clipboard.writeText(GAME_URL); toast(t("copied")); } catch (e) {} }
     else if (a === "rules") openRules();
-    else if (a === "again") { if (app.online) onlineRematch(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
+    else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
+    else if (a === "dailyShare") shareDaily();
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
     else if (a === "share") shareInvite();
@@ -5104,6 +5166,7 @@ function bind() {
       else if (act === "login") { openScreen("settings"); setTimeout(showLoginWidget, 50); }
       else if (act === "resume") resumeGame();
       else if (act === "install") doInstall();
+      else if (act === "daily") { homeHere(); startDaily(); }
       else if (act.startsWith("og:")) { homeHere(); joinOnline(act.slice(3)); }
     }
   });

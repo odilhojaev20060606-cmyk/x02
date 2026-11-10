@@ -476,6 +476,8 @@ function coverBanner() {
   const rs = resumeData();
   if (rs) return { cls: "turn", ic: "▶", text: t("resumeBn", rs.botId ? t("q", bt(rs.botId, "name")) : ""), act: "resume" };
   if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
+  const dy = dailyState();
+  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : "", act: "daily" };
   if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
   const tt = totals();
   if (installKind() && !store.get("instAsked", false) && tt.w + tt.l + tt.d >= 3) return { cls: "info", ic: "⌂", text: t("bnHome"), act: "install" };
@@ -771,6 +773,56 @@ function cardInfoSet(info) {
       (TG && tgv("7.8") && TG.shareToStory && serverOn() ? `<button class="btn small" type="button" data-act="shareStory">${t("shareStory")}</button>` : "");
   }
 }
+// ---- puzzle of the day: the same X02.0 position for everyone, beat the bot from it in as few moves as you can
+const DAILY_EPOCH = Date.UTC(2026, 10, 10);
+function dailyNo() { return Math.floor((Date.now() + 5 * 3600000 - DAILY_EPOCH) / 86400000) + 1; }
+function dailyState() { const d = store.get("daily", null); return d && d.no === dailyNo() ? d : { no: dailyNo(), tries: 0, won: false }; }
+function dailyPosition(no, side) {        // generated for X; an O player gets the same position with the colours swapped
+  const g = dailyPositionX(no);
+  if (side === 2) { const sw = v => v === 1 ? 2 : v === 2 ? 1 : v; g.cells = g.cells.map(sw); g.owner = g.owner.map(sw); g.turn = 2; g.stars = [g.stars[0], g.stars[2], g.stars[1]]; }
+  return g;
+}
+function dailyPositionX(no) {
+  const side = 1;
+  for (let salt = 0; salt < 50; salt++) {
+    let x = (no * 7919 + salt * 104729) >>> 0;
+    const rnd = () => { x = (x + 0x6D2B79F5) >>> 0; let z = x; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; };
+    let g = E.newMain(1), placed = 0;
+    while (!g.result && (placed < 12 || g.turn !== side || g.choosing)) {
+      const acts = E.legal(g).filter(a => a < 81 || a >= 300);
+      if (!acts.length || placed > 20) break;
+      const a = acts[Math.floor(rnd() * acts.length)];
+      g = E.apply(g, a); if (a < 81) placed++;
+    }
+    if (!g.result && g.turn === side && !g.choosing && g.owner.filter(o => o === 1 || o === 2).length <= 1) { g.log = []; return g; }
+  }
+  return E.newMain(side);
+}
+function startDaily() {
+  startGame("x02", "x2");
+  const g = dailyPosition(dailyNo(), app.side);
+  app.daily = { no: dailyNo(), start: g.moves };
+  app.history = [{ phase: "main", g }];
+  renderX02(null); saveResume(); kickBot();
+}
+function dailyEnd(r) {
+  const d = dailyState(), g = cur() && cur().g;
+  d.tries++;
+  if (r === app.side && !d.won && g) { d.won = true; d.moves = g.moves - app.daily.start; d.grid = g.owner.slice(); d.side = app.side; }
+  store.set("daily", d);
+  if (d.won) for (const id of ["bannerShare", "cBannerShare"]) { const el = $(id); el.hidden = false; el.innerHTML = `<button class="btn small primary" type="button" data-act="dailyShare">${t("dailyShareBtn")}</button>`; }
+}
+function shareDaily() {
+  const d = dailyState();
+  if (!d.won) return;
+  const em = o => o === d.side ? "🟩" : o === 3 - d.side ? "🟥" : o === 3 ? "⬜" : "▫️";
+  const grid = [0, 3, 6].map(i => d.grid.slice(i, i + 3).map(em).join("")).join("\n");
+  const link = inviteLink(), text = t("dailyText", d.no, grid, d.moves, d.tries) + "\n" + t("dailyTry");
+  const share = "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
+  try { if (TG && TG.openTelegramLink) { TG.openTelegramLink(share); return; } } catch (e) {}
+  if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
+  window.open(share, "_blank", "noopener");
+}
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
     const el = $(id); el.hidden = false;
@@ -923,7 +975,7 @@ function saveResume() {
   const e = cur();
   if (!e) return;
   const over = app.mode === "classic" ? !!e.t.result : (e.phase === "main" && !!e.g.result);
-  store.set("resume", over ? null : { mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: [e], t0: app.t0 || Date.now(), undoUsed: !!app.undoUsed });
+  store.set("resume", over ? null : { mode: app.mode, botId: app.bot ? app.bot.id : "", side: app.side, history: [e], t0: app.t0 || Date.now(), undoUsed: !!app.undoUsed, daily: app.daily || null });
 }
 function resumeData() {
   const d = store.get("resume", null);
@@ -939,7 +991,7 @@ function resumeGame() {
   app.bot = d.botId ? BOTS[d.mode].find(b => b.id === d.botId) || null : null;
   app.side = d.side === 2 ? 2 : 1;
   app.history = d.history;
-  app.gameId++; app.t0 = d.t0; app.undoUsed = d.undoUsed; uiMode = null; flash = null;
+  app.gameId++; app.t0 = d.t0; app.undoUsed = d.undoUsed; uiMode = null; flash = null; app.daily = d.daily && d.daily.no === dailyNo() ? d.daily : null;
   $("bannerReward").innerHTML = ""; $("cBannerReward").innerHTML = ""; cardInfoSet(null);
   syncTalkClass();
   show(d.mode === "classic" ? "classic" : "x02");
@@ -1124,6 +1176,7 @@ function newPrelude() {
 }
 function startGame(mode, botId) {
   if (app.learn) endLearn();
+  app.daily = null;
   cancelBot();
   if (app.online) stopOnline();
   app.mode = mode;
@@ -1208,6 +1261,7 @@ function onGameEnd(r) {
   store.set("resume", null);
   cardInfoSet(cardFromGame(r));
   if (app.bot && r !== 3 && r !== app.side) dareSet();
+  if (app.daily) dailyEnd(r);
   askWrite();
   recordResult(r);
   clearTimeout(slowTimer);
@@ -1741,7 +1795,7 @@ function statusMain(g) {
   }
   if (!last) {
     const who = g.turn;
-    let m = opp() ? (who === app.side ? t("youStart") : t("botStart", botQ())) : t("symStart", SYM[who]);
+    let m = app.daily ? t("dailyStart") : opp() ? (who === app.side ? t("youStart") : t("botStart", botQ())) : t("symStart", SYM[who]);
     if (g.stars[1] || g.stars[2]) m += t("startStar", g.stars[1] ? "X" : "O");
     return [m, ""];
   }
@@ -2535,7 +2589,8 @@ function bind() {
     else if (a === "closeInstall") closeInstall();
     else if (a === "copyGame") { try { navigator.clipboard.writeText(GAME_URL); toast(t("copied")); } catch (e) {} }
     else if (a === "rules") openRules();
-    else if (a === "again") { if (app.online) onlineRematch(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
+    else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
+    else if (a === "dailyShare") shareDaily();
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
     else if (a === "share") shareInvite();
@@ -2565,6 +2620,7 @@ function bind() {
       else if (act === "login") { openScreen("settings"); setTimeout(showLoginWidget, 50); }
       else if (act === "resume") resumeGame();
       else if (act === "install") doInstall();
+      else if (act === "daily") { homeHere(); startDaily(); }
       else if (act.startsWith("og:")) { homeHere(); joinOnline(act.slice(3)); }
     }
   });
