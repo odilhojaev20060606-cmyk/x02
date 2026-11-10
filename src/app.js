@@ -631,6 +631,7 @@ function buildMenu() {
 const BACK_SIDE = ["settings", "shop", "me", "about"];
 function show(screen) {
   const from = app.screen, prevBg = from && from !== screen ? getComputedStyle(document.body).backgroundImage + "|" + getComputedStyle(document.body).backgroundColor : "";
+  if (screen === "menu" && from && from !== "menu") nextAlloma();
   const plan = from && from !== screen ? notebookPlan(from, screen) : null;
   const ov = plan ? notebookOverlays(plan, from, prevBg) : null;
   const go = () => {
@@ -888,28 +889,103 @@ function shouldBridge() {        // wins Nostalgia but has never tried the real 
 }
 // ---- the medallion: one of the great scholars of the land each day, like on the notebook covers
 const ALLOMA = [
-  { n: "Abu Rayhon Beruniy", y: "973–1048", tu: "#f4f1ea", be: "#4a3426", ro: "#3e5f86" },
-  { n: "Abu Ali ibn Sino", y: "980–1037", tu: "#f4f1ea", be: "#3a2a20", ro: "#5b4a7e" },
-  { n: "Muhammad al-Xorazmiy", y: "783–850", tu: "#e9e2cf", be: "#5a4030", ro: "#2f6b5a" },
-  { n: "Mirzo Ulug‘bek", y: "1394–1449", tu: "#f0e9d8", be: "#2e2018", ro: "#7a3b2e" },
-  { n: "Alisher Navoiy", y: "1441–1501", tu: "#f4f1ea", be: "#5c5c5c", ro: "#2f5f86" },
-  { n: "Zahiriddin Muhammad Bobur", y: "1483–1530", tu: "#efe6cf", be: "#2a1d15", ro: "#6b5a2e" },
-  { n: "Ahmad al-Farg‘oniy", y: "797–865", tu: "#ebe4d2", be: "#4d3a2c", ro: "#3b5f7a" },
-  { n: "Amir Temur", y: "1336–1405", tu: "#d8d2c4", be: "#2b1f17", ro: "#7d2f2a" }
+  { id: "tomaris", n: "Tomaris", y: { ru: "VI в. до н. э.", uz: "mil. avv. VI asr", en: "6th c. BC" }, s: "crown" },
+  { id: "spitamen", n: "Spitamen", y: { ru: "? – 328 до н. э.", uz: "? – mil. avv. 328", en: "? – 328 BC" }, s: "bow" },
+  { id: "jaloliddin", n: "Jaloliddin Manguberdi", y: "1199–1231", s: "sword" },
+  { id: "xorazmiy", n: "Muhammad al-Xorazmiy", y: "783–850", s: "algebra" },
+  { id: "fargoniy", n: "Ahmad al-Farg‘oniy", y: "797–865", s: "waves" },
+  { id: "beruniy", n: "Abu Rayhon Beruniy", y: "973–1048", s: "globe" },
+  { id: "ibnsino", n: "Abu Ali ibn Sino", y: "980–1037", s: "bowl" },
+  { id: "ulugbek", n: "Mirzo Ulug‘bek", y: "1394–1449", s: "sextant" },
+  { id: "qushchi", n: "Ali Qushchi", y: "1403–1474", s: "dividers" },
+  { id: "temur", n: "Amir Temur", y: "1336–1405", s: "knight" },
+  { id: "bobur", n: "Zahiriddin Bobur", y: "1483–1530", s: "tree" },
+  { id: "pahlavon", n: "Pahlavon Mahmud", y: "1247–1326", s: "belt" },
+  { id: "lutfiy", n: "Lutfiy", y: "1366–1465", s: "rose" },
+  { id: "navoiy", n: "Alisher Navoiy", y: "1441–1501", s: "quill" },
+  { id: "behzod", n: "Kamoliddin Behzod", y: "1455–1535", s: "palette" },
+  { id: "uvaysiy", n: "Uvaysiy", y: "1781–1845", s: "ikat" },
+  { id: "nodira", n: "Nodira", y: "1792–1842", s: "tulip" },
+  { id: "ogahiy", n: "Ogahiy", y: "1809–1874", s: "scroll" },
+  { id: "muqimiy", n: "Muqimiy", y: "1850–1903", s: "dutar" },
+  { id: "furqat", n: "Furqat", y: "1859–1909", s: "compass" },
+  { id: "behbudiy", n: "Mahmudxo‘ja Behbudiy", y: "1875–1919", s: "masks" },
+  { id: "fitrat", n: "Abdurauf Fitrat", y: "1886–1938", s: "letters" },
+  { id: "qodiriy", n: "Abdulla Qodiriy", y: "1894–1938", s: "book" },
+  { id: "cholpon", n: "Cho‘lpon", y: "1897–1938", s: "dawn" },
+  { id: "zulfiya", n: "Zulfiya", y: "1915–1996", s: "heart" },
+  { id: "buxoriy", n: "Imom al-Buxoriy", y: "810–870", s: "lamp" },
+  { id: "termiziy", n: "Imom at-Termiziy", y: "824–892", s: "minaret" },
+  { id: "moturidiy", n: "Abu Mansur Moturidiy", y: "870–944", s: "star8" },
+  { id: "marginoniy", n: "al-Marg‘inoniy", y: "1123–1197", s: "scales" },
+  { id: "kubro", n: "Najmiddin Kubro", y: "1145–1221", s: "staff" },
+  { id: "naqshband", n: "Bahouddin Naqshband", y: "1318–1389", s: "rosette" }
 ];
-function allomaToday() { return ALLOMA[(dailyNo() + ALLOMA.length * 100) % ALLOMA.length]; }
+// symbols for the medallion: drawn in dark gold, no faces
+const SYM_ART = {
+  crown: `<path d="M24 68 L28 36 L40 52 L50 28 L60 52 L72 36 L76 68 Z" class="f"/><path d="M24 76 H76"/><circle cx="50" cy="26" r="3" class="f"/>`,
+  bow: `<path d="M36 18 C 70 34, 70 66, 36 82"/><path d="M36 18 L36 82" class="th"/><path d="M24 50 H80"/><path d="M72 43 L81 50 L72 57"/><path d="M26 45 L22 50 L26 55"/>`,
+  sword: `<path d="M46 66 V22 L50 13 L54 22 V66 Z" class="f"/><path d="M34 68 H66"/><path d="M50 68 V82"/><circle cx="50" cy="86" r="4" class="f"/>`,
+  algebra: `<text x="50" y="58" class="tx" font-size="40">x²</text><text x="50" y="82" class="tx" font-size="16">1 2 3</text>`,
+  waves: `<path d="M50 18 V82" class="th"/><path d="M44 26 H50 M46 36 H50 M44 46 H50 M46 56 H50 M44 66 H50"/><path d="M18 62 Q26 54 34 62 T50 62 T66 62 T82 62"/><path d="M18 74 Q26 66 34 74 T50 74 T66 74 T82 74"/>`,
+  globe: `<circle cx="50" cy="50" r="28"/><ellipse cx="50" cy="50" rx="12" ry="28"/><path d="M22 50 H78 M27 36 H73 M27 64 H73"/>`,
+  bowl: `<path d="M26 58 H74 C 72 76, 28 76, 26 58 Z" class="f"/><path d="M50 52 C 44 38, 54 26, 66 22 C 66 36, 60 46, 50 52 Z"/><path d="M50 52 L60 32" class="th"/>`,
+  sextant: `<path d="M50 24 L26 74 M50 24 L74 74"/><path d="M26 74 A 52 52 0 0 0 74 74"/><path d="M50 24 L56 70"/><circle cx="50" cy="24" r="4" class="f"/><path d="M33 72 L34 77 M42 75 L42 80 M58 75 L58 80 M67 72 L66 77" class="th"/>`,
+  dividers: `<circle cx="50" cy="22" r="5" class="f"/><path d="M47 26 L32 80 M53 26 L68 80"/><path d="M38 62 Q50 70 62 62" class="th"/>`,
+  knight: `<path d="M34 80 H68 L64 70 C 68 56, 66 40, 56 30 L54 20 L47 29 C 38 31, 30 41, 32 50 L44 50 C 42 57, 39 63, 36 70 Z" class="f"/><circle cx="46" cy="38" r="2.5" fill="#f6e3ad" stroke="none"/>`,
+  tree: `<path d="M50 84 V54"/><circle cx="50" cy="38" r="15" class="f"/><circle cx="36" cy="50" r="10" class="f"/><circle cx="64" cy="50" r="10" class="f"/><path d="M38 84 H62"/>`,
+  belt: `<path d="M18 46 H82 V56 H18 Z" class="f"/><circle cx="50" cy="51" r="7"/><path d="M46 58 L38 80 M54 58 L62 80"/>`,
+  rose: `<circle cx="50" cy="40" r="15"/><path d="M50 40 C 56 40, 56 32, 50 32 C 42 32, 42 46, 50 46 C 60 46, 62 30, 52 27"/><path d="M50 55 V86"/><path d="M50 72 C 40 66, 34 70, 32 74 C 40 78, 46 76, 50 72 Z" class="f"/>`,
+  quill: `<path d="M34 66 H62 L58 84 H38 Z" class="f"/><path d="M52 64 C 56 44, 66 28, 80 16 C 76 34, 68 50, 56 64 Z"/><path d="M52 64 L72 26" class="th"/>`,
+  palette: `<path d="M50 26 C 28 26, 18 42, 22 58 C 26 74, 46 78, 52 70 C 56 64, 50 60, 56 56 C 62 52, 76 58, 78 46 C 80 34, 66 26, 50 26 Z"/><circle cx="38" cy="42" r="4" class="f"/><circle cx="52" cy="38" r="4" class="f"/><circle cx="64" cy="44" r="4" class="f"/><path d="M60 82 L84 30" class="th"/>`,
+  ikat: `<path d="M18 34 L34 24 L50 34 L66 24 L82 34"/><path d="M18 50 L34 40 L50 50 L66 40 L82 50" class="th"/><path d="M18 66 L34 56 L50 66 L66 56 L82 66"/><path d="M34 70 L42 76 L34 82 L26 76 Z M66 70 L74 76 L66 82 L58 76 Z" class="f"/>`,
+  tulip: `<path d="M36 28 C 34 50, 40 58, 50 58 C 60 58, 66 50, 64 28 L57 38 L50 24 L43 38 Z" class="f"/><path d="M50 58 V86"/><path d="M50 76 C 42 70, 34 70, 30 64 C 36 64, 46 66, 50 76 Z" class="f"/>`,
+  scroll: `<path d="M32 26 H70 V74 H32 Z"/><path d="M28 22 H36 V30 H28 Z M28 70 H36 V78 H28 Z" class="f"/><path d="M40 38 H62 M40 48 H62 M40 58 H56" class="th"/>`,
+  dutar: `<ellipse cx="50" cy="68" rx="14" ry="16" class="f"/><path d="M48 14 H52 V54 H48 Z" class="f"/><path d="M44 18 H48 M52 22 H56"/><path d="M47 60 V82 M53 60 V82" stroke="#f6e3ad" stroke-width="1.6"/>`,
+  compass: `<circle cx="50" cy="50" r="28"/><path d="M50 28 L57 50 L50 72 L43 50 Z"/><path d="M50 28 L57 50 L43 50 Z" class="f"/><text x="50" y="20" class="tx" font-size="11">N</text>`,
+  masks: `<path d="M22 30 H48 V50 C 48 64, 22 64, 22 50 Z"/><path d="M28 40 H32 M38 40 H42 M29 52 Q35 57 41 52" class="th"/><path d="M52 40 H78 V60 C 78 74, 52 74, 52 60 Z" class="f"/><path d="M58 50 H62 M68 50 H72 M59 66 Q65 61 71 66" stroke="#f6e3ad" stroke-width="2.4"/>`,
+  letters: `<text x="50" y="64" class="tx" font-size="38">A Б</text><path d="M24 74 H76" class="th"/>`,
+  book: `<path d="M20 32 C 34 28, 44 30, 50 36 C 56 30, 66 28, 80 32 V72 C 66 68, 56 70, 50 76 C 44 70, 34 68, 20 72 Z"/><path d="M50 36 V76" class="th"/><path d="M60 30 V52 L64 47 L68 52 V29" class="f"/>`,
+  dawn: `<path d="M50 20 L55 40 L74 45 L55 50 L50 70 L45 50 L26 45 L45 40 Z" class="f"/><path d="M18 78 H82" /><circle cx="76" cy="24" r="2.5" class="f"/><circle cx="26" cy="66" r="2" class="f"/>`,
+  heart: `<path d="M50 78 C 20 58, 18 36, 32 30 C 42 26, 48 32, 50 38 C 52 32, 58 26, 68 30 C 82 36, 80 58, 50 78 Z" class="f"/>`,
+  lamp: `<path d="M22 62 C 28 76, 66 76, 74 60 L84 56 L70 54 C 62 50, 34 50, 22 62 Z" class="f"/><path d="M80 50 C 76 42, 82 36, 84 28 C 88 36, 88 46, 80 50 Z"/><path d="M40 52 C 40 44, 48 42, 50 50" class="th"/>`,
+  minaret: `<path d="M44 84 V36 H56 V84 Z" class="f"/><path d="M40 36 H60 L56 28 H44 Z"/><path d="M50 28 V16"/><circle cx="50" cy="14" r="3" class="f"/><path d="M44 52 H56 M44 68 H56" stroke="#f6e3ad" stroke-width="2.4"/><path d="M36 84 H64"/>`,
+  star8: `<path d="M30 30 H70 V70 H30 Z"/><path d="M50 22 L78 50 L50 78 L22 50 Z"/><circle cx="50" cy="50" r="8" class="f"/>`,
+  scales: `<path d="M50 22 V80 M36 80 H64 M24 34 H76"/><path d="M24 34 L16 56 H32 Z M76 34 L68 56 H84 Z" class="th"/><path d="M16 56 Q24 64 32 56 M68 56 Q76 64 84 56" class="f"/><circle cx="50" cy="20" r="4" class="f"/>`,
+  staff: `<path d="M50 86 V26"/><path d="M50 26 C 50 14, 66 14, 66 26 C 66 34, 56 34, 56 28"/><path d="M44 56 H56" class="th"/>`,
+  rosette: `<circle cx="50" cy="50" r="28"/><g class="f"><ellipse cx="50" cy="34" rx="5" ry="10"/><ellipse cx="50" cy="66" rx="5" ry="10"/><ellipse cx="34" cy="50" rx="10" ry="5"/><ellipse cx="66" cy="50" rx="10" ry="5"/></g><g class="th"><ellipse cx="50" cy="50" rx="5" ry="16" transform="rotate(45 50 50)"/><ellipse cx="50" cy="50" rx="5" ry="16" transform="rotate(-45 50 50)"/></g><circle cx="50" cy="50" r="4" class="f"/>`
+};
+
+// a new scholar every time you come back to the cover: a shuffled round, no repeats until everyone was shown
+function allomaRound() {
+  let o = store.get("alOrder", null);
+  if (!Array.isArray(o) || o.length !== ALLOMA.length) {
+    o = ALLOMA.map((a, i) => i);
+    for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+    store.set("alOrder", o); store.set("alPos", 0);
+  }
+  return o;
+}
+function allomaToday() { const o = allomaRound(), pos = (store.get("alPos", 0) | 0) % o.length; return ALLOMA[o[pos]] || ALLOMA[0]; }
+function nextAlloma() {
+  const o = allomaRound(); let pos = (store.get("alPos", 0) | 0) + 1;
+  if (pos >= o.length) { store.set("alOrder", null); allomaRound(); pos = 0; }
+  store.set("alPos", pos);
+  const card = $("medCard"); if (card) card.hidden = true;
+  try { renderMedal(); } catch (e) {}
+}
+const allomaYears = a => typeof a.y === "string" ? a.y : (a.y[lang] || a.y.ru);
 function medalFace(a) {
-  return `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 100 C 20 78, 34 70, 50 70 C 66 70, 80 78, 82 100 Z" fill="${a.ro}"/><path d="M40 70 L50 92 L60 70 Z" fill="#e9e1cf"/>` +
-    `<ellipse cx="50" cy="50" rx="14" ry="17" fill="#d9a77c"/><path d="M36 54 C 38 74, 62 74, 64 54 C 60 66, 40 66, 36 54 Z" fill="${a.be}"/>` +
-    `<path d="M33 40 C 33 22, 67 22, 67 40 C 60 34, 40 34, 33 40 Z" fill="${a.tu}"/><path d="M33 40 C 40 36, 60 36, 67 40 L66 44 C 58 40, 42 40, 34 44 Z" fill="rgba(0,0,0,.12)"/></svg>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true" class="msym">${SYM_ART[a.s] || ""}</svg>`;
 }
 function renderMedal() {
   const a = allomaToday(), el = $("medFace");
   if (!el) return;
-  if (el.dataset.k !== a.n) { el.dataset.k = a.n; el.innerHTML = medalFace(a); }
-  $("medName").textContent = a.n; $("medYears").textContent = `(${a.y})`;
+  if (el.dataset.k !== a.id) { el.dataset.k = a.id; el.innerHTML = medalFace(a); }
+  $("medName").textContent = a.n; $("medYears").textContent = `(${allomaYears(a)})`;
+  $("medBtn").classList.toggle("long", a.n.length > 17);
   const card = $("medCard"), facts = t("allomaFacts") || {};
-  if (!card.hidden) card.innerHTML = `<b>${esc(a.n)}</b>${esc(facts[a.n] || "")}`;
+  if (!card.hidden) card.innerHTML = `<b>${esc(a.n)} <small>${esc(allomaYears(a))}</small></b>${esc(facts[a.id] || "")}`;
 }
 function toggleMedal() {
   const card = $("medCard");
