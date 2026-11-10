@@ -936,3 +936,22 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 #sigSubjSuf[hidden] { display: none; }
 .d-lines { width: auto; margin-left: 16px; margin-right: 16px; }
 .dl .hw { max-width: 70%; }
+
+/* the living logo */
+.lg-old { font: 700 30px var(--font-hand); fill: #7a8396; }
+.lg-cross { fill: none; stroke: var(--ink-o); stroke-width: 3.5; stroke-linecap: round; }
+.lg-v { fill: none; stroke: var(--pen); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+.lg-dot { fill: var(--pen); transform-box: fill-box; transform-origin: center bottom; }
+.lg-ul { fill: none; stroke: var(--ink-o); stroke-width: 4; opacity: .55; stroke-linecap: round; }
+.lg-mark path { fill: none; stroke-width: 11.5; stroke-linecap: round; stroke-linejoin: round; animation: none; }
+.lg-mark path.core { stroke-width: 4.5; }
+.lg-mark.mark.fresh path { animation: none; }
+.lg-wig { transform-box: fill-box; transform-origin: center; }
+.lg-wiggle { animation: lgWig .6s ease-in-out; }
+.lg-roll { animation: lgRoll .8s ease-in-out; }
+.lg-hop { animation: lgHop .7s ease-out; }
+@keyframes lgWig { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-8deg); } 75% { transform: rotate(7deg); } }
+@keyframes lgRoll { 0% { transform: translateX(0) rotate(0); } 50% { transform: translateX(5px) rotate(22deg); } 100% { transform: none; } }
+@keyframes lgHop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14px); } 70% { transform: translateY(0); } 85% { transform: translateY(-4px); } }
+.tagline s { color: var(--ink-o); text-decoration-thickness: 2px; }
+.lg-fix { font: 700 18px var(--font-hand); color: var(--ink-x); }

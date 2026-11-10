@@ -495,7 +495,7 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  renderMedal(); renderSig();
+  renderMedal(); renderSig(); renderLogo();
   $("cSub").textContent = !info.logged ? "" : [streakNow() ? "🔥 " + streakNow() : "", tot.w ? t("cardWins", tot.w) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
@@ -642,6 +642,7 @@ function show(screen) {
     try { const c = screen === "menu" || BACK_SIDE.includes(screen) ? "#a8d3f1" : "#f6f7f2"; if (TG && TG.setHeaderColor) TG.setHeaderColor(c); if (TG && TG.setBackgroundColor) TG.setBackgroundColor(c); } catch (e) {}
     window.scrollTo(0, 0);
     tgBack();
+    if (screen === "menu" && logoPending) setTimeout(runLogoIntro, plan ? 650 : 200);
     if (plan === "flip-out" || plan === "flip-back") { const el = $("scr-" + screen); el.classList.remove("fx-flip-in"); void el.offsetWidth; el.classList.add("fx-flip-in"); setTimeout(() => el.classList.remove("fx-flip-in"), 700); }
   };
   go();
@@ -887,6 +888,98 @@ function shouldBridge() {        // wins Nostalgia but has never tried the real 
   const cw = ["c1", "c2", "c3"].reduce((n, id) => n + sc(id).me, 0);
   return cw >= 2 && sum(["x1", "x2", "x3"]) === 0 && (store.get("bridgeShown", 0) | 0) < 3;
 }
+
+// ---- the logo on the cover: X and 0 are drawn with the skins you own, a pen writes it once a day and after a new skin
+const LOGO_P = { two: "M234 52 C 237 27 279 22 285 47 C 291 71 254 93 231 121 L 293 119", zero: "M364 24 C 392 24 401 62 399 86 C 397 112 382 127 360 125 C 337 123 326 99 328 72 C 330 45 343 25 366 27", ul: "M18 142 C 140 133 300 147 424 137" };
+const LOGO_T = { x: [5, 16, 1.15], o: [110, 17, 1.15] };
+let logoBusy = false, logoPending = false, logoIdleN = 0;
+const logoSvgEl = () => document.querySelector("#scr-menu .logo");
+function logoSkinKey() { const e = profile.equip; return [e.xShape, e.xColor, e.oShape, e.oColor, skinRev > 0 ? 1 : 0].slice(0, 4).join("|"); }
+function logoSVG() {
+  const e = profile.equip, sx = { shape: e.xShape, color: e.xColor }, so = { shape: e.oShape, color: e.oColor };
+  const strip = h => h.replace(/ pathLength="1"/g, "");
+  const g = (p, sk, k) => { const [tx, ty, sc] = LOGO_T[k]; return `<g class="lg-mark lg-${k} mark ${p === 1 ? "x" : "o"}${skinClasses(sk)}" transform="translate(${tx} ${ty}) scale(${sc})" data-t="${tx},${ty},${sc}"><g class="lg-wig">${strip(pathsFor(p, 7, false, sk))}</g></g>`; };
+  return `<title id="logoTitle">X02.0</title><text class="lg-old" x="301" y="4" text-anchor="middle">1.0</text><path class="lg-cross" d="M281 -6 Q300 -9 321 -4"/>` +
+    g(1, sx, "x") + g(2, so, "o") +
+    `<path class="lg-v lg-2" d="${LOGO_P.two}"/><circle class="lg-dot" cx="315" cy="116" r="7.5"/><path class="lg-v lg-0" d="${LOGO_P.zero}"/><path class="lg-ul" d="${LOGO_P.ul}"/>` +
+    `<g class="lg-pen" opacity="0"><path d="M0 0 L-6 -22 L6 -22 Z" fill="#2b3a55"/><rect x="-6" y="-70" width="12" height="48" rx="3" fill="#1f3fa8"/><rect x="-6" y="-70" width="12" height="9" rx="2" fill="#c4362f"/></g>`;
+}
+function renderLogo() {
+  const svg = logoSvgEl();
+  if (!svg) return;
+  const key = logoSkinKey();
+  if (svg.dataset.k === key) return;
+  const changed = !!svg.dataset.k || (store.get("logoSkin", "") && store.get("logoSkin", "") !== key);
+  svg.setAttribute("viewBox", "0 -30 440 180");
+  svg.innerHTML = logoSVG(); svg.dataset.k = key;
+  store.set("logoSkin", key);
+  const first = store.get("logoDay", "") !== tashDay(0);
+  if ((first || changed) && !reduce()) { logoPending = true; if (app.screen === "menu") setTimeout(runLogoIntro, 250); }
+}
+function runLogoIntro() {
+  if (!logoPending || logoBusy || app.screen !== "menu" || document.hidden) return;
+  logoPending = false; store.set("logoDay", tashDay(0));
+  logoIntro().catch(() => {}).finally(() => { logoBusy = false; });
+}
+async function logoIntro() {
+  const svg = logoSvgEl(); if (!svg) return;
+  logoBusy = true;
+  const pen = svg.querySelector(".lg-pen"), dot = svg.querySelector(".lg-dot"), old = svg.querySelector(".lg-old"), cross = svg.querySelector(".lg-cross");
+  const all = [...svg.querySelectorAll(".lg-mark path, .lg-v, .lg-ul")];
+  const len = p => { try { return p.getTotalLength(); } catch (e) { return 100; } };
+  all.forEach(p => { const L = len(p); p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+  const cl = len(cross); cross.style.strokeDasharray = cl; cross.style.strokeDashoffset = cl;
+  dot.style.opacity = 0; old.style.opacity = 0;
+  const tag = document.querySelector("#scr-menu .tagline"), tagFinal = tag ? tag.innerHTML : "";
+  if (tag) tag.innerHTML = "&nbsp;";
+  const draw = (paths, ms, tr) => new Promise(res => {
+    const main = paths[0], L = len(main), t0 = performance.now();
+    pen.setAttribute("opacity", 1);
+    const f = now => {
+      if (app.screen !== "menu") { paths.forEach(p => { p.style.strokeDashoffset = 0; }); return res(); }
+      const k = Math.min(1, (now - t0) / ms);
+      paths.forEach(p => { p.style.strokeDashoffset = len(p) * (1 - k); });
+      const pt = main.getPointAtLength(L * k), x = tr ? pt.x * tr[2] + tr[0] : pt.x, y = tr ? pt.y * tr[2] + tr[1] : pt.y;
+      pen.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(18)`);
+      if (k < 1) requestAnimationFrame(f); else res();
+    };
+    requestAnimationFrame(f);
+  });
+  await sleep(250);
+  old.style.transition = "opacity .3s"; old.style.opacity = 1; await sleep(350);
+  cross.style.transition = "stroke-dashoffset .3s"; cross.style.strokeDashoffset = 0; await sleep(380);
+  for (const k of ["x", "o"]) {
+    const grp = svg.querySelector(".lg-" + k), tr = grp.dataset.t.split(",").map(Number);
+    const mains = [...grp.querySelectorAll("path:not(.core)")], cores = [...grp.querySelectorAll("path.core")];
+    SND.play(k === "x" ? "x" : "o", 0.25);
+    for (let i = 0; i < mains.length; i++) await draw([mains[i], ...(cores[i] ? [cores[i]] : [])], k === "x" ? 230 : 420, tr);
+    if (grp.classList.contains("fire")) { try { FX.mark(grp, k === "x" ? 1 : 2); } catch (e) {} }
+  }
+  await draw([svg.querySelector(".lg-2")], 380);
+  dot.style.transition = "opacity .15s"; dot.style.opacity = 1;
+  await draw([svg.querySelector(".lg-0")], 420);
+  await draw([svg.querySelector(".lg-ul")], 360);
+  pen.setAttribute("opacity", 0);
+  if (tag && app.screen === "menu") {
+    const a = t("taglineA"), w = t("taglineWrong"), b = t("taglineB");
+    for (let i = 1; i <= a.length; i += 2) { tag.innerHTML = esc(a.slice(0, i)); await sleep(16); }
+    for (let i = 1; i <= w.length; i += 2) { tag.innerHTML = esc(a) + "<br>" + esc(w.slice(0, i)); await sleep(16); }
+    await sleep(380);
+    tag.innerHTML = esc(a) + "<br><s>" + esc(w) + "</s>"; await sleep(420);
+    tag.innerHTML = esc(a) + "<br><s>" + esc(w) + "</s><br><span class=\"lg-fix\">" + esc(b) + "</span>";
+    await sleep(2200);
+    tag.innerHTML = tagFinal;
+  } else if (tag) tag.innerHTML = tagFinal;
+}
+setInterval(() => {        // now and then the letters come alive
+  if (app.screen !== "menu" || document.hidden || logoBusy || reduce()) return;
+  const svg = logoSvgEl(); if (!svg) return;
+  const acts = [[".lg-x .lg-wig", "lg-wiggle"], [".lg-o .lg-wig", "lg-roll"], [".lg-dot", "lg-hop"]], [sel, cls] = acts[logoIdleN++ % 3];
+  const el = svg.querySelector(sel); if (!el) return;
+  el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls);
+  setTimeout(() => el.classList.remove(cls), 900);
+}, 4200);
+
 // ---- the medallion: one of the great scholars of the land each day, like on the notebook covers
 const ALLOMA = [
   { id: "tomaris", n: "Tomaris", y: { ru: "VI в. до н. э.", uz: "mil. avv. VI asr", en: "6th c. BC" }, s: "crown" },
