@@ -958,11 +958,14 @@ const SYM_ART = {
 
 // a new scholar every time you come back to the cover: a shuffled round, no repeats until everyone was shown
 function allomaRound() {
+  const sub = subjectOf(), key = (sub ? sub.k : "-") + ":" + ALLOMA.length;
   let o = store.get("alOrder", null);
-  if (!Array.isArray(o) || o.length !== ALLOMA.length) {
+  if (!Array.isArray(o) || store.get("alKey", "") !== key) {
     o = ALLOMA.map((a, i) => i);
+    if (sub) for (const id of sub.a) { const i = ALLOMA.findIndex(a => a.id === id); if (i >= 0) o.push(i); }   // linked scholars come twice
     for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
-    store.set("alOrder", o); store.set("alPos", 0);
+    for (let i = 1; i < o.length; i++) if (o[i] === o[i - 1]) { const j = (i + 2) % o.length; [o[i], o[j]] = [o[j], o[i]]; }
+    store.set("alOrder", o); store.set("alKey", key); store.set("alPos", 0);
   }
   return o;
 }
@@ -993,6 +996,24 @@ function toggleMedal() {
   card.hidden = !card.hidden;
   renderMedal();
 }
+// ---- the subject on the cover: scholars linked to it show up twice as often in the medallion
+const SUBJECTS = [
+  { k: "math", n: "Matematika", a: ["xorazmiy", "qushchi", "ulugbek", "beruniy"] },
+  { k: "phys", n: "Fizika", a: ["fargoniy", "ulugbek", "beruniy", "qushchi"] },
+  { k: "astro", n: "Astronomiya", a: ["fargoniy", "ulugbek", "beruniy", "qushchi"] },
+  { k: "bio", n: "Biologiya", a: ["ibnsino", "beruniy"] },
+  { k: "chem", n: "Kimyo", a: ["ibnsino", "beruniy"] },
+  { k: "geo", n: "Geografiya", a: ["beruniy", "bobur", "furqat", "fargoniy"] },
+  { k: "hist", n: "Tarix", a: ["temur", "bobur", "tomaris", "spitamen", "jaloliddin", "ogahiy"] },
+  { k: "lit", n: "Adabiyot", a: ["navoiy", "lutfiy", "qodiriy", "cholpon", "zulfiya", "nodira", "uvaysiy"] },
+  { k: "lang", n: "Ona tili", a: ["navoiy", "fitrat", "qodiriy", "behbudiy"] },
+  { k: "art", n: "Tasviriy san’at", a: ["behzod", "bobur"] },
+  { k: "music", n: "Musiqa", a: ["muqimiy", "uvaysiy", "navoiy"] },
+  { k: "sport", n: "Jismoniy tarbiya", a: ["pahlavon", "spitamen", "jaloliddin"] },
+  { k: "law", n: "Huquq", a: ["marginoniy", "temur"] },
+  { k: "rel", n: "Dinshunoslik", a: ["buxoriy", "termiziy", "moturidiy", "kubro", "naqshband"] }
+];
+const subjectOf = () => { const s = sigData(); return s && SUBJECTS.find(x => x.k === s.subj) || null; };
 // ---- the signature on the cover: school, class and name, written in pen
 function sigData() { const s = store.get("sig", null); return s && typeof s === "object" ? s : null; }
 function renderSig() {
@@ -1000,7 +1021,12 @@ function renderSig() {
   $("sigSchool").textContent = s ? s.school || "" : "";
   $("sigClass").textContent = s ? s.cls || "" : "";
   $("sigName").textContent = s ? s.name || "" : (info.logged ? info.first || info.name || "" : "");
+  const sub = subjectOf();
+  $("sigSubj").textContent = sub ? sub.n : "";
+  $("sigSubjSuf").hidden = !sub;
   $("sigHint").textContent = s ? "" : t("sigHint");
+  $("sigNote").textContent = s && s.note ? s.note : "";
+  $("noteHint").textContent = s && !s.note ? t("noteHint") : "";
 }
 function openSign() {
   const s = sigData() || {}, info = playerInfo();
@@ -1011,6 +1037,9 @@ function openSign() {
     <label>${t("sigSchool")}<input id="sgSchool" maxlength="6" inputmode="numeric" value="${val(s.school)}" placeholder="47"></label>
     <label>${t("sigClass")}<input id="sgClass" maxlength="8" value="${val(s.cls)}" placeholder="7 «B»"></label>
     <label>${t("sigName")}<input id="sgName" maxlength="40" value="${val(s.name || (info.logged ? [info.first, ""].join("") || info.name : ""))}" placeholder="${val(t("sigNamePh"))}"></label>
+    <label>${t("sigSubject")}<select id="sgSubj"><option value="">${t("sigSubjectNone")}</option>${SUBJECTS.map(x => `<option value="${x.k}"${s.subj === x.k ? " selected" : ""}>${esc(x.n)}</option>`).join("")}</select></label>
+    <label>${t("sigNote")}<input id="sgNote" maxlength="60" value="${val(s.note)}" placeholder="${val(t("sigNotePh"))}"></label>
+    <p class="sign-tip">${t("sigNoteTip")}</p>
     <p class="sign-err" id="sgErr" hidden>${t("sigNeedName")}</p>
     <button class="btn primary big" type="button" data-act="signSave">${t("sigSave")}${sigData() || (profile.bonus || []).includes("sign") ? "" : " · +" + BONUS.sign}</button>
     <button class="btn big" type="button" data-act="signLater">${t("later")}</button></div>`;
@@ -1020,12 +1049,18 @@ function openSign() {
 async function saveSign() {
   const v = id => ($(id).value || "").trim().slice(0, 40);
   if (!v("sgName")) { $("sgErr").hidden = false; $("sgName").focus(); return; }
-  const first = !sigData();
-  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName") });
+  const first = !sigData(), old = sigData() || {}, note = v("sgNote").slice(0, 60);
+  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName"), subj: $("sgSubj").value || "", note });
+  if (note && note !== old.note) sendNote(note);
+  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); }
   $("signSheet").hidden = true;
   renderSig();
   SND.play("star", 0.35);
   if (first) { const n = await claimBonus("sign"); if (n) toast(t("bonusGot", n)); }
+}
+async function sendNote(text) {        // the comment line is also a note to the author: the bot forwards it
+  if (!serverOn()) return;
+  try { const r = await apiCall("/api/note", { text, name: (sigData() || {}).name || "" }); if (r && r.ok) toast(t("noteSent")); else if (r && r.error === "slow") toast(t("noteSlow")); } catch (e) {}
 }
 function addMultTables() {        // the back of the notebook: a faded multiplication table on top
   for (const id of BACK_SIDE) {

@@ -957,6 +957,10 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .d-flap { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 0 100%); background: linear-gradient(135deg, #ffffff 0%, #eaf1f6 45%, #c9d7e2 100%); filter: drop-shadow(2px 2px 2px rgba(20,40,70,.25)); }
 .fx-cover .d-fold { position: absolute; }
 .d-fold { display: none; } body.on-cover .d-fold { display: block; }
+.sign-card select { font: 700 22px/1.1 var(--font-hand); color: var(--ink-x); border: 0; border-bottom: 1.5px solid var(--pen); background: transparent; padding: 4px 0; outline: none; }
+.sign-tip { font-size: 12px !important; }
+.hw.note { font-size: 19px; }
+#sigSubjSuf[hidden] { display: none; }
 
 </style>
 </head>
@@ -993,8 +997,8 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
       <button class="cbanner" type="button" id="coverBanner" hidden></button>
       <div class="d-title">DAFTAR</div>
       <button class="d-lines" type="button" id="sigBtn" data-act="sign">
-        <span class="dl"></span>
-        <span class="dl"><span class="sig-hint" id="sigHint"></span></span>
+        <span class="dl"><span class="hw" id="sigSubj"></span><i id="sigSubjSuf" hidden>fanidan</i><span class="sig-hint" id="sigHint"></span></span>
+        <span class="dl"><span class="hw note" id="sigNote"></span><span class="sig-hint" id="noteHint"></span></span>
         <span class="dl"><span class="hw" id="sigSchool"></span><i>-sonli maktabning</i><span class="hw push" id="sigClass"></span><i>-sinf</i></span>
         <span class="dl"><i>o‘quvchisi</i><span class="hw" id="sigName"></span><span class="dl-meta" id="cSub"></span></span>
       </button>
@@ -2015,7 +2019,7 @@ ru: {
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
   profileIc: 'Профиль', sigHint: 'Нажми, чтобы подписать тетрадь ✍️', sigTitle: 'Подпиши тетрадь', sigSub: 'Как в школе: номер школы, класс и имя. Подпись останется на обложке.',
-  sigSchool: 'Номер школы', sigClass: 'Класс', sigName: 'Имя и фамилия', sigNamePh: 'Имя Фамилия', sigNeedName: 'Напиши хотя бы имя', sigSave: 'Подписать',
+  sigSchool: 'Номер школы', sigClass: 'Класс', sigName: 'Имя и фамилия', sigNamePh: 'Имя Фамилия', sigNeedName: 'Напиши хотя бы имя', sigSave: 'Подписать', sigSubject: 'Предмет', sigSubjectNone: '— не выбран —', sigNote: 'Комментарий', sigNotePh: 'Любые слова', sigNoteTip: 'Предмет решает, кто чаще появляется в медальоне. Комментарий увидит автор игры.', noteHint: 'Напиши что угодно… автор прочитает ✍️', noteSent: 'Автор получил твой комментарий ✍️', noteSlow: 'Комментарий сохранён. Автору можно писать раз в час.',
   allomaFacts: {
     tomaris: "Царица кочевников-массагетов. По преданию, разбила войско персидского царя Кира Великого, покорителя полумира.",
     spitamen: "Согдийский полководец. Несколько лет воевал против армии Александра Македонского и стал символом свободы.",
@@ -2279,7 +2283,7 @@ uz: {
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
   profileIc: 'Profil', sigHint: 'Daftarni imzolash uchun bosing ✍️', sigTitle: 'Daftarni imzola', sigSub: "Maktabdagidek: maktab raqami, sinf va ism. Imzo muqovada qoladi.",
-  sigSchool: 'Maktab raqami', sigClass: 'Sinf', sigName: 'Ism va familiya', sigNamePh: 'Ism Familiya', sigNeedName: 'Hech bo‘lmasa ismingizni yozing', sigSave: 'Imzolash',
+  sigSchool: 'Maktab raqami', sigClass: 'Sinf', sigName: 'Ism va familiya', sigNamePh: 'Ism Familiya', sigNeedName: 'Hech bo‘lmasa ismingizni yozing', sigSave: 'Imzolash', sigSubject: 'Fan', sigSubjectNone: '— tanlanmagan —', sigNote: 'Izoh', sigNotePh: 'Istalgan so‘zlar', sigNoteTip: 'Fan medalyonda kim ko‘proq chiqishini belgilaydi. Izohni o‘yin muallifi ko‘radi.', noteHint: 'Istalgan narsani yoz… muallif o‘qiydi ✍️', noteSent: 'Muallif izohingni oldi ✍️', noteSlow: 'Izoh saqlandi. Muallifga soatiga bir marta yozish mumkin.',
   allomaFacts: {
     tomaris: "Massagetlar malikasi. Rivoyatga ko‘ra, dunyoning yarmini bosib olgan Fors shohi Kir qo‘shinini tor-mor etgan.",
     spitamen: "Sug‘d sarkardasi. Bir necha yil Iskandar Zulqarnayn qo‘shiniga qarshi kurashgan va ozodlik ramziga aylangan.",
@@ -2543,7 +2547,7 @@ en: {
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
   profileIc: 'Profile', sigHint: 'Tap to sign your notebook ✍️', sigTitle: 'Sign your notebook', sigSub: 'Like at school: school number, class and name. The signature stays on the cover.',
-  sigSchool: 'School number', sigClass: 'Class', sigName: 'Name', sigNamePh: 'First Last', sigNeedName: 'Write at least your name', sigSave: 'Sign',
+  sigSchool: 'School number', sigClass: 'Class', sigName: 'Name', sigNamePh: 'First Last', sigNeedName: 'Write at least your name', sigSave: 'Sign', sigSubject: 'Subject', sigSubjectNone: '— none —', sigNote: 'Comment', sigNotePh: 'Any words', sigNoteTip: 'The subject decides who shows up more often in the medallion. The game’s author reads the comment.', noteHint: 'Write anything… the author reads it ✍️', noteSent: 'The author got your comment ✍️', noteSlow: 'Comment saved. You can write to the author once an hour.',
   allomaFacts: {
     tomaris: "Queen of the nomadic Massagetae. Legend says she defeated the army of Cyrus the Great, conqueror of half the world.",
     spitamen: "A Sogdian commander who fought Alexander the Great's army for years and became a symbol of freedom.",
@@ -2814,7 +2818,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v16.2";
+const APP_VERSION = "v16.3";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3759,11 +3763,14 @@ const SYM_ART = {
 
 // a new scholar every time you come back to the cover: a shuffled round, no repeats until everyone was shown
 function allomaRound() {
+  const sub = subjectOf(), key = (sub ? sub.k : "-") + ":" + ALLOMA.length;
   let o = store.get("alOrder", null);
-  if (!Array.isArray(o) || o.length !== ALLOMA.length) {
+  if (!Array.isArray(o) || store.get("alKey", "") !== key) {
     o = ALLOMA.map((a, i) => i);
+    if (sub) for (const id of sub.a) { const i = ALLOMA.findIndex(a => a.id === id); if (i >= 0) o.push(i); }   // linked scholars come twice
     for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
-    store.set("alOrder", o); store.set("alPos", 0);
+    for (let i = 1; i < o.length; i++) if (o[i] === o[i - 1]) { const j = (i + 2) % o.length; [o[i], o[j]] = [o[j], o[i]]; }
+    store.set("alOrder", o); store.set("alKey", key); store.set("alPos", 0);
   }
   return o;
 }
@@ -3794,6 +3801,24 @@ function toggleMedal() {
   card.hidden = !card.hidden;
   renderMedal();
 }
+// ---- the subject on the cover: scholars linked to it show up twice as often in the medallion
+const SUBJECTS = [
+  { k: "math", n: "Matematika", a: ["xorazmiy", "qushchi", "ulugbek", "beruniy"] },
+  { k: "phys", n: "Fizika", a: ["fargoniy", "ulugbek", "beruniy", "qushchi"] },
+  { k: "astro", n: "Astronomiya", a: ["fargoniy", "ulugbek", "beruniy", "qushchi"] },
+  { k: "bio", n: "Biologiya", a: ["ibnsino", "beruniy"] },
+  { k: "chem", n: "Kimyo", a: ["ibnsino", "beruniy"] },
+  { k: "geo", n: "Geografiya", a: ["beruniy", "bobur", "furqat", "fargoniy"] },
+  { k: "hist", n: "Tarix", a: ["temur", "bobur", "tomaris", "spitamen", "jaloliddin", "ogahiy"] },
+  { k: "lit", n: "Adabiyot", a: ["navoiy", "lutfiy", "qodiriy", "cholpon", "zulfiya", "nodira", "uvaysiy"] },
+  { k: "lang", n: "Ona tili", a: ["navoiy", "fitrat", "qodiriy", "behbudiy"] },
+  { k: "art", n: "Tasviriy san’at", a: ["behzod", "bobur"] },
+  { k: "music", n: "Musiqa", a: ["muqimiy", "uvaysiy", "navoiy"] },
+  { k: "sport", n: "Jismoniy tarbiya", a: ["pahlavon", "spitamen", "jaloliddin"] },
+  { k: "law", n: "Huquq", a: ["marginoniy", "temur"] },
+  { k: "rel", n: "Dinshunoslik", a: ["buxoriy", "termiziy", "moturidiy", "kubro", "naqshband"] }
+];
+const subjectOf = () => { const s = sigData(); return s && SUBJECTS.find(x => x.k === s.subj) || null; };
 // ---- the signature on the cover: school, class and name, written in pen
 function sigData() { const s = store.get("sig", null); return s && typeof s === "object" ? s : null; }
 function renderSig() {
@@ -3801,7 +3826,12 @@ function renderSig() {
   $("sigSchool").textContent = s ? s.school || "" : "";
   $("sigClass").textContent = s ? s.cls || "" : "";
   $("sigName").textContent = s ? s.name || "" : (info.logged ? info.first || info.name || "" : "");
+  const sub = subjectOf();
+  $("sigSubj").textContent = sub ? sub.n : "";
+  $("sigSubjSuf").hidden = !sub;
   $("sigHint").textContent = s ? "" : t("sigHint");
+  $("sigNote").textContent = s && s.note ? s.note : "";
+  $("noteHint").textContent = s && !s.note ? t("noteHint") : "";
 }
 function openSign() {
   const s = sigData() || {}, info = playerInfo();
@@ -3812,6 +3842,9 @@ function openSign() {
     <label>${t("sigSchool")}<input id="sgSchool" maxlength="6" inputmode="numeric" value="${val(s.school)}" placeholder="47"></label>
     <label>${t("sigClass")}<input id="sgClass" maxlength="8" value="${val(s.cls)}" placeholder="7 «B»"></label>
     <label>${t("sigName")}<input id="sgName" maxlength="40" value="${val(s.name || (info.logged ? [info.first, ""].join("") || info.name : ""))}" placeholder="${val(t("sigNamePh"))}"></label>
+    <label>${t("sigSubject")}<select id="sgSubj"><option value="">${t("sigSubjectNone")}</option>${SUBJECTS.map(x => `<option value="${x.k}"${s.subj === x.k ? " selected" : ""}>${esc(x.n)}</option>`).join("")}</select></label>
+    <label>${t("sigNote")}<input id="sgNote" maxlength="60" value="${val(s.note)}" placeholder="${val(t("sigNotePh"))}"></label>
+    <p class="sign-tip">${t("sigNoteTip")}</p>
     <p class="sign-err" id="sgErr" hidden>${t("sigNeedName")}</p>
     <button class="btn primary big" type="button" data-act="signSave">${t("sigSave")}${sigData() || (profile.bonus || []).includes("sign") ? "" : " · +" + BONUS.sign}</button>
     <button class="btn big" type="button" data-act="signLater">${t("later")}</button></div>`;
@@ -3821,12 +3854,18 @@ function openSign() {
 async function saveSign() {
   const v = id => ($(id).value || "").trim().slice(0, 40);
   if (!v("sgName")) { $("sgErr").hidden = false; $("sgName").focus(); return; }
-  const first = !sigData();
-  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName") });
+  const first = !sigData(), old = sigData() || {}, note = v("sgNote").slice(0, 60);
+  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName"), subj: $("sgSubj").value || "", note });
+  if (note && note !== old.note) sendNote(note);
+  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); }
   $("signSheet").hidden = true;
   renderSig();
   SND.play("star", 0.35);
   if (first) { const n = await claimBonus("sign"); if (n) toast(t("bonusGot", n)); }
+}
+async function sendNote(text) {        // the comment line is also a note to the author: the bot forwards it
+  if (!serverOn()) return;
+  try { const r = await apiCall("/api/note", { text, name: (sigData() || {}).name || "" }); if (r && r.ok) toast(t("noteSent")); else if (r && r.error === "slow") toast(t("noteSlow")); } catch (e) {}
 }
 function addMultTables() {        // the back of the notebook: a faded multiplication table on top
   for (const id of BACK_SIDE) {

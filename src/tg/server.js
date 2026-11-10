@@ -196,6 +196,7 @@ async function ensureSchema(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS challenges (code TEXT PRIMARY KEY, host INTEGER, mode TEXT, minutes INTEGER, inline_id TEXT, game TEXT, created INTEGER)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS challenges_game ON challenges(game)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_members (chat INTEGER, uid INTEGER, t INTEGER, PRIMARY KEY (chat, uid))"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, t INTEGER, text TEXT)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS games_done ON games(status, updated)"),
   ]);
   schemaReady = true;
@@ -791,6 +792,21 @@ async function api(request, env, path) {
     p.clips += BONUS[kind];
     await putProfile(env, user.id, p, metaOf(user));
     return json({ ...publicProfile(p), paid: BONUS[kind] });
+  }
+
+  if (path === "/api/note") {        // the comment line on the cover: forwarded to the owner, at most once an hour per player
+    const text = String(body.text || "").replace(/\s+/g, " ").trim().slice(0, 60);
+    if (!text || !env.DB) return json({ error: "bad" }, 400);
+    await ensureSchema(env);
+    const now = Date.now(), last = await env.DB.prepare("SELECT MAX(t) AS t FROM notes WHERE uid = ?").bind(user.id).first();
+    if (last && last.t && now - last.t < 3600000) return json({ error: "slow" });
+    await env.DB.prepare("INSERT INTO notes (uid, t, text) VALUES (?, ?, ?)").bind(user.id, now, text).run();
+    const owner = await getMeta(env, "owner");
+    if (owner) {
+      const who = [user.first_name, user.last_name].filter(Boolean).join(" ") || String(body.name || "").slice(0, 40) || "Player";
+      try { await tg(env, "sendMessage", { chat_id: Number(owner), text: `✍️ Комментарий с обложки от ${who}${user.username ? " @" + user.username : ""} (id ${user.id}):\n\n${text}` }); } catch (e) {}
+    }
+    return json({ ok: true });
   }
 
   if (path === "/api/streak") {        // daily visit: the reward grows each day in a row, day 7 brings a fire skin

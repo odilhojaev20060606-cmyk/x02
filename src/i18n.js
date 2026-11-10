@@ -12,7 +12,7 @@ ru: {
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
   profileIc: 'Профиль', sigHint: 'Нажми, чтобы подписать тетрадь ✍️', sigTitle: 'Подпиши тетрадь', sigSub: 'Как в школе: номер школы, класс и имя. Подпись останется на обложке.',
-  sigSchool: 'Номер школы', sigClass: 'Класс', sigName: 'Имя и фамилия', sigNamePh: 'Имя Фамилия', sigNeedName: 'Напиши хотя бы имя', sigSave: 'Подписать',
+  sigSchool: 'Номер школы', sigClass: 'Класс', sigName: 'Имя и фамилия', sigNamePh: 'Имя Фамилия', sigNeedName: 'Напиши хотя бы имя', sigSave: 'Подписать', sigSubject: 'Предмет', sigSubjectNone: '— не выбран —', sigNote: 'Комментарий', sigNotePh: 'Любые слова', sigNoteTip: 'Предмет решает, кто чаще появляется в медальоне. Комментарий увидит автор игры.', noteHint: 'Напиши что угодно… автор прочитает ✍️', noteSent: 'Автор получил твой комментарий ✍️', noteSlow: 'Комментарий сохранён. Автору можно писать раз в час.',
   allomaFacts: {
     tomaris: "Царица кочевников-массагетов. По преданию, разбила войско персидского царя Кира Великого, покорителя полумира.",
     spitamen: "Согдийский полководец. Несколько лет воевал против армии Александра Македонского и стал символом свободы.",
@@ -276,7 +276,7 @@ uz: {
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
   profileIc: 'Profil', sigHint: 'Daftarni imzolash uchun bosing ✍️', sigTitle: 'Daftarni imzola', sigSub: "Maktabdagidek: maktab raqami, sinf va ism. Imzo muqovada qoladi.",
-  sigSchool: 'Maktab raqami', sigClass: 'Sinf', sigName: 'Ism va familiya', sigNamePh: 'Ism Familiya', sigNeedName: 'Hech bo‘lmasa ismingizni yozing', sigSave: 'Imzolash',
+  sigSchool: 'Maktab raqami', sigClass: 'Sinf', sigName: 'Ism va familiya', sigNamePh: 'Ism Familiya', sigNeedName: 'Hech bo‘lmasa ismingizni yozing', sigSave: 'Imzolash', sigSubject: 'Fan', sigSubjectNone: '— tanlanmagan —', sigNote: 'Izoh', sigNotePh: 'Istalgan so‘zlar', sigNoteTip: 'Fan medalyonda kim ko‘proq chiqishini belgilaydi. Izohni o‘yin muallifi ko‘radi.', noteHint: 'Istalgan narsani yoz… muallif o‘qiydi ✍️', noteSent: 'Muallif izohingni oldi ✍️', noteSlow: 'Izoh saqlandi. Muallifga soatiga bir marta yozish mumkin.',
   allomaFacts: {
     tomaris: "Massagetlar malikasi. Rivoyatga ko‘ra, dunyoning yarmini bosib olgan Fors shohi Kir qo‘shinini tor-mor etgan.",
     spitamen: "Sug‘d sarkardasi. Bir necha yil Iskandar Zulqarnayn qo‘shiniga qarshi kurashgan va ozodlik ramziga aylangan.",
@@ -540,7 +540,7 @@ en: {
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
   profileIc: 'Profile', sigHint: 'Tap to sign your notebook ✍️', sigTitle: 'Sign your notebook', sigSub: 'Like at school: school number, class and name. The signature stays on the cover.',
-  sigSchool: 'School number', sigClass: 'Class', sigName: 'Name', sigNamePh: 'First Last', sigNeedName: 'Write at least your name', sigSave: 'Sign',
+  sigSchool: 'School number', sigClass: 'Class', sigName: 'Name', sigNamePh: 'First Last', sigNeedName: 'Write at least your name', sigSave: 'Sign', sigSubject: 'Subject', sigSubjectNone: '— none —', sigNote: 'Comment', sigNotePh: 'Any words', sigNoteTip: 'The subject decides who shows up more often in the medallion. The game’s author reads the comment.', noteHint: 'Write anything… the author reads it ✍️', noteSent: 'The author got your comment ✍️', noteSlow: 'Comment saved. You can write to the author once an hour.',
   allomaFacts: {
     tomaris: "Queen of the nomadic Massagetae. Legend says she defeated the army of Cyrus the Great, conqueror of half the world.",
     spitamen: "A Sogdian commander who fought Alexander the Great's army for years and became a symbol of freedom.",
