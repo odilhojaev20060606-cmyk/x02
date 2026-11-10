@@ -949,6 +949,15 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .d-med.long .d-band { font-size: 10.5px; }
 .med-card b small { font: 500 13px var(--font-body); color: #9c7a3a; }
 
+/* the folded corner, redone: a clean flap over a grid page, right in the screen corner */
+.d-fold, .in-tg .d-fold { position: fixed; right: 0; bottom: 0; width: 54px; height: 54px; background: none !important; clip-path: none !important; pointer-events: none; z-index: 5; }
+.d-fold::before, .d-fold::after, .d-fold svg { display: none !important; }
+.d-under { position: absolute; inset: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background-color: #f7f8f3; background-image: linear-gradient(315deg, rgba(20,40,70,0) 45%, rgba(20,40,70,.16) 100%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 100% 100%, 9px 9px, 9px 9px; }
+.d-flap { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 0 100%); background: linear-gradient(135deg, #ffffff 0%, #eaf1f6 45%, #c9d7e2 100%); filter: drop-shadow(2px 2px 2px rgba(20,40,70,.25)); }
+.fx-cover .d-fold { position: absolute; }
+.d-fold { display: none; } body.on-cover .d-fold { display: block; }
+
 </style>
 </head>
 <body>
@@ -984,7 +993,7 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
       <button class="cbanner" type="button" id="coverBanner" hidden></button>
       <div class="d-title">DAFTAR</div>
       <button class="d-lines" type="button" id="sigBtn" data-act="sign">
-        <span class="dl c"><span class="hw">X02.0</span></span>
+        <span class="dl"></span>
         <span class="dl"><span class="sig-hint" id="sigHint"></span></span>
         <span class="dl"><span class="hw" id="sigSchool"></span><i>-sonli maktabning</i><span class="hw push" id="sigClass"></span><i>-sinf</i></span>
         <span class="dl"><i>o‘quvchisi</i><span class="hw" id="sigName"></span><span class="dl-meta" id="cSub"></span></span>
@@ -1001,7 +1010,6 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
       </nav>
       <div hidden><span id="cAva"></span><span id="cName"></span><span id="cFriends"></span><button type="button" id="coverBot"><span id="coverFace"></span><span id="coverSay"></span></button></div>
     </div>
-    <div class="d-fold" aria-hidden="true"><svg viewBox="-6 -6 76 76"><path d="M1 2 L63 1 L1 63 Z" fill="rgba(20,40,70,.2)" transform="translate(2.5 2.5)"/><path d="M0 0 L64 0 L0 64 Z" fill="#e4ecf2"/><path d="M0 0 L64 0 L0 64 Z" fill="url(#foldShade)"/><path d="M64 0 L0 64" stroke="rgba(45,62,92,.3)"/><defs><linearGradient id="foldShade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#9fb2c2" stop-opacity=".6"/></linearGradient></defs></svg></div>
   </section>
 
   <!-- ================= MODE: X02.0 ================= -->
@@ -1313,6 +1321,7 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 </div>
 
 <canvas id="confetti" aria-hidden="true"></canvas>
+<div class="d-fold" aria-hidden="true"><i class="d-under"></i><i class="d-flap"></i></div>
 
 <script>
 // X02.0 engine: rules for the main game, the classic 3x3 game, and the bots.
@@ -2805,7 +2814,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v16.1";
+const APP_VERSION = "v16.2";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };

@@ -921,3 +921,12 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .msym .tx { fill: #7a5410; stroke: none; font-family: "Times New Roman", Tinos, serif; font-style: italic; font-weight: 700; text-anchor: middle; }
 .d-med.long .d-band { font-size: 10.5px; }
 .med-card b small { font: 500 13px var(--font-body); color: #9c7a3a; }
+
+/* the folded corner, redone: a clean flap over a grid page, right in the screen corner */
+.d-fold, .in-tg .d-fold { position: fixed; right: 0; bottom: 0; width: 54px; height: 54px; background: none !important; clip-path: none !important; pointer-events: none; z-index: 5; }
+.d-fold::before, .d-fold::after, .d-fold svg { display: none !important; }
+.d-under { position: absolute; inset: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  background-color: #f7f8f3; background-image: linear-gradient(315deg, rgba(20,40,70,0) 45%, rgba(20,40,70,.16) 100%), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 100% 100%, 9px 9px, 9px 9px; }
+.d-flap { position: absolute; inset: 0; clip-path: polygon(0 0, 100% 0, 0 100%); background: linear-gradient(135deg, #ffffff 0%, #eaf1f6 45%, #c9d7e2 100%); filter: drop-shadow(2px 2px 2px rgba(20,40,70,.25)); }
+.fx-cover .d-fold { position: absolute; }
+.d-fold { display: none; } body.on-cover .d-fold { display: block; }
