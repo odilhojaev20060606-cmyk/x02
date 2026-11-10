@@ -1786,9 +1786,47 @@ async function onUpdate(env, update) {
   });
 }
 
+// ---- bot settings (webhook, commands, menu button, description): applied by itself after a deploy that changes SETUP_VER
+const SETUP_VER = "15.1";
+const BOT_INFO = {
+  ru: { cmd: [["start", "Играть"], ["top", "Рейтинг недели"], ["paysupport", "Помощь с оплатой"]],
+    short: "Крестики-нолики 2.0 — игра сложнее шахмат 🧠",
+    desc: "X02.0 — крестики-нолики 2.0. Девять досок в одной, звёзды и зачёркивания: игра сложнее шахмат.\n\nИграй с ботами и друзьями прямо в Telegram, решай головоломку дня и стань королём своего чата." },
+  uz: { cmd: [["start", "O'ynash"], ["top", "Hafta reytingi"], ["paysupport", "To'lov bo'yicha yordam"]],
+    short: "Iks-nol 2.0 — shaxmatdan ham qiyin o'yin 🧠",
+    desc: "X02.0 — iks-nol 2.0. Bitta doskada to'qqizta doska, yulduzlar va o'chirishlar: shaxmatdan ham qiyin o'yin.\n\nBotlar va do'stlar bilan Telegramda o'ynang, kun jumbog'ini yeching va chatingiz qiroli bo'ling." },
+  en: { cmd: [["start", "Play"], ["top", "Weekly ranking"], ["paysupport", "Payment help"]],
+    short: "Tic-tac-toe 2.0 — a game harder than chess 🧠",
+    desc: "X02.0 — tic-tac-toe 2.0. Nine boards in one, stars and strikes: a game harder than chess.\n\nPlay bots and friends right in Telegram, solve the puzzle of the day and become the king of your chat." },
+};
+async function botSetup(env, origin, drop) {
+  const res = await tg(env, "setWebhook", {
+    url: `${env.PUBLIC_ORIGIN || origin}/hook`, secret_token: env.WEBHOOK_SECRET,
+    allowed_updates: ["message", "pre_checkout_query", "inline_query", "chosen_inline_result"], drop_pending_updates: !!drop,
+  });
+  for (const [lc, b] of Object.entries(BOT_INFO)) {
+    const extra = lc === "ru" ? {} : { language_code: lc };
+    await tg(env, "setMyCommands", { commands: b.cmd.map(([command, description]) => ({ command, description })), ...extra });
+    await tg(env, "setMyShortDescription", { short_description: b.short, ...extra });
+    await tg(env, "setMyDescription", { description: b.desc, ...extra });
+  }
+  await tg(env, "setChatMenuButton", { menu_button: { type: "web_app", text: "▶ X02.0", web_app: { url: GAME_URL } } });
+  return res;
+}
+let setupChecked = false;
+async function autoSetup(env, origin) {
+  if (!env.BOT_TOKEN || !env.WEBHOOK_SECRET || !env.DB) return;
+  await ensureSchema(env);
+  if (String(await getMeta(env, "setupVer")) === SETUP_VER) return;
+  await setMeta(env, "setupVer", SETUP_VER);        // first, so parallel requests don't repeat it
+  const res = await botSetup(env, origin, false);
+  if (!res || !res.ok) await setMeta(env, "setupVer", "failed");
+}
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (!setupChecked && ctx && ctx.waitUntil) { setupChecked = true; ctx.waitUntil(autoSetup(env, url.origin).catch(() => { setupChecked = false; })); }
 
     if (url.pathname.startsWith("/api/")) {
       if (request.method === "OPTIONS") return new Response(null, { headers: cors });
@@ -1803,13 +1841,7 @@ export default {
       const plain = { headers: { "content-type": "text/plain; charset=utf-8" } };
       if (!env.BOT_TOKEN || !env.WEBHOOK_SECRET) return new Response("Нет секретов BOT_TOKEN / WEBHOOK_SECRET", { status: 500, ...plain });
       if (url.searchParams.get("key") !== env.WEBHOOK_SECRET) return new Response("Неверный key", { status: 403, ...plain });
-      const res = await tg(env, "setWebhook", {
-        url: `${url.origin}/hook`,
-        secret_token: env.WEBHOOK_SECRET,
-        allowed_updates: ["message", "pre_checkout_query", "inline_query", "chosen_inline_result"],
-        drop_pending_updates: true,
-      });
-      await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Начать" }, { command: "top", description: "Рейтинг недели" }, { command: "paysupport", description: "Помощь с оплатой" }] });
+      const res = await botSetup(env, url.origin, true);
       let db = "База D1 (DB) не подключена ❌ (игра с друзьями и статистика не будут работать)";
       if (env.DB) { try { await ensureSchema(env); db = "База D1 подключена ✅"; } catch (e) { db = "Ошибка базы D1: " + e.message; } }
       const kv = env.WALLET ? "KV подключён ✅" : "KV не подключён (это нормально, если всё уже в D1)";
