@@ -1010,6 +1010,16 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .btn.gold-btn .ico-coin circle { fill: url(#coinFace); }
 .inst-lab em .ico-coin { width: 14px; height: 14px; vertical-align: -2px; }
 
+/* golden marks: a gold bar with a running glint */
+.mark.gold path, .overlay.gold path, .fly.gold path { stroke: url(#goldMetal); }
+.mark.gold path.gb, .overlay.gold path.gb, .fly.gold path.gb { stroke: #6b4300; stroke-width: 13; }
+.mark.gold path.gg, .overlay.gold path.gg, .fly.gold path.gg { stroke: url(#goldGlint); stroke-width: 4.5; }
+.overlay.gold path.gb { stroke-width: 10; } .overlay.gold path.gg { stroke-width: 3.5; }
+.mark.gold { animation: none; filter: none; }
+.mark.gold.fresh { animation: goldPop .6s cubic-bezier(.3,1.6,.5,1); }
+.mark.gold.fresh path { animation-delay: 0s !important; }
+.lg-mark.gold path { stroke-width: 11.5; } .lg-mark.gold path.gb { stroke-width: 16; } .lg-mark.gold path.gg { stroke-width: 6; }
+
 </style>
 </head>
 <body>
@@ -1376,6 +1386,8 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 <div class="d-fold" aria-hidden="true"><i class="d-under"></i><i class="d-flap"></i></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="coinFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".35" stop-color="#f4c542"/><stop offset=".7" stop-color="#d89a12"/><stop offset="1" stop-color="#a86a00"/></linearGradient>
+  <linearGradient id="goldMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a4d00"/><stop offset=".3" stop-color="#f4c542"/><stop offset=".5" stop-color="#fff6c8"/><stop offset=".7" stop-color="#e0a82a"/><stop offset="1" stop-color="#8a5a00"/></linearGradient>
+  <linearGradient id="goldGlint" x1="-120" y1="0" x2="-80" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="rotate(35)"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/><animate attributeName="x1" values="-120;140;140" keyTimes="0;.6;1" dur="3.4s" repeatCount="indefinite"/><animate attributeName="x2" values="-80;180;180" keyTimes="0;.6;1" dur="3.4s" repeatCount="indefinite"/></linearGradient>
   <linearGradient id="coinEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a0c"/><stop offset="1" stop-color="#7a4d00"/></linearGradient>
 </defs></svg>
 
@@ -2873,7 +2885,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v16.8";
+const APP_VERSION = "v16.9";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3257,8 +3269,10 @@ function shapePaths(p, k, shape) {
     default: return p === 1 ? xPaths(k) : [oPath(k)];
   }
 }
-const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire");
-  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
+const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire"), gold = !star && (sh === "x_gold" || sh === "o_gold");
+  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => gold
+    ? `<path class="gb" pathLength="1" d="${d}"/><path pathLength="1" d="${d}"/><path class="gg" pathLength="1" d="${d}"/>`        // gold bar: dark edge, metal, running glint
+    : `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
 function markSVG(p, k, cls, star, sk) {
   sk = sk || skinOf(p);
   return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
@@ -3811,9 +3825,9 @@ async function logoIntro() {
   cross.style.transition = "stroke-dashoffset .3s"; cross.style.strokeDashoffset = 0; await sleep(380);
   for (const k of ["x", "o"]) {
     const grp = svg.querySelector(".lg-" + k), tr = grp.dataset.t.split(",").map(Number);
-    const mains = [...grp.querySelectorAll("path:not(.core)")], cores = [...grp.querySelectorAll("path.core")];
+    const mains = [...grp.querySelectorAll("path:not(.core):not(.gb):not(.gg)")];
     SND.play(k === "x" ? "x" : "o", 0.25);
-    for (let i = 0; i < mains.length; i++) await draw([mains[i], ...(cores[i] ? [cores[i]] : [])], k === "x" ? 230 : 420, tr);
+    for (const m of mains) await draw([m, ...[...grp.querySelectorAll("path")].filter(q => q !== m && q.getAttribute("d") === m.getAttribute("d"))], k === "x" ? 230 : 420, tr);
     if (grp.classList.contains("fire")) { try { FX.mark(grp, k === "x" ? 1 : 2); } catch (e) {} }
   }
   await draw([svg.querySelector(".lg-2")], 380);

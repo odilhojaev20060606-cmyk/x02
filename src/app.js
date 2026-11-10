@@ -397,8 +397,10 @@ function shapePaths(p, k, shape) {
     default: return p === 1 ? xPaths(k) : [oPath(k)];
   }
 }
-const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire");
-  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
+const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire"), gold = !star && (sh === "x_gold" || sh === "o_gold");
+  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => gold
+    ? `<path class="gb" pathLength="1" d="${d}"/><path pathLength="1" d="${d}"/><path class="gg" pathLength="1" d="${d}"/>`        // gold bar: dark edge, metal, running glint
+    : `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
 function markSVG(p, k, cls, star, sk) {
   sk = sk || skinOf(p);
   return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
@@ -951,9 +953,9 @@ async function logoIntro() {
   cross.style.transition = "stroke-dashoffset .3s"; cross.style.strokeDashoffset = 0; await sleep(380);
   for (const k of ["x", "o"]) {
     const grp = svg.querySelector(".lg-" + k), tr = grp.dataset.t.split(",").map(Number);
-    const mains = [...grp.querySelectorAll("path:not(.core)")], cores = [...grp.querySelectorAll("path.core")];
+    const mains = [...grp.querySelectorAll("path:not(.core):not(.gb):not(.gg)")];
     SND.play(k === "x" ? "x" : "o", 0.25);
-    for (let i = 0; i < mains.length; i++) await draw([mains[i], ...(cores[i] ? [cores[i]] : [])], k === "x" ? 230 : 420, tr);
+    for (const m of mains) await draw([m, ...[...grp.querySelectorAll("path")].filter(q => q !== m && q.getAttribute("d") === m.getAttribute("d"))], k === "x" ? 230 : 420, tr);
     if (grp.classList.contains("fire")) { try { FX.mark(grp, k === "x" ? 1 : 2); } catch (e) {} }
   }
   await draw([svg.querySelector(".lg-2")], 380);

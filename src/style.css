@@ -982,3 +982,13 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .ico-coin { width: 20px; height: 20px; overflow: visible; }
 .btn.gold-btn .ico-coin circle { fill: url(#coinFace); }
 .inst-lab em .ico-coin { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* golden marks: a gold bar with a running glint */
+.mark.gold path, .overlay.gold path, .fly.gold path { stroke: url(#goldMetal); }
+.mark.gold path.gb, .overlay.gold path.gb, .fly.gold path.gb { stroke: #6b4300; stroke-width: 13; }
+.mark.gold path.gg, .overlay.gold path.gg, .fly.gold path.gg { stroke: url(#goldGlint); stroke-width: 4.5; }
+.overlay.gold path.gb { stroke-width: 10; } .overlay.gold path.gg { stroke-width: 3.5; }
+.mark.gold { animation: none; filter: none; }
+.mark.gold.fresh { animation: goldPop .6s cubic-bezier(.3,1.6,.5,1); }
+.mark.gold.fresh path { animation-delay: 0s !important; }
+.lg-mark.gold path { stroke-width: 11.5; } .lg-mark.gold path.gb { stroke-width: 16; } .lg-mark.gold path.gg { stroke-width: 6; }
