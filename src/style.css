@@ -407,8 +407,8 @@ aside.notes { display: grid; gap: 22px; }
 .cur-name { color: var(--pencil-soft); font-size: 13px; }
 .ico-clip { width: 18px; height: 18px; fill: none; stroke: #5b6b86; stroke-width: 2; stroke-linecap: round; transform: rotate(35deg); }
 .ico-coin { width: 18px; height: 18px; }
-.ico-coin circle { fill: #e8d59a; stroke: #a9853a; stroke-width: 2; }
-.ico-coin path { stroke: #1f3fa8; stroke-width: 2.2; stroke-linecap: round; fill: none; }
+
+
 .coin-prev { display: grid; place-items: center; }
 .item-prev.ex-prev { display: flex; align-items: center; justify-content: center; gap: 4px; width: auto; }
 .ex-prev svg { flex: none; }
@@ -976,3 +976,9 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .d-title .inst-wrap { position: absolute; right: -10px; top: -36px; font-style: normal; letter-spacing: 0; text-align: left; }
 .d-title .inst-lab small, .d-title .inst-lab em { font-family: var(--font-body); font-style: normal; }
 .d-title .inst-lab { width: 102px; }
+
+/* the X0 gold coin icon */
+.ico-coin circle, .ico-coin path, .ico-coin ellipse { stroke-linecap: round; }
+.ico-coin { width: 20px; height: 20px; overflow: visible; }
+.btn.gold-btn .ico-coin circle { fill: url(#coinFace); }
+.inst-lab em .ico-coin { width: 14px; height: 14px; vertical-align: -2px; }

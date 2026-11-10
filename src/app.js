@@ -1309,6 +1309,7 @@ function doInstall() {
 // ---- the install sticker on the cover: tap it, it falls, Telegram offers to put the game on the home screen (+1 coin)
 function renderInstallSticker() {
   const w = $("instWrap"); if (!w) return;
+  const em = w.querySelector(".inst-lab em"); if (em && !em.dataset.k) { em.dataset.k = "1"; em.innerHTML = "+1 " + ICON_COIN; }
   const done = !!store.get("instDone", false) || homeStatus === "added", k = installKind();
   w.hidden = !(k || done);
   w.classList.toggle("done", done);
@@ -2829,7 +2830,8 @@ function renderOnlineList() {
 
 // ---------------- shop ----------------
 const ICON_CLIP = '<svg class="ico-clip" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5 V16 a3 3 0 0 0 6 0 V6 a4.5 4.5 0 0 0 -9 0 V16.5 a6 6 0 0 0 12 0 V8"/></svg>';
-const ICON_COIN = '<svg class="ico-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 8.5 L15.5 15.5 M15.5 8.5 L8.5 15.5"/></svg>';
+// the coin: gold with the X0 logo struck in it (defs live once in the page: #coinFace, #coinEdge)
+const ICON_COIN = '<svg class="ico-coin" viewBox="10 4 100 100" aria-hidden="true"><circle cx="60" cy="57" r="46" fill="url(#coinEdge)"/><circle cx="60" cy="52" r="46" fill="url(#coinFace)" stroke="#8a5a00" stroke-width="3"/><circle cx="60" cy="52" r="36" fill="none" stroke="#a86a00" stroke-width="3" stroke-dasharray="3 4"/><path d="M40 35 L57 67 M57 35 L40 67" stroke="#9a6400" stroke-width="8.5" stroke-linecap="round"/><ellipse cx="75" cy="51" rx="10.5" ry="15.5" fill="none" stroke="#9a6400" stroke-width="7.5"/><path d="M30 34 Q40 18 60 16" stroke="#fffbe0" stroke-width="5" fill="none" stroke-linecap="round"/></svg>';
 const curIcon = cur => (cur === "coins" ? ICON_COIN : ICON_CLIP);
 function walletHTML() {
   return `<span class="cur" title="${t("clips")}">${ICON_CLIP}<b>${profile.clips}</b> <span class="cur-name">${t("clipsWord", profile.clips)}</span></span>` +
