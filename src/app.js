@@ -1206,6 +1206,8 @@ function onGameEnd(r) {
     : `<span class="reward-pop">${t("reward", g.clips)} ${curIcon("clips")}</span>`;
   renderBars();
   if (r !== 3 && (!app.bot || r === app.side)) setTimeout(() => confetti(r), 650);
+  const bEl = app.mode === "classic" ? $("tttBoard") : $("board");
+  setTimeout(() => FX.end(r === 3 ? "draw" : (!app.bot || r === app.side) ? "win" : "lose", r, bEl), 380);
 }
 
 // ---------------- actions ----------------
@@ -1466,6 +1468,67 @@ function confetti(winner) {
   requestAnimationFrame(frame);
 }
 
+
+// ---------------- juice: ink bursts, captures, victory stamp ----------------
+const FX = (() => {
+  const COL = { 1: "#1f3fa8", 2: "#c4362f", 3: "#d99a0b" };
+  let layer = null, combo = { g: null, p: 0, n: 0 };
+  const L = () => { if (!layer) { layer = document.createElement("div"); layer.id = "fxLayer"; layer.setAttribute("aria-hidden", "true"); document.body.appendChild(layer); } return layer; };
+  const ok = () => !reduce() && document.visibilityState !== "hidden";
+  const center = el => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2, r.width]; };
+  function drops(x, y, col, n, dist, size) {
+    const lay = L();
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement("i"), a = Math.random() * 6.283, r = dist * (0.45 + Math.random() * 0.75), s = size * (0.5 + Math.random() * 0.8);
+      d.className = "fx-drop"; d.style.cssText = `left:${x}px;top:${y}px;width:${s}px;height:${s}px;background:${col}`;
+      lay.appendChild(d);
+      const an = d.animate([{ transform: "translate(-50%,-50%) scale(1)", opacity: 1 }, { opacity: 1, offset: .55 }, { transform: `translate(calc(-50% + ${Math.cos(a) * r}px), calc(-50% + ${Math.sin(a) * r + r * 0.25}px)) scale(.2)`, opacity: 0 }],
+        { duration: 420 + Math.random() * 320, easing: "cubic-bezier(.15,.7,.3,1)" });
+      an.onfinish = () => d.remove();
+    }
+  }
+  function ring(x, y, col, size) {
+    const d = document.createElement("i"); d.className = "fx-ring"; d.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-color:${col}`;
+    L().appendChild(d);
+    d.animate([{ transform: "translate(-50%,-50%) scale(.3)", opacity: .9 }, { transform: "translate(-50%,-50%) scale(1.6)", opacity: 0 }], { duration: 520, easing: "ease-out" }).onfinish = () => d.remove();
+  }
+  function pop(x, y, text, col, big) {
+    const d = document.createElement("b"); d.className = "fx-pop" + (big ? " big" : ""); d.textContent = text; d.style.cssText = `left:${x}px;top:${y}px;color:${col}`;
+    L().appendChild(d);
+    d.animate([{ transform: "translate(-50%,-30%) scale(.4) rotate(-8deg)", opacity: 0 }, { transform: "translate(-50%,-80%) scale(1.15) rotate(-3deg)", opacity: 1, offset: .25 },
+      { transform: "translate(-50%,-110%) scale(1) rotate(-3deg)", opacity: 1, offset: .75 }, { transform: "translate(-50%,-150%) scale(.9)", opacity: 0 }], { duration: 1300, easing: "ease-out" }).onfinish = () => d.remove();
+  }
+  function shake(el, k) { if (el && el.animate) el.animate([{ transform: "none" }, { transform: `translate(${-3 * k}px,${1 * k}px) rotate(${-0.6 * k}deg)` }, { transform: `translate(${3 * k}px,${-1 * k}px) rotate(${0.5 * k}deg)` }, { transform: `translate(${-2 * k}px,0)` }, { transform: "none" }], { duration: 360 }); }
+  return {
+    mark(el, p) { if (!ok() || !el) return; const [x, y, w] = center(el); drops(x, y, COL[p], 10, w * 0.8, Math.max(5, w * 0.15)); },
+    capture(el, p, boardEl) {
+      if (!ok() || !el) return;
+      const [x, y, w] = center(el);
+      ring(x, y, COL[p], w); drops(x, y, COL[p], 22, w * 0.95, Math.max(5, w * 0.07));
+      shake(boardEl, 1.2); haptic("medium");
+      if (combo.g !== app.gameId) combo = { g: app.gameId, p: 0, n: 0 };
+      combo.n = combo.p === p ? combo.n + 1 : 1; combo.p = p;
+      pop(x, y - w * 0.1, combo.n >= 2 ? t("fxCombo", combo.n) : t("fxCapture"), COL[p]);
+    },
+    end(kind, p, boardEl) {
+      if (!ok()) return;
+      const lay = L(), W = window.innerWidth, H = window.innerHeight;
+      if (kind === "win") {
+        const f = document.createElement("i"); f.className = "fx-flash"; lay.appendChild(f);
+        f.animate([{ opacity: .75 }, { opacity: 0 }], { duration: 450, easing: "ease-out" }).onfinish = () => f.remove();
+        [[.3, .35, 0], [.7, .3, 260], [.5, .55, 520]].forEach(([fx, fy, dl]) => setTimeout(() => { ring(W * fx, H * fy, COL[p], 140); drops(W * fx, H * fy, COL[p], 26, 170, 9); drops(W * fx, H * fy, COL[3], 10, 120, 7); }, dl));
+      } else if (kind === "lose") { shake(boardEl, 2.2); if (boardEl && boardEl.animate) boardEl.animate([{ filter: "grayscale(0)" }, { filter: "grayscale(.85)" }, { filter: "grayscale(0)" }], { duration: 1600 }); }
+      const st = document.createElement("b"); st.className = "fx-stamp " + kind;
+      st.textContent = kind === "win" ? (opp() ? t("fxWin") : t("fxWinSym", SYM[p])) : kind === "lose" ? t("fxLose") : t("fxDraw");
+      if (kind === "win") st.style.color = COL[p];
+      lay.appendChild(st);
+      st.animate([{ transform: "translate(-50%,-50%) scale(3) rotate(-14deg)", opacity: 0 }, { transform: "translate(-50%,-50%) scale(.92) rotate(-8deg)", opacity: 1, offset: .18 },
+        { transform: "translate(-50%,-50%) scale(1) rotate(-8deg)", opacity: 1, offset: .3 }, { transform: "translate(-50%,-50%) scale(1) rotate(-8deg)", opacity: 1, offset: .82 }, { transform: "translate(-50%,-50%) scale(1.1) rotate(-8deg)", opacity: 0 }],
+        { duration: 1500, easing: "ease-out" }).onfinish = () => st.remove();
+    }
+  };
+})();
+
 // ---------------- coin ----------------
 let flipping = false;
 function showCoinFace(r) {
@@ -1556,6 +1619,7 @@ function renderTTTCells(cells, tt, ctx, offset, lockAll) {
     const fresh = ctx && tt.last === i;
     const key = v ? `${v}.${skinRev}` : "";
     if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, offset + i, fresh ? "fresh" : "") : ""; }
+    if (fresh && v) FX.mark(el, v);
     el.disabled = !!v || !!tt.result || lockAll;
     el.setAttribute("aria-label", `${t("aTCell")} ${i + 1}: ${v ? SYM[v] : t("aEmpty")}`);
   }
@@ -1678,6 +1742,7 @@ function renderMain(g, ctx) {
     const newlyWon = !!prev && prev.owner[b] === 0 && (g.owner[b] === 1 || g.owner[b] === 2);
     sub.classList.remove("won-now", "sent");
     if (newlyWon || (chose && last && last.to === b)) { void sub.offsetWidth; sub.classList.add(newlyWon ? "won-now" : "sent"); }
+    if (newlyWon) { const bo = g.owner[b]; setTimeout(() => FX.capture(sub, bo, $("board")), 120); }
     const o = g.owner[b], ov = o === 1 || o === 2 ? `${o}.${skinRev}` : "";
     if (slotEls[b].dataset.o !== ov) {
       slotEls[b].dataset.o = ov;
@@ -1694,6 +1759,7 @@ function renderMain(g, ctx) {
       el.classList.remove("struck");
       const key = v ? `${v}${g.star[i]}.${skinRev}` : "";
       if (el.dataset.k !== key || fresh) { el.dataset.k = key; el.innerHTML = v ? markSVG(v, i + 1, fresh ? "fresh" : "", g.star[i]) : ""; }
+      if (fresh && v) FX.mark(el, v);
       el.setAttribute("aria-label", g.choosing
         ? `${t("aBoard")} ${b + 1}${ok ? ": " + t("aSendHere") : ""}`
         : `${t("aBoard")} ${b + 1}, ${t("aCell")} ${c + 1}: ${v ? SYM[v] + (g.star[i] ? ", " + t("aStar") : "") : (ok ? t("aPlayable") : t("aEmpty"))}`);
@@ -2087,6 +2153,7 @@ function onlineEnd(v, quiet) {
     SND.play(r === 3 ? "draw" : won ? "win" : "lose", 0.4);
     if (r !== 3) hapticResult(won);
     if (won) setTimeout(() => confetti(r), 650);
+    setTimeout(() => FX.end(r === 3 ? "draw" : won ? "win" : "lose", r, $(classic ? "tttBoard" : "board")), 380);
   }
   showRematch();
   setTimeout(syncProfile, 700);

@@ -788,3 +788,12 @@ details.acc[open] summary::after { content: "–"; }
 .install-link { word-break: break-all; font-size: 13px; padding: 8px 10px; border: 1.5px dashed var(--grid-strong); border-radius: 8px; background: var(--paper); }
 #installBody { display: grid; gap: 10px; font-size: 15px; }
 #installRow[hidden] { display: none; }
+
+#fxLayer { position: fixed; inset: 0; pointer-events: none; z-index: 300; overflow: hidden; }
+#fxLayer .fx-drop { position: absolute; border-radius: 50% 45% 55% 50%; }
+#fxLayer .fx-ring { position: absolute; border: 3px solid; border-radius: 50%; box-sizing: border-box; }
+#fxLayer .fx-pop { position: absolute; font: 700 30px "Caveat", cursive; white-space: nowrap; text-shadow: 0 1px 0 #fff, 0 0 6px rgba(255,255,255,.9); }
+#fxLayer .fx-flash { position: absolute; inset: 0; background: #fffbe8; }
+#fxLayer .fx-stamp { position: absolute; left: 50%; top: 42%; font: 700 clamp(56px, 16vw, 110px) "Caveat", cursive; white-space: nowrap; padding: 0 .25em; border: 6px solid currentColor; border-radius: 14px; background: #f6f7f2; box-shadow: 4px 4px 0 currentColor; }
+#fxLayer .fx-stamp.lose { color: #6b707a; }
+#fxLayer .fx-stamp.draw { color: #d99a0b; }
