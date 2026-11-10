@@ -479,7 +479,7 @@ function coverBanner() {
   if (rs) return { cls: "turn", ic: "▶", text: t("resumeBn", rs.botId ? t("q", bt(rs.botId, "name")) : ""), act: "resume" };
   if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
   const dy = dailyState();
-  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : "", act: "daily" };
+  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : t("dailySolve"), act: "daily" };
   if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
   const tt = totals();
   if (installKind() && !store.get("instAsked", false) && tt.w + tt.l + tt.d >= 3) return { cls: "info", ic: "⌂", text: t("bnHome"), act: "install" };
@@ -495,7 +495,8 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  $("cSub").textContent = !info.logged ? t("guestSub") : [streakNow() ? "🔥 " + streakNow() : "", t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
+  renderMedal(); renderSig();
+  $("cSub").textContent = !info.logged ? "" : [streakNow() ? "🔥 " + streakNow() : "", tot.w ? t("cardWins", tot.w) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
   be.hidden = false;
@@ -627,11 +628,56 @@ function buildMenu() {
   renderOnlineList();
   fetchFriends();
 }
+const BACK_SIDE = ["settings", "shop", "me", "about"];
 function show(screen) {
-  app.screen = screen;
-  for (const id of ALL_SCREENS) $("scr-" + id).classList.toggle("active", id === screen);
-  window.scrollTo(0, 0);
-  tgBack();
+  const from = app.screen, prevBg = from && from !== screen ? getComputedStyle(document.body).backgroundImage + "|" + getComputedStyle(document.body).backgroundColor : "";
+  const plan = from && from !== screen ? notebookPlan(from, screen) : null;
+  const ov = plan ? notebookOverlays(plan, from, prevBg) : null;
+  const go = () => {
+    app.screen = screen;
+    for (const id of ALL_SCREENS) $("scr-" + id).classList.toggle("active", id === screen);
+    document.body.classList.toggle("on-cover", screen === "menu");
+    document.body.classList.toggle("on-back", BACK_SIDE.includes(screen));
+    try { const c = screen === "menu" || BACK_SIDE.includes(screen) ? "#a8d3f1" : "#f6f7f2"; if (TG && TG.setHeaderColor) TG.setHeaderColor(c); if (TG && TG.setBackgroundColor) TG.setBackgroundColor(c); } catch (e) {}
+    window.scrollTo(0, 0);
+    tgBack();
+    if (plan === "flip-out" || plan === "flip-back") { const el = $("scr-" + screen); el.classList.remove("fx-flip-in"); void el.offsetWidth; el.classList.add("fx-flip-in"); setTimeout(() => el.classList.remove("fx-flip-in"), 700); }
+  };
+  go();
+  if (ov) setTimeout(() => ov.forEach(o => o.remove()), plan === "open" ? 780 : plan === "close" ? 620 : 360);
+}
+// the notebook moves: the cover opens for play, it turns over for settings/shop/profile/about, closes on the way back
+function notebookPlan(from, to) {
+  if (reduce() || document.hidden) return null;
+  if (from === "menu") return BACK_SIDE.includes(to) ? "flip-out" : "open";
+  if (to === "menu") return BACK_SIDE.includes(from) ? "flip-back" : "close";
+  return null;
+}
+function snapScreen(id, cls, bg) {
+  const src = $("scr-" + id);
+  if (!src) return null;
+  const ov = document.createElement("div"), ap = document.createElement("div"), c = src.cloneNode(true);
+  ov.className = "fx-cover " + cls;
+  if (bg) { const [img, col] = bg.split("|"); ov.style.backgroundImage = img; ov.style.backgroundColor = col; ov.style.backgroundSize = getComputedStyle(document.body).backgroundSize; }
+  ap.className = "app";
+  c.removeAttribute("id"); c.classList.add("active"); c.classList.remove("fx-flip-in");
+  c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id"));
+  ap.appendChild(c); ov.appendChild(ap); document.body.appendChild(ov);
+  return ov;
+}
+function notebookOverlays(plan, from, prevBg) {
+  try {
+    if (plan === "open") { const o = snapScreen("menu", "is-blue"); if (o) o.classList.add("fx-open"); return o ? [o] : null; }
+    if (plan === "flip-out") { const o = snapScreen("menu", "is-blue"); if (o) o.classList.add("fx-flip-out"); return o ? [o] : null; }
+    if (plan === "flip-back") { const o = snapScreen(from, "is-blue"); if (o) o.classList.add("fx-flip-out"); return o ? [o] : null; }
+    if (plan === "close") {
+      renderCover();
+      const u = snapScreen(from, "under", prevBg), o = snapScreen("menu", "is-blue");
+      if (o) o.classList.add("fx-close");
+      return [u, o].filter(Boolean);
+    }
+  } catch (e) {}
+  return null;
 }
 // menu navigation: a small stack, so "Back" always returns to where you came from
 function openScreen(s) {
@@ -650,7 +696,7 @@ function goBack() {
   show(p);
 }
 function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
-function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
+function anySheet() { return !!document.querySelector("#signSheet:not([hidden])") || !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
   try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
@@ -670,7 +716,7 @@ function tgInit() {
       TG.onEvent("homeScreenAdded", () => { homeStatus = "added"; toast(t("homeAdded")); try { renderSettings(); renderCover(); } catch (e) {} });
     }
   } catch (e) {}   // a swipe down must not close the game mid-move
-  try { if (TG.setHeaderColor) TG.setHeaderColor("#f6f7f2"); if (TG.setBackgroundColor) TG.setBackgroundColor("#f6f7f2"); } catch (e) {}
+  try { if (TG.setHeaderColor) TG.setHeaderColor("#a8d3f1"); if (TG.setBackgroundColor) TG.setBackgroundColor("#a8d3f1"); } catch (e) {}
   try { if (v("7.0") && TG.SettingsButton) { TG.SettingsButton.show(); TG.SettingsButton.onClick(() => { if (inGame() || app.screen === "wait") goMenu(); openScreen("settings"); }); } } catch (e) {}
   try {
     TG.BackButton.onClick(() => {
@@ -839,6 +885,84 @@ function shouldBridge() {        // wins Nostalgia but has never tried the real 
   const sc = id => app.scores[id] || { me: 0, bot: 0, draw: 0 }, sum = ids => ids.reduce((n, id) => n + sc(id).me + sc(id).bot + sc(id).draw, 0);
   const cw = ["c1", "c2", "c3"].reduce((n, id) => n + sc(id).me, 0);
   return cw >= 2 && sum(["x1", "x2", "x3"]) === 0 && (store.get("bridgeShown", 0) | 0) < 3;
+}
+// ---- the medallion: one of the great scholars of the land each day, like on the notebook covers
+const ALLOMA = [
+  { n: "Abu Rayhon Beruniy", y: "973–1048", tu: "#f4f1ea", be: "#4a3426", ro: "#3e5f86" },
+  { n: "Abu Ali ibn Sino", y: "980–1037", tu: "#f4f1ea", be: "#3a2a20", ro: "#5b4a7e" },
+  { n: "Muhammad al-Xorazmiy", y: "783–850", tu: "#e9e2cf", be: "#5a4030", ro: "#2f6b5a" },
+  { n: "Mirzo Ulug‘bek", y: "1394–1449", tu: "#f0e9d8", be: "#2e2018", ro: "#7a3b2e" },
+  { n: "Alisher Navoiy", y: "1441–1501", tu: "#f4f1ea", be: "#5c5c5c", ro: "#2f5f86" },
+  { n: "Zahiriddin Muhammad Bobur", y: "1483–1530", tu: "#efe6cf", be: "#2a1d15", ro: "#6b5a2e" },
+  { n: "Ahmad al-Farg‘oniy", y: "797–865", tu: "#ebe4d2", be: "#4d3a2c", ro: "#3b5f7a" },
+  { n: "Amir Temur", y: "1336–1405", tu: "#d8d2c4", be: "#2b1f17", ro: "#7d2f2a" }
+];
+function allomaToday() { return ALLOMA[(dailyNo() + ALLOMA.length * 100) % ALLOMA.length]; }
+function medalFace(a) {
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 100 C 20 78, 34 70, 50 70 C 66 70, 80 78, 82 100 Z" fill="${a.ro}"/><path d="M40 70 L50 92 L60 70 Z" fill="#e9e1cf"/>` +
+    `<ellipse cx="50" cy="50" rx="14" ry="17" fill="#d9a77c"/><path d="M36 54 C 38 74, 62 74, 64 54 C 60 66, 40 66, 36 54 Z" fill="${a.be}"/>` +
+    `<path d="M33 40 C 33 22, 67 22, 67 40 C 60 34, 40 34, 33 40 Z" fill="${a.tu}"/><path d="M33 40 C 40 36, 60 36, 67 40 L66 44 C 58 40, 42 40, 34 44 Z" fill="rgba(0,0,0,.12)"/></svg>`;
+}
+function renderMedal() {
+  const a = allomaToday(), el = $("medFace");
+  if (!el) return;
+  if (el.dataset.k !== a.n) { el.dataset.k = a.n; el.innerHTML = medalFace(a); }
+  $("medName").textContent = a.n; $("medYears").textContent = `(${a.y})`;
+  const card = $("medCard"), facts = t("allomaFacts") || {};
+  if (!card.hidden) card.innerHTML = `<b>${esc(a.n)}</b>${esc(facts[a.n] || "")}`;
+}
+function toggleMedal() {
+  const card = $("medCard");
+  if (!card.onclick) card.onclick = () => { card.hidden = true; };
+  card.hidden = !card.hidden;
+  renderMedal();
+}
+// ---- the signature on the cover: school, class and name, written in pen
+function sigData() { const s = store.get("sig", null); return s && typeof s === "object" ? s : null; }
+function renderSig() {
+  const s = sigData(), info = playerInfo();
+  $("sigSchool").textContent = s ? s.school || "" : "";
+  $("sigClass").textContent = s ? s.cls || "" : "";
+  $("sigName").textContent = s ? s.name || "" : (info.logged ? info.first || info.name || "" : "");
+  $("sigHint").textContent = s ? "" : t("sigHint");
+}
+function openSign() {
+  const s = sigData() || {}, info = playerInfo();
+  let sh = $("signSheet");
+  if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "signSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
+  const val = v => esc(String(v || ""));
+  sh.innerHTML = `<div class="sheet-card sign-card"><h2>${t("sigTitle")}</h2><p>${t("sigSub")}</p>
+    <label>${t("sigSchool")}<input id="sgSchool" maxlength="6" inputmode="numeric" value="${val(s.school)}" placeholder="47"></label>
+    <label>${t("sigClass")}<input id="sgClass" maxlength="8" value="${val(s.cls)}" placeholder="7 «B»"></label>
+    <label>${t("sigName")}<input id="sgName" maxlength="40" value="${val(s.name || (info.logged ? [info.first, ""].join("") || info.name : ""))}" placeholder="${val(t("sigNamePh"))}"></label>
+    <p class="sign-err" id="sgErr" hidden>${t("sigNeedName")}</p>
+    <button class="btn primary big" type="button" data-act="signSave">${t("sigSave")}${sigData() || (profile.bonus || []).includes("sign") ? "" : " · +" + BONUS.sign}</button>
+    <button class="btn big" type="button" data-act="signLater">${t("later")}</button></div>`;
+  sh.hidden = false;
+  const nm = $("sgName"); nm.addEventListener("input", () => { $("sgErr").hidden = true; });
+}
+async function saveSign() {
+  const v = id => ($(id).value || "").trim().slice(0, 40);
+  if (!v("sgName")) { $("sgErr").hidden = false; $("sgName").focus(); return; }
+  const first = !sigData();
+  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName") });
+  $("signSheet").hidden = true;
+  renderSig();
+  SND.play("star", 0.35);
+  if (first) { const n = await claimBonus("sign"); if (n) toast(t("bonusGot", n)); }
+}
+function addMultTables() {        // the back of the notebook: a faded multiplication table on top
+  for (const id of BACK_SIDE) {
+    const sec = $("scr-" + id);
+    if (!sec || sec.querySelector(".mtable")) continue;
+    let cells = "";
+    for (let b = 2; b <= 4; b++) for (let a = 2; a <= 6; a++) cells += `<span>${a}×${b}=${a * b}</span>`;
+    const wrap = document.createElement("div");
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.innerHTML = `<div class="mtable-t">KO‘PAYTIRISH JADVALI</div><div class="mtable">${cells}</div>`;
+    const bar = sec.querySelector(".sub-bar, .game-bar, header");
+    if (bar && bar.nextSibling) sec.insertBefore(wrap, bar.nextSibling); else sec.insertBefore(wrap, sec.firstChild);
+  }
 }
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
@@ -1018,7 +1142,7 @@ function resumeGame() {
 }
 
 // ---------------- newcomer: a gift for the first visit ----------------
-const BONUS = { welcome: 20, learn: 30 };    // must match worker.js
+const BONUS = { welcome: 20, learn: 30, sign: 20 };    // must match worker.js
 function maybeWelcome() {
   if (store.get("welcomed", false)) return;
   const tot = totals();
@@ -2658,6 +2782,10 @@ function bind() {
     else if (a === "loginTop") { closeOnlineSheet(); openScreen("settings"); setTimeout(showLoginWidget, 50); }
     else if (a === "undo") undo();
     else if (a === "shop") openShop();
+    else if (a === "medal") toggleMedal();
+    else if (a === "sign") openSign();
+    else if (a === "signSave") saveSign();
+    else if (a === "signLater") { const sh = $("signSheet"); if (sh) sh.hidden = true; }
     else if (a === "login") showLoginWidget();
     else if (a === "logout") logout();
   });
@@ -2801,6 +2929,7 @@ function boot(data) {
   tgInit();
   const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
   app.linkVisit = !!(gid || cid);
+  addMultTables(); document.body.classList.toggle("on-cover", app.screen === "menu");
   handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else { maybeWelcome(); setTimeout(maybeStreak, 700); } });
   buildDOM();
   applyStatic();

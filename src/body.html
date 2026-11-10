@@ -2,18 +2,16 @@
 
   <!-- ================= MENU (cover) ================= -->
   <section class="screen menu active" id="scr-menu" aria-labelledby="logoTitle">
-    <div class="cover">
+    <div class="cover daftar">
       <div class="cover-top">
         <button class="wallet-btn" type="button" data-act="shop" id="menuWallet"></button>
         <button class="icon-btn" type="button" data-act="settings" id="gearBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.6 7.6 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6c-.1.5-.1 1-.1 1.5s0 1 .1 1.5l-2 1.6 2 3.4 2.4-1c.8.6 1.6 1.1 2.6 1.5l.4 2.5h4l.4-2.5c1-.4 1.8-.9 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
       </div>
-      <button class="pcard" type="button" data-go="me" id="pcard">
-        <span class="pf-ava" id="cAva"></span>
-        <span class="pc-id"><span class="pc-name" id="cName"></span><span class="pc-sub" id="cSub"></span></span>
-        <span class="pc-friends" id="cFriends"></span>
-      </button>
-      <button class="cbanner" type="button" id="coverBanner" hidden></button>
-      <div class="cover-hero">
+      <div class="d-hero">
+        <button class="d-med" type="button" id="medBtn" data-act="medal">
+          <span class="d-ring"><span class="d-inner" id="medFace"></span></span>
+          <span class="d-rib"><span class="d-tail l"></span><span class="d-band"><span id="medName"></span><small id="medYears"></small></span><span class="d-tail r"></span></span>
+        </button>
         <div class="cover-title">
         <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
           <title id="logoTitle">X02.0</title>
@@ -27,19 +25,29 @@
         </svg>
         <p class="tagline" data-i18n-html="tagline"></p>
         </div>
-        <button class="cover-bot" type="button" id="coverBot" data-go="modex02"><span class="bot-face" id="coverFace"></span><span class="cover-say" id="coverSay"></span></button>
       </div>
+      <div class="med-card" id="medCard" hidden></div>
+      <button class="cbanner" type="button" id="coverBanner" hidden></button>
+      <div class="d-title">DAFTAR</div>
+      <button class="d-lines" type="button" id="sigBtn" data-act="sign">
+        <span class="dl c"><span class="hw">X02.0</span></span>
+        <span class="dl"><span class="sig-hint" id="sigHint"></span></span>
+        <span class="dl"><span class="hw" id="sigSchool"></span><i>-sonli maktabning</i><span class="hw push" id="sigClass"></span><i>-sinf</i></span>
+        <span class="dl"><i>o‘quvchisi</i><span class="hw" id="sigName"></span><span class="dl-meta" id="cSub"></span></span>
+      </button>
       <div class="cover-modes">
         <button class="mbtn mx" type="button" data-go="modex02"><span class="mb-ic">X</span><span class="mb-t"><b><span class="x">X</span><span class="o">0</span>2.0</b><span data-i18n="mbX02"></span></span></button>
         <button class="mbtn mc" type="button" data-go="modeclassic"><span class="mb-ic">0</span><span class="mb-t"><b data-i18n="classicName"></b><span data-i18n="mbClassic"></span></span></button>
         <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
       </div>
       <nav class="cover-icons">
+        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span></button>
         <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
         <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
-        <!-- reserved places: "Задания" and "Рейтинг" appear here when they are ready -->
       </nav>
+      <div hidden><span id="cAva"></span><span id="cName"></span><span id="cFriends"></span><button type="button" id="coverBot"><span id="coverFace"></span><span id="coverSay"></span></button></div>
     </div>
+    <div class="d-fold" aria-hidden="true"><svg viewBox="-6 -6 76 76"><path d="M1 2 L63 1 L1 63 Z" fill="rgba(20,40,70,.2)" transform="translate(2.5 2.5)"/><path d="M0 0 L64 0 L0 64 Z" fill="#e4ecf2"/><path d="M0 0 L64 0 L0 64 Z" fill="url(#foldShade)"/><path d="M64 0 L0 64" stroke="rgba(45,62,92,.3)"/><defs><linearGradient id="foldShade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#9fb2c2" stop-opacity=".6"/></linearGradient></defs></svg></div>
   </section>
 
   <!-- ================= MODE: X02.0 ================= -->

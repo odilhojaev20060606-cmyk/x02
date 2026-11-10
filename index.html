@@ -853,6 +853,94 @@ details.acc[open] summary::after { content: "–"; }
 .cover-hero .cover-title .logo { width: 100%; }
 .cover-title .tagline { font-size: 13px; line-height: 1.3; text-align: center; margin-top: 2px; }
 
+/* ================= the cover is a school notebook (Alloma series) ================= */
+:root { --cover: #a8d3f1; --cover-ink: #2d3e5c; }
+body.on-cover, body.on-back { background-color: var(--cover); background-image: linear-gradient(160deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 35%, rgba(0,40,90,.05) 100%); background-size: 100% 100%; background-attachment: fixed; }
+.daftar { color: var(--cover-ink); gap: 10px; max-width: 460px; }
+.daftar .cover-top { min-height: 34px; gap: 8px; }
+.daftar .wpill { border: 1px solid rgba(45,62,92,.5); background: rgba(255,255,255,.75); box-shadow: none; font-weight: 600; padding: 2px 4px 2px 8px; }
+.daftar .icon-btn { background: rgba(255,255,255,.75); border: 1px solid rgba(45,62,92,.5); box-shadow: none; }
+.d-hero { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 4px; }
+.d-med { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; width: 128px; flex-shrink: 0; display: grid; justify-items: center; font: inherit; }
+.d-ring { width: 106px; height: 106px; border-radius: 50%; padding: 5px; background: conic-gradient(from 210deg, #a8761f, #f6dc8c, #c8922e, #fff1bf, #b7832a, #f3d27a, #a8761f); display: block; }
+.d-inner { display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 40% 30%, #dceefa, #9fc4e3 70%); box-shadow: inset 0 0 0 2px rgba(255,240,200,.9); }
+.d-inner svg { width: 100%; height: 100%; display: block; }
+.d-rib { position: relative; margin-top: -16px; height: 32px; display: flex; align-items: center; justify-content: center; width: 100%; }
+.d-band { position: relative; z-index: 2; background: linear-gradient(#f0c766, #c98f2a 60%, #b07a20); color: #fff; font: 400 12px/1.05 "Times New Roman", Tinos, serif; text-align: center; padding: 3px 8px 2px; border-radius: 2px; text-shadow: 0 1px 0 rgba(90,55,10,.5); white-space: nowrap; }
+.d-band small { display: block; font-size: 9.5px; }
+.d-tail { position: absolute; top: 10px; width: 20px; height: 19px; background: #a8761f; z-index: 1; }
+.d-tail.l { left: 0; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 35% 50%); }
+.d-tail.r { right: 0; clip-path: polygon(0 0, 100% 0, 65% 50%, 100% 100%, 0 100%); }
+.d-med:active .d-ring { transform: scale(.97); }
+.daftar .cover-title { width: auto; flex: 1; max-width: 230px; }
+.daftar .tagline { color: #3d4f70; font-size: 13px; }
+.med-card { background: #fffdf4; border: 1.2px solid #b98a2c; border-radius: 10px; padding: 10px 14px; font-size: 14px; line-height: 1.45; color: var(--cover-ink); box-shadow: 3px 3px 0 rgba(185,138,44,.45); animation: fadeUp .25s both; cursor: pointer; }
+.med-card b { display: block; font: 700 22px/1.1 var(--font-hand); color: #7a5410; }
+.med-card[hidden] { display: none; }
+.daftar .cbanner { background: rgba(255,255,255,.62); box-shadow: none; border-width: 1px; border-radius: 9px; }
+.daftar .cbanner.turn { background: rgba(255,251,224,.85); }
+.d-title { text-align: center; font: italic 400 26px "Times New Roman", Tinos, serif; letter-spacing: .06em; margin-top: 2px; }
+.d-lines { appearance: none; border: 0; background: none; padding: 0; width: 100%; cursor: pointer; display: grid; text-align: left; color: var(--cover-ink); font: italic 400 12.5px "Times New Roman", Tinos, serif; margin-top: -6px; }
+.dl { border-bottom: 1px solid #3a4b6a; min-height: 27px; display: flex; align-items: flex-end; gap: 5px; padding-bottom: 1px; min-width: 0; }
+.dl.c { justify-content: center; }
+.dl i { font-style: italic; white-space: nowrap; padding-bottom: 2px; }
+.hw { font: 700 22px/1 var(--font-hand); color: var(--ink-x); font-style: normal; padding: 0 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.hw.push { margin-left: auto; }
+.hw:empty { min-width: 34px; }
+.sig-hint { font: 500 18px/1 var(--font-hand); color: #5b7ea6; font-style: normal; padding-bottom: 2px; }
+.dl-meta { margin-left: auto; font: 500 12px var(--font-body); font-style: normal; white-space: nowrap; padding-bottom: 3px; }
+.daftar .cover-modes { grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 4px; }
+.daftar .mbtn { grid-column: span 1; grid-template-columns: 30px minmax(0, 1fr); gap: 9px; padding: 8px 12px; border: 1px solid rgba(45,62,92,.55) !important; border-radius: 11px; background: rgba(255,255,255,.8); box-shadow: none !important; }
+.daftar .mbtn.mx { grid-column: 1 / -1; }
+.daftar .mbtn:active { transform: translate(1px,1px); background: #fff; }
+.daftar .mb-ic { font-size: 32px; }
+.daftar .mb-ic svg { width: 24px; height: 24px; }
+.daftar .mb-t b { font-size: 25px; }
+.daftar .mb-t > span { font-size: 12px; }
+.daftar .cover-icons { gap: 30px; padding-top: 4px; padding-right: 30px; }
+.daftar .rb-ic { width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(45,62,92,.55); box-shadow: none; background: rgba(255,255,255,.75); }
+.daftar .rb-ic svg { width: 22px; height: 22px; }
+.daftar .rbtn { color: var(--cover-ink); }
+.d-fold { position: fixed; right: 0; bottom: 0; width: 64px; height: 64px; pointer-events: none; z-index: 5;
+  background-color: var(--paper); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 9px 9px;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%, 0 0); }
+.d-fold::before { content: ""; position: absolute; inset: 0; background: linear-gradient(315deg, rgba(20,40,70,0) 40%, rgba(20,40,70,.22) 100%); }
+.d-fold svg { position: absolute; left: -6px; top: -6px; width: 76px; height: 76px; overflow: visible; }
+.d-fold { clip-path: none; }
+.d-fold::after { content: ""; position: absolute; inset: 0; background: var(--cover); clip-path: polygon(0 0, 100% 0, 0 100%); }
+.d-fold svg { z-index: 1; }
+.in-tg .d-fold { bottom: var(--tg-safe-area-inset-bottom, 0px); }
+/* back side of the notebook: settings, shop, profile, about */
+.mtable { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px 10px; font: 500 10.5px var(--font-body); color: var(--cover-ink); opacity: .32; padding: 8px 10px; border: 1px solid rgba(43,58,85,.35); border-radius: 4px; margin: 2px 0 4px; }
+.mtable-t { font: 500 10.5px var(--font-body); letter-spacing: .14em; text-align: center; color: var(--cover-ink); opacity: .6; margin-top: 4px; }
+body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
+/* notebook motion: the cover opens for play, the notebook turns over for settings */
+.fx-cover { position: fixed; inset: 0; z-index: 70; overflow: hidden; pointer-events: none; transform-origin: left center; }
+.fx-cover.is-blue { background-color: var(--cover); background-image: linear-gradient(160deg, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 35%, rgba(0,40,90,.05) 100%); }
+.fx-cover *, .fx-cover *::before, .fx-cover *::after { animation: none !important; transition: none !important; }
+.fx-cover .logo .stroke, .fx-cover .logo .underline { stroke-dashoffset: 0 !important; }
+.fx-cover .logo .dot { opacity: 1 !important; transform: none !important; }
+.fx-cover .d-fold { position: absolute; }
+.fx-cover.under { z-index: 69; }
+.fx-open { animation: coverOpen .75s cubic-bezier(.22,.61,.36,1) forwards !important; }
+.fx-close { animation: coverOpen .6s cubic-bezier(.4,0,.3,1) reverse forwards !important; }
+@keyframes coverOpen { from { transform: perspective(1800px) none; opacity: 1; } 70% { opacity: .55; } to { transform: perspective(1800px) rotateY(-58deg) translateX(-6%); opacity: 0; } }
+.fx-flip-out { transform-origin: center; animation: flipOut .3s ease-in forwards !important; }
+.fx-flip-in { animation: flipIn .36s ease-out .28s both !important; transform-origin: center top; }
+@keyframes flipOut { to { transform: perspective(1600px) rotateY(88deg); opacity: .5; } }
+@keyframes flipIn { from { transform: perspective(1600px) rotateY(-88deg); opacity: .5; } to { transform: none; opacity: 1; } }
+.sign-card { text-align: left; display: grid; gap: 8px; }
+.sign-card h2 { margin: 0; font: 700 32px/1 var(--font-hand); color: var(--pen); }
+.sign-card p { margin: 0 0 4px; font-size: 14px; color: var(--pencil-soft); }
+.sign-card label { display: grid; gap: 2px; font-size: 13px; color: var(--pencil-soft); }
+.sign-card input { font: 700 24px/1.1 var(--font-hand); color: var(--ink-x); border: 0; border-bottom: 1.5px solid var(--pen); background: transparent; padding: 4px 2px; outline: none; }
+.sign-card input:focus { border-bottom-color: var(--ink-x); }
+.sign-err { color: var(--ink-o) !important; }
+.sign-err[hidden] { display: none; }
+.daftar .tagline { font-size: 12px; line-height: 1.3; }
+.daftar .cbanner b { font: 600 13px var(--font-body); opacity: .75; }
+.daftar .mo .mb-t > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 </style>
 </head>
 <body>
@@ -860,18 +948,16 @@ details.acc[open] summary::after { content: "–"; }
 
   <!-- ================= MENU (cover) ================= -->
   <section class="screen menu active" id="scr-menu" aria-labelledby="logoTitle">
-    <div class="cover">
+    <div class="cover daftar">
       <div class="cover-top">
         <button class="wallet-btn" type="button" data-act="shop" id="menuWallet"></button>
         <button class="icon-btn" type="button" data-act="settings" id="gearBtn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5c.1-.5.1-1 .1-1.5s0-1-.1-1.5l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.6 7.6 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6c-.1.5-.1 1-.1 1.5s0 1 .1 1.5l-2 1.6 2 3.4 2.4-1c.8.6 1.6 1.1 2.6 1.5l.4 2.5h4l.4-2.5c1-.4 1.8-.9 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
       </div>
-      <button class="pcard" type="button" data-go="me" id="pcard">
-        <span class="pf-ava" id="cAva"></span>
-        <span class="pc-id"><span class="pc-name" id="cName"></span><span class="pc-sub" id="cSub"></span></span>
-        <span class="pc-friends" id="cFriends"></span>
-      </button>
-      <button class="cbanner" type="button" id="coverBanner" hidden></button>
-      <div class="cover-hero">
+      <div class="d-hero">
+        <button class="d-med" type="button" id="medBtn" data-act="medal">
+          <span class="d-ring"><span class="d-inner" id="medFace"></span></span>
+          <span class="d-rib"><span class="d-tail l"></span><span class="d-band"><span id="medName"></span><small id="medYears"></small></span><span class="d-tail r"></span></span>
+        </button>
         <div class="cover-title">
         <svg class="logo" viewBox="0 0 440 150" role="img" aria-labelledby="logoTitle">
           <title id="logoTitle">X02.0</title>
@@ -885,19 +971,29 @@ details.acc[open] summary::after { content: "–"; }
         </svg>
         <p class="tagline" data-i18n-html="tagline"></p>
         </div>
-        <button class="cover-bot" type="button" id="coverBot" data-go="modex02"><span class="bot-face" id="coverFace"></span><span class="cover-say" id="coverSay"></span></button>
       </div>
+      <div class="med-card" id="medCard" hidden></div>
+      <button class="cbanner" type="button" id="coverBanner" hidden></button>
+      <div class="d-title">DAFTAR</div>
+      <button class="d-lines" type="button" id="sigBtn" data-act="sign">
+        <span class="dl c"><span class="hw">X02.0</span></span>
+        <span class="dl"><span class="sig-hint" id="sigHint"></span></span>
+        <span class="dl"><span class="hw" id="sigSchool"></span><i>-sonli maktabning</i><span class="hw push" id="sigClass"></span><i>-sinf</i></span>
+        <span class="dl"><i>o‘quvchisi</i><span class="hw" id="sigName"></span><span class="dl-meta" id="cSub"></span></span>
+      </button>
       <div class="cover-modes">
         <button class="mbtn mx" type="button" data-go="modex02"><span class="mb-ic">X</span><span class="mb-t"><b><span class="x">X</span><span class="o">0</span>2.0</b><span data-i18n="mbX02"></span></span></button>
         <button class="mbtn mc" type="button" data-go="modeclassic"><span class="mb-ic">0</span><span class="mb-t"><b data-i18n="classicName"></b><span data-i18n="mbClassic"></span></span></button>
         <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
       </div>
       <nav class="cover-icons">
+        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span></button>
         <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
         <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
-        <!-- reserved places: "Задания" and "Рейтинг" appear here when they are ready -->
       </nav>
+      <div hidden><span id="cAva"></span><span id="cName"></span><span id="cFriends"></span><button type="button" id="coverBot"><span id="coverFace"></span><span id="coverSay"></span></button></div>
     </div>
+    <div class="d-fold" aria-hidden="true"><svg viewBox="-6 -6 76 76"><path d="M1 2 L63 1 L1 63 Z" fill="rgba(20,40,70,.2)" transform="translate(2.5 2.5)"/><path d="M0 0 L64 0 L0 64 Z" fill="#e4ecf2"/><path d="M0 0 L64 0 L0 64 Z" fill="url(#foldShade)"/><path d="M64 0 L0 64" stroke="rgba(45,62,92,.3)"/><defs><linearGradient id="foldShade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#9fb2c2" stop-opacity=".6"/></linearGradient></defs></svg></div>
   </section>
 
   <!-- ================= MODE: X02.0 ================= -->
@@ -1898,9 +1994,21 @@ ru: {
   cardHook: 'Думаешь, ты умный?',
   fxWin: 'Победа!', fxWinSym: s => `Победа ${s}!`, fxLose: 'Поражение', fxDraw: 'Ничья', fxCapture: 'Доска взята!', fxCombo: n => `Комбо ×${n}!`,
   dareBtn: '😏 Спорим, друг не обыграет?', dareText: n => `Я не смог обыграть ${n} в X02.0 — игре сложнее шахмат. Спорим, ты тоже не сможешь? 😏`, revengeBtn: '🔥 Отомстить',
-  dailyBn: n => `Головоломка дня №${n}: одна позиция для всех`, dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
+  dailyBn: n => `Головоломка дня №${n}`, dailySolve: 'Решить →', dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
+  profileIc: 'Профиль', sigHint: 'Нажми, чтобы подписать тетрадь ✍️', sigTitle: 'Подпиши тетрадь', sigSub: 'Как в школе: номер школы, класс и имя. Подпись останется на обложке.',
+  sigSchool: 'Номер школы', sigClass: 'Класс', sigName: 'Имя и фамилия', sigNamePh: 'Имя Фамилия', sigNeedName: 'Напиши хотя бы имя', sigSave: 'Подписать',
+  allomaFacts: {
+    'Abu Rayhon Beruniy': 'Учёный из Хорезма. Почти тысячу лет назад вычислил радиус Земли с удивительной точностью и написал более 150 трудов по астрономии, математике и географии.',
+    'Abu Ali ibn Sino': 'Родился под Бухарой. Его «Канон врачебной науки» несколько веков был главным учебником медицины и на Востоке, и в Европе.',
+    'Muhammad al-Xorazmiy': 'Математик из Хорезма. От его имени произошло слово «алгоритм», а от названия его книги — слово «алгебра».',
+    'Mirzo Ulug‘bek': 'Внук Амира Темура и правитель Самарканда. Построил огромную обсерваторию и составил каталог более тысячи звёзд.',
+    'Alisher Navoiy': 'Великий поэт и мыслитель. Писал на тюркском языке и доказал, что на нём можно создавать шедевры. Автор «Хамсы» — пяти поэм.',
+    'Zahiriddin Muhammad Bobur': 'Родился в Андижане. Основал империю Великих Моголов в Индии и написал «Бобурнаме» — одну из первых автобиографий на Востоке.',
+    'Ahmad al-Farg‘oniy': 'Астроном из Ферганы. Его книгу о звёздах веками изучали в Европе, где его знали под именем Альфраганус.',
+    'Amir Temur': 'Великий полководец и правитель. Очень любил шахматы и играл в усложнённый вариант на большой доске — «шахматы Тамерлана».'
+  },
   frTopTitle: 'Рейтинг друзей · неделя', frTopYou: 'Ты', frTopHint: 'Онлайн-победы с понедельника. Обгони всех — напиши /top боту в группе с друзьями.',
   streakTitle: n => `Серия: день ${n}`, streakSub: 'Заходи каждый день — награда растёт. На 7-й день огненный скин!', streakDay: n => `${n} д.`, streakTake: n => `Забрать +${n}`, streakGift: (n, s) => `+${n} скрепок и скин «${s}»!`,
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
@@ -1917,7 +2025,7 @@ ru: {
   meEmpty: 'Здесь появится твоя статистика.', meFirst: 'Сыграть первую партию',
   // ---- v13: game-style menu
   settings: 'Настройки', about: 'Об игре', backBtn: '← Назад', segOn: 'Вкл', segOff: 'Выкл',
-  mbX02: '81 клетка, звёзды, удары', mbClassic: 'Классика 3×3', mbOnline: 'Онлайн', mbOnlineSub: 'С друзьями по ссылке',
+  mbX02: '81 клетка, звёзды, удары', mbClassic: 'Классика 3×3', mbOnline: 'Онлайн', mbOnlineSub: 'С друзьями',
   withBot: 'С ботом', withFriend: 'С другом', nearby: 'Рядом', byLink: 'По ссылке',
   ladDone: s => `Пройден · ${s}`, ladNext: 'Следующий соперник', rwGold: '2 золотые',
   bridgeText: 'Слишком просто? Попробуй <b>X02.0</b>', learnBtn: 'Как играть · обучение',
@@ -2127,9 +2235,21 @@ uz: {
   cardHook: "O'zingni aqlli deb o'ylaysanmi?",
   fxWin: "G'alaba!", fxWinSym: s => `${s} g'alaba qildi!`, fxLose: "Mag'lubiyat", fxDraw: 'Durang', fxCapture: 'Doska olindi!', fxCombo: n => `Kombo ×${n}!`,
   dareBtn: "😏 Do'sting ham yutolmaydi, garovmi?", dareText: n => `Men X02.0 da ${n} ni yengolmadim — bu shaxmatdan ham qiyin o'yin. Garov, sen ham yengolmaysan? 😏`, revengeBtn: "🔥 O'ch olish",
-  dailyBn: n => `Kun jumbog'i №${n}: hamma uchun bitta pozitsiya`, dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
+  dailyBn: n => `Kun jumbog'i №${n}`, dailySolve: 'Yechish →', dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
+  profileIc: 'Profil', sigHint: 'Daftarni imzolash uchun bosing ✍️', sigTitle: 'Daftarni imzola', sigSub: "Maktabdagidek: maktab raqami, sinf va ism. Imzo muqovada qoladi.",
+  sigSchool: 'Maktab raqami', sigClass: 'Sinf', sigName: 'Ism va familiya', sigNamePh: 'Ism Familiya', sigNeedName: 'Hech bo‘lmasa ismingizni yozing', sigSave: 'Imzolash',
+  allomaFacts: {
+    'Abu Rayhon Beruniy': "Xorazmlik olim. Qariyb ming yil oldin Yer radiusini hayratlanarli aniqlikda hisoblagan va astronomiya, matematika, geografiyaga oid 150 dan ortiq asar yozgan.",
+    'Abu Ali ibn Sino': "Buxoro yaqinida tug‘ilgan. Uning «Tib qonunlari» bir necha asr davomida Sharqda ham, Yevropada ham tibbiyotning asosiy darsligi bo‘lgan.",
+    'Muhammad al-Xorazmiy': "Xorazmlik matematik. «Algoritm» so‘zi uning ismidan, «algebra» so‘zi esa kitobining nomidan kelib chiqqan.",
+    'Mirzo Ulug‘bek': "Amir Temurning nabirasi va Samarqand hukmdori. Ulkan rasadxona qurgan va mingdan ortiq yulduz katalogini tuzgan.",
+    'Alisher Navoiy': "Buyuk shoir va mutafakkir. Turkiy tilda yozib, unda durdona asarlar yaratish mumkinligini isbotlagan. «Xamsa» — besh dostonning muallifi.",
+    'Zahiriddin Muhammad Bobur': "Andijonda tug‘ilgan. Hindistonda Boburiylar saltanatiga asos solgan va Sharqdagi ilk tarjimai hollardan biri — «Boburnoma»ni yozgan.",
+    'Ahmad al-Farg‘oniy': "Farg‘onalik astronom. Uning yulduzlar haqidagi kitobini Yevropada asrlar davomida o‘rganishgan, u yerda uni Alfraganus deb bilishgan.",
+    'Amir Temur': "Buyuk sarkarda va hukmdor. Shaxmatni juda yaxshi ko‘rgan va katta taxtada murakkablashtirilgan variantini o‘ynagan — «Temur shaxmati»."
+  },
   frTopTitle: "Do'stlar reytingi · hafta", frTopYou: 'Siz', frTopHint: "Dushanbadan beri onlayn g'alabalar. Do'stlar guruhida botga /top yozing.",
   streakTitle: n => `Seriya: ${n}-kun`, streakSub: "Har kuni kiring — mukofot oshadi. 7-kuni olovli skin!", streakDay: n => `${n}-k`, streakTake: n => `Olish +${n}`, streakGift: (n, s) => `+${n} skrepka va «${s}» skini!`,
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
@@ -2146,7 +2266,7 @@ uz: {
   meEmpty: 'Bu yerda statistikangiz paydo bo\'ladi.', meFirst: "Birinchi o'yinni o'ynash",
   // ---- v13: game-style menu
   settings: 'Sozlamalar', about: "O'yin haqida", backBtn: '← Orqaga', segOn: 'Ha', segOff: "Yo'q",
-  mbX02: '81 katak, yulduzlar, zarbalar', mbClassic: 'Klassika 3×3', mbOnline: 'Onlayn', mbOnlineSub: "Do'stlar bilan havola orqali",
+  mbX02: '81 katak, yulduzlar, zarbalar', mbClassic: 'Klassika 3×3', mbOnline: 'Onlayn', mbOnlineSub: "Do'stlar bilan",
   withBot: 'Bot bilan', withFriend: "Do'st bilan", nearby: 'Yonimda', byLink: 'Havola',
   ladDone: s => `Yengilgan · ${s}`, ladNext: 'Keyingi raqib', rwGold: '2 ta oltin',
   bridgeText: "Juda osonmi? <b>X02.0</b> ni sinab ko'ring", learnBtn: "Qanday o'ynaladi · o'rgatish",
@@ -2356,9 +2476,21 @@ en: {
   cardHook: 'Think you\'re smart?',
   fxWin: 'Victory!', fxWinSym: s => `${s} wins!`, fxLose: 'Defeat', fxDraw: 'Draw', fxCapture: 'Board taken!', fxCombo: n => `Combo ×${n}!`,
   dareBtn: '😏 Bet a friend can\'t win?', dareText: n => `I couldn't beat ${n} in X02.0, a game harder than chess. Bet you can't either? 😏`, revengeBtn: '🔥 Take revenge',
-  dailyBn: n => `Puzzle of the day #${n}: one position for everyone`, dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
+  dailyBn: n => `Puzzle of the day #${n}`, dailySolve: 'Solve →', dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
+  profileIc: 'Profile', sigHint: 'Tap to sign your notebook ✍️', sigTitle: 'Sign your notebook', sigSub: 'Like at school: school number, class and name. The signature stays on the cover.',
+  sigSchool: 'School number', sigClass: 'Class', sigName: 'Name', sigNamePh: 'First Last', sigNeedName: 'Write at least your name', sigSave: 'Sign',
+  allomaFacts: {
+    'Abu Rayhon Beruniy': 'A scholar from Khorezm. Almost a thousand years ago he measured the radius of the Earth with amazing accuracy and wrote over 150 works on astronomy, maths and geography.',
+    'Abu Ali ibn Sino': 'Born near Bukhara. His Canon of Medicine was the main medical textbook in both the East and Europe for centuries.',
+    'Muhammad al-Xorazmiy': 'A mathematician from Khorezm. The word “algorithm” comes from his name, and “algebra” from the title of his book.',
+    'Mirzo Ulug‘bek': 'Grandson of Amir Temur and ruler of Samarkand. He built a huge observatory and catalogued over a thousand stars.',
+    'Alisher Navoiy': 'A great poet and thinker who proved masterpieces could be written in Turkic. Author of the Khamsa, five long poems.',
+    'Zahiriddin Muhammad Bobur': 'Born in Andijan. He founded the Mughal Empire in India and wrote the Baburnama, one of the first autobiographies in the East.',
+    'Ahmad al-Farg‘oniy': 'An astronomer from Fergana. Europe studied his book on the stars for centuries, knowing him as Alfraganus.',
+    'Amir Temur': 'A great conqueror and ruler. He loved chess and played a harder version on a big board, known as Tamerlane chess.'
+  },
   frTopTitle: 'Friends ranking · this week', frTopYou: 'You', frTopHint: 'Online wins since Monday. Type /top to the bot in a group with friends.',
   streakTitle: n => `Streak: day ${n}`, streakSub: 'Come back every day — the reward grows. Day 7 brings a fire skin!', streakDay: n => `D${n}`, streakTake: n => `Take +${n}`, streakGift: (n, s) => `+${n} paperclips and the “${s}” skin!`,
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
@@ -2375,7 +2507,7 @@ en: {
   meEmpty: 'Your stats will show up here.', meFirst: 'Play your first game',
   // ---- v13: game-style menu
   settings: 'Settings', about: 'About', backBtn: '← Back', segOn: 'On', segOff: 'Off',
-  mbX02: '81 cells, stars, strikes', mbClassic: 'Classic 3×3', mbOnline: 'Online', mbOnlineSub: 'With friends by link',
+  mbX02: '81 cells, stars, strikes', mbClassic: 'Classic 3×3', mbOnline: 'Online', mbOnlineSub: 'With friends',
   withBot: 'With a bot', withFriend: 'With a friend', nearby: 'Nearby', byLink: 'By link',
   ladDone: s => `Beaten · ${s}`, ladNext: 'Next opponent', rwGold: '2 golds',
   bridgeText: 'Too easy? Try <b>X02.0</b>', learnBtn: 'How to play · tutorial',
@@ -2596,7 +2728,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v15.1";
+const APP_VERSION = "v16.0";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3062,7 +3194,7 @@ function coverBanner() {
   if (rs) return { cls: "turn", ic: "▶", text: t("resumeBn", rs.botId ? t("q", bt(rs.botId, "name")) : ""), act: "resume" };
   if (!learnDone()) return { cls: "", ic: "?", text: t("bnLearn"), right: learnPaid() ? "" : "+30", act: "learn" };
   const dy = dailyState();
-  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : "", act: "daily" };
+  if (!dy.won) return { cls: "daily", ic: "🧩", text: t("dailyBn", dailyNo()), right: dy.tries ? t("dailyTries", dy.tries) : t("dailySolve"), act: "daily" };
   if (!TG && API_OK && !(session && session.token)) return { cls: "info", ic: "→", text: t("bnLogin"), act: "login" };
   const tt = totals();
   if (installKind() && !store.get("instAsked", false) && tt.w + tt.l + tt.d >= 3) return { cls: "info", ic: "⌂", text: t("bnHome"), act: "install" };
@@ -3078,7 +3210,8 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  $("cSub").textContent = !info.logged ? t("guestSub") : [streakNow() ? "🔥 " + streakNow() : "", t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
+  renderMedal(); renderSig();
+  $("cSub").textContent = !info.logged ? "" : [streakNow() ? "🔥 " + streakNow() : "", tot.w ? t("cardWins", tot.w) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
   be.hidden = false;
@@ -3210,11 +3343,56 @@ function buildMenu() {
   renderOnlineList();
   fetchFriends();
 }
+const BACK_SIDE = ["settings", "shop", "me", "about"];
 function show(screen) {
-  app.screen = screen;
-  for (const id of ALL_SCREENS) $("scr-" + id).classList.toggle("active", id === screen);
-  window.scrollTo(0, 0);
-  tgBack();
+  const from = app.screen, prevBg = from && from !== screen ? getComputedStyle(document.body).backgroundImage + "|" + getComputedStyle(document.body).backgroundColor : "";
+  const plan = from && from !== screen ? notebookPlan(from, screen) : null;
+  const ov = plan ? notebookOverlays(plan, from, prevBg) : null;
+  const go = () => {
+    app.screen = screen;
+    for (const id of ALL_SCREENS) $("scr-" + id).classList.toggle("active", id === screen);
+    document.body.classList.toggle("on-cover", screen === "menu");
+    document.body.classList.toggle("on-back", BACK_SIDE.includes(screen));
+    try { const c = screen === "menu" || BACK_SIDE.includes(screen) ? "#a8d3f1" : "#f6f7f2"; if (TG && TG.setHeaderColor) TG.setHeaderColor(c); if (TG && TG.setBackgroundColor) TG.setBackgroundColor(c); } catch (e) {}
+    window.scrollTo(0, 0);
+    tgBack();
+    if (plan === "flip-out" || plan === "flip-back") { const el = $("scr-" + screen); el.classList.remove("fx-flip-in"); void el.offsetWidth; el.classList.add("fx-flip-in"); setTimeout(() => el.classList.remove("fx-flip-in"), 700); }
+  };
+  go();
+  if (ov) setTimeout(() => ov.forEach(o => o.remove()), plan === "open" ? 780 : plan === "close" ? 620 : 360);
+}
+// the notebook moves: the cover opens for play, it turns over for settings/shop/profile/about, closes on the way back
+function notebookPlan(from, to) {
+  if (reduce() || document.hidden) return null;
+  if (from === "menu") return BACK_SIDE.includes(to) ? "flip-out" : "open";
+  if (to === "menu") return BACK_SIDE.includes(from) ? "flip-back" : "close";
+  return null;
+}
+function snapScreen(id, cls, bg) {
+  const src = $("scr-" + id);
+  if (!src) return null;
+  const ov = document.createElement("div"), ap = document.createElement("div"), c = src.cloneNode(true);
+  ov.className = "fx-cover " + cls;
+  if (bg) { const [img, col] = bg.split("|"); ov.style.backgroundImage = img; ov.style.backgroundColor = col; ov.style.backgroundSize = getComputedStyle(document.body).backgroundSize; }
+  ap.className = "app";
+  c.removeAttribute("id"); c.classList.add("active"); c.classList.remove("fx-flip-in");
+  c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id"));
+  ap.appendChild(c); ov.appendChild(ap); document.body.appendChild(ov);
+  return ov;
+}
+function notebookOverlays(plan, from, prevBg) {
+  try {
+    if (plan === "open") { const o = snapScreen("menu", "is-blue"); if (o) o.classList.add("fx-open"); return o ? [o] : null; }
+    if (plan === "flip-out") { const o = snapScreen("menu", "is-blue"); if (o) o.classList.add("fx-flip-out"); return o ? [o] : null; }
+    if (plan === "flip-back") { const o = snapScreen(from, "is-blue"); if (o) o.classList.add("fx-flip-out"); return o ? [o] : null; }
+    if (plan === "close") {
+      renderCover();
+      const u = snapScreen(from, "under", prevBg), o = snapScreen("menu", "is-blue");
+      if (o) o.classList.add("fx-close");
+      return [u, o].filter(Boolean);
+    }
+  } catch (e) {}
+  return null;
 }
 // menu navigation: a small stack, so "Back" always returns to where you came from
 function openScreen(s) {
@@ -3233,7 +3411,7 @@ function goBack() {
   show(p);
 }
 function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
-function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
+function anySheet() { return !!document.querySelector("#signSheet:not([hidden])") || !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
   try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
@@ -3253,7 +3431,7 @@ function tgInit() {
       TG.onEvent("homeScreenAdded", () => { homeStatus = "added"; toast(t("homeAdded")); try { renderSettings(); renderCover(); } catch (e) {} });
     }
   } catch (e) {}   // a swipe down must not close the game mid-move
-  try { if (TG.setHeaderColor) TG.setHeaderColor("#f6f7f2"); if (TG.setBackgroundColor) TG.setBackgroundColor("#f6f7f2"); } catch (e) {}
+  try { if (TG.setHeaderColor) TG.setHeaderColor("#a8d3f1"); if (TG.setBackgroundColor) TG.setBackgroundColor("#a8d3f1"); } catch (e) {}
   try { if (v("7.0") && TG.SettingsButton) { TG.SettingsButton.show(); TG.SettingsButton.onClick(() => { if (inGame() || app.screen === "wait") goMenu(); openScreen("settings"); }); } } catch (e) {}
   try {
     TG.BackButton.onClick(() => {
@@ -3422,6 +3600,84 @@ function shouldBridge() {        // wins Nostalgia but has never tried the real 
   const sc = id => app.scores[id] || { me: 0, bot: 0, draw: 0 }, sum = ids => ids.reduce((n, id) => n + sc(id).me + sc(id).bot + sc(id).draw, 0);
   const cw = ["c1", "c2", "c3"].reduce((n, id) => n + sc(id).me, 0);
   return cw >= 2 && sum(["x1", "x2", "x3"]) === 0 && (store.get("bridgeShown", 0) | 0) < 3;
+}
+// ---- the medallion: one of the great scholars of the land each day, like on the notebook covers
+const ALLOMA = [
+  { n: "Abu Rayhon Beruniy", y: "973–1048", tu: "#f4f1ea", be: "#4a3426", ro: "#3e5f86" },
+  { n: "Abu Ali ibn Sino", y: "980–1037", tu: "#f4f1ea", be: "#3a2a20", ro: "#5b4a7e" },
+  { n: "Muhammad al-Xorazmiy", y: "783–850", tu: "#e9e2cf", be: "#5a4030", ro: "#2f6b5a" },
+  { n: "Mirzo Ulug‘bek", y: "1394–1449", tu: "#f0e9d8", be: "#2e2018", ro: "#7a3b2e" },
+  { n: "Alisher Navoiy", y: "1441–1501", tu: "#f4f1ea", be: "#5c5c5c", ro: "#2f5f86" },
+  { n: "Zahiriddin Muhammad Bobur", y: "1483–1530", tu: "#efe6cf", be: "#2a1d15", ro: "#6b5a2e" },
+  { n: "Ahmad al-Farg‘oniy", y: "797–865", tu: "#ebe4d2", be: "#4d3a2c", ro: "#3b5f7a" },
+  { n: "Amir Temur", y: "1336–1405", tu: "#d8d2c4", be: "#2b1f17", ro: "#7d2f2a" }
+];
+function allomaToday() { return ALLOMA[(dailyNo() + ALLOMA.length * 100) % ALLOMA.length]; }
+function medalFace(a) {
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M18 100 C 20 78, 34 70, 50 70 C 66 70, 80 78, 82 100 Z" fill="${a.ro}"/><path d="M40 70 L50 92 L60 70 Z" fill="#e9e1cf"/>` +
+    `<ellipse cx="50" cy="50" rx="14" ry="17" fill="#d9a77c"/><path d="M36 54 C 38 74, 62 74, 64 54 C 60 66, 40 66, 36 54 Z" fill="${a.be}"/>` +
+    `<path d="M33 40 C 33 22, 67 22, 67 40 C 60 34, 40 34, 33 40 Z" fill="${a.tu}"/><path d="M33 40 C 40 36, 60 36, 67 40 L66 44 C 58 40, 42 40, 34 44 Z" fill="rgba(0,0,0,.12)"/></svg>`;
+}
+function renderMedal() {
+  const a = allomaToday(), el = $("medFace");
+  if (!el) return;
+  if (el.dataset.k !== a.n) { el.dataset.k = a.n; el.innerHTML = medalFace(a); }
+  $("medName").textContent = a.n; $("medYears").textContent = `(${a.y})`;
+  const card = $("medCard"), facts = t("allomaFacts") || {};
+  if (!card.hidden) card.innerHTML = `<b>${esc(a.n)}</b>${esc(facts[a.n] || "")}`;
+}
+function toggleMedal() {
+  const card = $("medCard");
+  if (!card.onclick) card.onclick = () => { card.hidden = true; };
+  card.hidden = !card.hidden;
+  renderMedal();
+}
+// ---- the signature on the cover: school, class and name, written in pen
+function sigData() { const s = store.get("sig", null); return s && typeof s === "object" ? s : null; }
+function renderSig() {
+  const s = sigData(), info = playerInfo();
+  $("sigSchool").textContent = s ? s.school || "" : "";
+  $("sigClass").textContent = s ? s.cls || "" : "";
+  $("sigName").textContent = s ? s.name || "" : (info.logged ? info.first || info.name || "" : "");
+  $("sigHint").textContent = s ? "" : t("sigHint");
+}
+function openSign() {
+  const s = sigData() || {}, info = playerInfo();
+  let sh = $("signSheet");
+  if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "signSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
+  const val = v => esc(String(v || ""));
+  sh.innerHTML = `<div class="sheet-card sign-card"><h2>${t("sigTitle")}</h2><p>${t("sigSub")}</p>
+    <label>${t("sigSchool")}<input id="sgSchool" maxlength="6" inputmode="numeric" value="${val(s.school)}" placeholder="47"></label>
+    <label>${t("sigClass")}<input id="sgClass" maxlength="8" value="${val(s.cls)}" placeholder="7 «B»"></label>
+    <label>${t("sigName")}<input id="sgName" maxlength="40" value="${val(s.name || (info.logged ? [info.first, ""].join("") || info.name : ""))}" placeholder="${val(t("sigNamePh"))}"></label>
+    <p class="sign-err" id="sgErr" hidden>${t("sigNeedName")}</p>
+    <button class="btn primary big" type="button" data-act="signSave">${t("sigSave")}${sigData() || (profile.bonus || []).includes("sign") ? "" : " · +" + BONUS.sign}</button>
+    <button class="btn big" type="button" data-act="signLater">${t("later")}</button></div>`;
+  sh.hidden = false;
+  const nm = $("sgName"); nm.addEventListener("input", () => { $("sgErr").hidden = true; });
+}
+async function saveSign() {
+  const v = id => ($(id).value || "").trim().slice(0, 40);
+  if (!v("sgName")) { $("sgErr").hidden = false; $("sgName").focus(); return; }
+  const first = !sigData();
+  store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName") });
+  $("signSheet").hidden = true;
+  renderSig();
+  SND.play("star", 0.35);
+  if (first) { const n = await claimBonus("sign"); if (n) toast(t("bonusGot", n)); }
+}
+function addMultTables() {        // the back of the notebook: a faded multiplication table on top
+  for (const id of BACK_SIDE) {
+    const sec = $("scr-" + id);
+    if (!sec || sec.querySelector(".mtable")) continue;
+    let cells = "";
+    for (let b = 2; b <= 4; b++) for (let a = 2; a <= 6; a++) cells += `<span>${a}×${b}=${a * b}</span>`;
+    const wrap = document.createElement("div");
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.innerHTML = `<div class="mtable-t">KO‘PAYTIRISH JADVALI</div><div class="mtable">${cells}</div>`;
+    const bar = sec.querySelector(".sub-bar, .game-bar, header");
+    if (bar && bar.nextSibling) sec.insertBefore(wrap, bar.nextSibling); else sec.insertBefore(wrap, sec.firstChild);
+  }
 }
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
@@ -3601,7 +3857,7 @@ function resumeGame() {
 }
 
 // ---------------- newcomer: a gift for the first visit ----------------
-const BONUS = { welcome: 20, learn: 30 };    // must match worker.js
+const BONUS = { welcome: 20, learn: 30, sign: 20 };    // must match worker.js
 function maybeWelcome() {
   if (store.get("welcomed", false)) return;
   const tot = totals();
@@ -5241,6 +5497,10 @@ function bind() {
     else if (a === "loginTop") { closeOnlineSheet(); openScreen("settings"); setTimeout(showLoginWidget, 50); }
     else if (a === "undo") undo();
     else if (a === "shop") openShop();
+    else if (a === "medal") toggleMedal();
+    else if (a === "sign") openSign();
+    else if (a === "signSave") saveSign();
+    else if (a === "signLater") { const sh = $("signSheet"); if (sh) sh.hidden = true; }
     else if (a === "login") showLoginWidget();
     else if (a === "logout") logout();
   });
@@ -5384,6 +5644,7 @@ function boot(data) {
   tgInit();
   const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
   app.linkVisit = !!(gid || cid);
+  addMultTables(); document.body.classList.toggle("on-cover", app.screen === "menu");
   handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else { maybeWelcome(); setTimeout(maybeStreak, 700); } });
   buildDOM();
   applyStatic();
