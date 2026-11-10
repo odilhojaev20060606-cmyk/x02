@@ -685,7 +685,12 @@ const GAME_URL = "https://odilhojaev20060606-cmyk.github.io/x02/";
 const GAME_ORIGIN = "https://odilhojaev20060606-cmyk.github.io";
 const BOT_LINK = "https://t.me/xo_version2bot/play";
 const TZ_OFFSET = 5 * 3600 * 1000;    // Tashkent time for "today" in admin stats
-const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }];
+// coin-priced skins (must match SHOP in app.js); owned ones live in p.gold
+const COIN_ITEMS = { x_neon: 25, o_neon: 25, x_cosmos: 35, o_cosmos: 35, x_vostok: 45, o_vostok: 45, x_samurai: 60, o_samurai: 60, x_pirate: 60, o_pirate: 60, x_gold: 100, o_gold: 100 };
+const CHEST_START = ["x_neon", "o_neon", "x_cosmos", "o_cosmos"];
+const CHEST_KING = Object.keys(COIN_ITEMS);
+const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }, { coins: 30, stars: 135 }, { coins: 250, stars: 900 },
+  { coins: 20, stars: 150, items: CHEST_START, once: "start" }, { coins: 100, stars: 990, items: CHEST_KING, once: "king" }];   // must match app.js
 const GOLD = ["x_gold", "o_gold"];
 const EXCHANGE = { ex0: [5, 100], ex1: [10, 250], ex2: [20, 600] };          // coins -> paperclips
 // paperclip shop (must match SHOP in app.js); price 0 = free, -1 = coins only
@@ -695,6 +700,8 @@ const ITEMS = {
   xc_blue: ["xColor", 0], xc_purple: ["xColor", 150], xc_graphite: ["xColor", 150],
   oc_red: ["oColor", 0], oc_green: ["oColor", 150], oc_orange: ["oColor", 150],
   x_gold: ["xShape", -1], o_gold: ["oShape", -1],
+  x_neon: ["xShape", -1], o_neon: ["oShape", -1], x_cosmos: ["xShape", -1], o_cosmos: ["oShape", -1], x_vostok: ["xShape", -1], o_vostok: ["oShape", -1],
+  x_samurai: ["xShape", -1], o_samurai: ["oShape", -1], x_pirate: ["xShape", -1], o_pirate: ["oShape", -1],
 };
 const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };      // paperclips per win against bots
 const FRIEND_REWARD = 10;                                     // paperclips per online X02.0 win (Nostalgia: none)
@@ -720,7 +727,8 @@ const TEXT = {
     play: "▶ Играть", move: "▶ Сделать ход", open: "▶ Открыть партию",
     paid: n => `Оплата прошла: +${n} монет 🪙\nВозвращайся в игру.`,
     support: s => `По вопросам оплаты напиши ${s || "автору игры"}. Опиши, что купил и когда — разберёмся и при необходимости вернём звёзды.`,
-    invTitle: n => `${n} монет X02.0`,
+    invTitle: n => `${n} монет X02.0`, chest: { start: "Сундук новичка", king: "Сундук Падишаха" },
+    chestDesc: (k, n) => `${k} скинов навсегда + ${n} монет. Один раз на аккаунт.`, chestPaid: n => `Сундук открыт! Все скины уже в магазине, +${n} монет 🪙`,
     invDesc: "Монеты для магазина X02.0: золотые знаки и обмен на скрепки.",
     yourTurn: (n, m) => `⏱ Твой ход в партии с ${n}! На ход — ${m} мин.`,
     joined: n => `🎮 ${n} принял вызов. Партия началась!`,
@@ -744,7 +752,8 @@ const TEXT = {
     play: "▶ O'ynash", move: "▶ Yurish qilish", open: "▶ O'yinni ochish",
     paid: n => `To'lov o'tdi: +${n} tanga 🪙\nO'yinga qayt.`,
     support: s => `To'lov bo'yicha savollar uchun ${s || "o'yin muallifiga"} yozing. Nima va qachon sotib olganingizni yozing — hal qilamiz.`,
-    invTitle: n => `X02.0: ${n} tanga`,
+    invTitle: n => `X02.0: ${n} tanga`, chest: { start: "Yangi o'yinchi sandig'i", king: "Podshoh sandig'i" },
+    chestDesc: (k, n) => `${k} ta skin abadiy + ${n} tanga. Akkauntga bir marta.`, chestPaid: n => `Sandiq ochildi! Hamma skinlar do'konda, +${n} tanga 🪙`,
     invDesc: "X02.0 do'koni uchun tangalar: oltin belgilar va skrepkaga almashtirish.",
     yourTurn: (n, m) => `⏱ ${n} bilan o'yinda sizning yurishingiz! Yurishga — ${m} daqiqa.`,
     joined: n => `🎮 ${n} chaqiruvni qabul qildi. O'yin boshlandi!`,
@@ -768,7 +777,8 @@ const TEXT = {
     play: "▶ Play", move: "▶ Make a move", open: "▶ Open the game",
     paid: n => `Payment received: +${n} coins 🪙\nHead back to the game.`,
     support: s => `For payment questions, message ${s || "the game's author"}. Tell us what you bought and when — we'll sort it out and refund Stars if needed.`,
-    invTitle: n => `${n} X02.0 coins`,
+    invTitle: n => `${n} X02.0 coins`, chest: { start: "Starter Chest", king: "Padishah Chest" },
+    chestDesc: (k, n) => `${k} skins forever + ${n} coins. Once per account.`, chestPaid: n => `Chest opened! All skins are in the shop, +${n} coins 🪙`,
     invDesc: "Coins for the X02.0 shop: golden marks and paperclip exchange.",
     yourTurn: (n, m) => `⏱ Your move in the game with ${n}! ${m} min per move.`,
     joined: n => `🎮 ${n} accepted the challenge. The game is on!`,
@@ -888,6 +898,7 @@ function normProfile(p) {
     imported: p.imported | 0, day: p.day || "", dayClips: p.dayClips | 0, rk: Array.isArray(p.rk) ? p.rk : [],
     bonus: Array.isArray(p.bonus) ? p.bonus.filter(k => BONUS[k]) : [],
     streak: p.streak && typeof p.streak === "object" ? { last: String(p.streak.last || ""), n: p.streak.n | 0 } : { last: "", n: 0 },
+    packs: Array.isArray(p.packs) ? p.packs : [],
   };
 }
 // returns { p, fresh } — fresh = this player was never seen before (neither in D1 nor in old KV)
@@ -983,7 +994,7 @@ async function topText(env, t, chatId) {        // /top: the chat's members in a
   const lines = list.map(([id, e], i) => `${i === 0 ? "👑" : i + 1 + "."} ${escHtml(nm.get(id) || "Player")} — ${t.topWins(e.w)}`);
   return (chatId ? t.topChat : t.topAll) + "\n\n" + lines.join("\n") + "\n\n" + (chatId ? t.topJoin : t.topHint);
 }
-const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak });
+const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak, packs: p.packs });
 const ownsItem = (p, id) => ITEMS[id] && (ITEMS[id][1] === 0 || p.owned.includes(id) || p.gold.includes(id));
 const today = () => new Date().toISOString().slice(0, 10);
 async function countPlay(env, mode) {
@@ -1582,12 +1593,14 @@ async function api(request, env, path) {
   if (path === "/api/invoice") {
     const k = body.pack | 0, pack = PACKS[k];
     if (!pack || String(body.pack) !== String(k)) return json({ error: "pack" }, 400);
+    if (pack.once && p.packs.includes(pack.once)) return json({ error: "owned", ...publicProfile(p) }, 409);
+    const title = pack.once ? t.chest[pack.once] : t.invTitle(pack.coins);
     const res = await tg(env, "createInvoiceLink", {
-      title: t.invTitle(pack.coins),
-      description: t.invDesc,
+      title,
+      description: pack.once ? t.chestDesc(pack.items.length, pack.coins) : t.invDesc,
       payload: JSON.stringify({ u: user.id, p: k }),
       currency: "XTR",
-      prices: [{ label: t.invTitle(pack.coins), amount: pack.stars }],
+      prices: [{ label: title, amount: pack.stars }],
     });
     return res.ok ? json({ link: res.result }) : json({ error: "telegram", detail: res.description }, 502);
   }
@@ -1598,10 +1611,10 @@ async function api(request, env, path) {
       const [c, n] = EXCHANGE[item];
       if (p.coins < c) return json({ error: "coins", ...publicProfile(p) }, 409);
       p.coins -= c; p.clips += n;
-    } else if (GOLD.includes(item)) {
+    } else if (COIN_ITEMS[item]) {
       if (!p.gold.includes(item)) {
-        if (p.coins < 1) return json({ error: "coins", ...publicProfile(p) }, 409);
-        p.coins -= 1; p.gold.push(item);
+        if (p.coins < COIN_ITEMS[item]) return json({ error: "coins", ...publicProfile(p) }, 409);
+        p.coins -= COIN_ITEMS[item]; p.gold.push(item);
       }
       p.equip[ITEMS[item][0]] = item;
     } else if (ITEMS[item] && ITEMS[item][1] > 0) {
@@ -1719,7 +1732,11 @@ async function onUpdate(env, update) {
   if (update.pre_checkout_query) {
     const q = update.pre_checkout_query;
     let ok = false;
-    try { const p = JSON.parse(q.invoice_payload); ok = q.currency === "XTR" && !!PACKS[p.p] && PACKS[p.p].stars === q.total_amount && p.u === q.from.id; } catch (e) {}
+    try {
+      const p = JSON.parse(q.invoice_payload), pk = PACKS[p.p];
+      ok = q.currency === "XTR" && !!pk && pk.stars === q.total_amount && p.u === q.from.id;
+      if (ok && pk.once) { const { p: w } = await getProfile(env, q.from.id); if (w.packs.includes(pk.once)) ok = false; }
+    } catch (e) {}
     await tg(env, "answerPreCheckoutQuery", ok ? { pre_checkout_query_id: q.id, ok: true }
       : { pre_checkout_query_id: q.id, ok: false, error_message: "Invalid order. Please reopen the shop and try again." });
     return;
@@ -1764,8 +1781,9 @@ async function onUpdate(env, update) {
     }
     const { p: w } = await getProfile(env, msg.from.id);
     w.coins += pack.coins;
+    if (pack.items) { for (const id of pack.items) if (!w.gold.includes(id)) w.gold.push(id); if (!w.packs.includes(pack.once)) w.packs.push(pack.once); }
     await putProfile(env, msg.from.id, w, metaOf({ ...msg.from, src: null }));
-    await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.paid(pack.coins), reply_markup: playButton(t) });
+    await tg(env, "sendMessage", { chat_id: msg.chat.id, text: pack.items ? t.chestPaid(pack.coins) : t.paid(pack.coins), reply_markup: playButton(t) });
     return;
   }
 

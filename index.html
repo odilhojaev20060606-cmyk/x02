@@ -1020,6 +1020,60 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .mark.gold.fresh path { animation-delay: 0s !important; }
 .lg-mark.gold path { stroke-width: 11.5; } .lg-mark.gold path.gb { stroke-width: 16; } .lg-mark.gold path.gg { stroke-width: 6; }
 
+/* v17: coin skins */
+.mark.neon, .overlay.neon, .fly.neon { overflow: visible; }
+.mark.neon path, .overlay.neon path, .fly.neon path { stroke: #f06595; }
+.mark.x.neon path, .overlay.x.neon path, .fly.x.neon path { stroke: #22b8cf; }
+.mark.neon path.core, .fly.neon path.core { stroke: #fff; stroke-width: 2.6; }
+.overlay.neon path.core { stroke: #fff; stroke-width: 2; }
+.mark.neon { filter: drop-shadow(0 0 3px rgba(240,101,149,.8)); animation: neonHum 2.6s ease-in-out infinite; }
+.mark.x.neon { filter: drop-shadow(0 0 3px rgba(34,184,207,.85)); }
+@keyframes neonHum { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 94% { opacity: .55; } 96% { opacity: 1; } }
+
+.mark.cosmos path, .overlay.cosmos path, .fly.cosmos path { stroke: url(#cosmosG); }
+.mark.cosmos path.star, .overlay.cosmos path.star, .fly.cosmos path.star { stroke: #ffd43b; stroke-width: 6; animation: twinkle 1.8s ease-in-out infinite alternate; }
+.mark.cosmos path.ring, .fly.cosmos path.ring { stroke: #845ef7; stroke-width: 3; opacity: .7; }
+.overlay.cosmos path.ring { stroke-width: 2; opacity: .6; }
+@keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+
+.mark.vostok path, .overlay.vostok path, .fly.vostok path { stroke: url(#vostokG); }
+.mark.vostok path.core, .fly.vostok path.core, .overlay.vostok path.core { stroke: #ffe8a3; stroke-width: 2; stroke-dasharray: .04 .04; }
+.mark.vostok path.gem, .overlay.vostok path.gem, .fly.vostok path.gem { stroke: #c99700; stroke-width: 4; fill: #ffd43b; }
+.mark.vostok path.dot, .overlay.vostok path.dot, .fly.vostok path.dot { stroke: #c99700; stroke-width: 7; }
+
+.mark.samurai path, .overlay.samurai path, .fly.samurai path { stroke: #1b1b1f; stroke-width: 11; }
+.mark.samurai path.blade, .overlay.samurai path.blade, .fly.samurai path.blade { stroke: #c92a2a; stroke-width: 2.5; }
+.mark.samurai path.seal, .overlay.samurai path.seal, .fly.samurai path.seal { stroke: #c92a2a; fill: #c92a2a; stroke-width: 3; }
+.overlay.samurai path { stroke-width: 8; }
+
+.mark.pirate path, .overlay.pirate path, .fly.pirate path { stroke: #5c3d1e; }
+.mark.pirate path.core, .fly.pirate path.core, .overlay.pirate path.core { stroke: #d9a066; stroke-width: 2.5; }
+.mark.pirate path.knob, .overlay.pirate path.knob, .fly.pirate path.knob { stroke: #f1e3c6; stroke-width: 13; }
+.mark.o.pirate path:nth-child(3), .overlay.o.pirate path:nth-child(3) { stroke-width: 5; }
+.mark.pirate path.handle, .overlay.pirate path.handle, .fly.pirate path.handle { stroke: #5c3d1e; stroke-width: 9; }
+
+/* rarity */
+.rar { display: inline-block; font: 700 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; padding: 3px 6px; border-radius: 6px; margin-right: 4px; color: #fff; }
+.rar.rare { background: #1c7ed6; }
+.rar.epic { background: #7048e8; }
+.rar.legend { background: linear-gradient(90deg, #c99700, #f59f00); }
+.item.r-rare { background: linear-gradient(160deg, #f5faff, #e3f0ff); border-color: #1c7ed6; box-shadow: 3px 3px 0 #1c7ed6; }
+.item.r-epic { background: linear-gradient(160deg, #faf7ff, #ece4ff); border-color: #7048e8; box-shadow: 3px 3px 0 #7048e8; }
+.item.pack .coin-prev svg { width: 54px; height: 54px; }
+
+/* chests */
+.chests { display: grid; gap: 12px; }
+.chest { position: relative; border: 2px solid #7048e8; border-radius: 14px; padding: 12px; background: linear-gradient(160deg, #faf7ff, #efe7ff); box-shadow: 3px 3px 0 #7048e8; text-align: center; }
+.chest.king { border-color: #a97c00; background: linear-gradient(160deg, #fffaf0, #ffe8a3); box-shadow: 4px 4px 0 #a97c00; }
+.chest.king::before { content: "👑"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 24px; }
+.chest-t { font: 700 26px "Caveat", cursive; }
+.chest-prev { display: flex; justify-content: center; align-items: center; gap: 4px; flex-wrap: wrap; margin: 6px 0; }
+.chest-prev svg { width: 40px; height: 40px; }
+.chest-prev .more { font: 700 16px system-ui, sans-serif; color: #7a5a00; }
+.chest-what { font-size: 14px; }
+.chest-worth { font-size: 13px; color: #868e96; text-decoration: line-through; margin: 2px 0 8px; }
+.btn.big-chest { font-size: 16px; padding: 9px 16px; }
+
 </style>
 </head>
 <body>
@@ -1387,6 +1441,8 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="coinFace" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".35" stop-color="#f4c542"/><stop offset=".7" stop-color="#d89a12"/><stop offset="1" stop-color="#a86a00"/></linearGradient>
   <linearGradient id="goldMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a4d00"/><stop offset=".3" stop-color="#f4c542"/><stop offset=".5" stop-color="#fff6c8"/><stop offset=".7" stop-color="#e0a82a"/><stop offset="1" stop-color="#8a5a00"/></linearGradient>
+  <linearGradient id="cosmosG" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7048e8"/><stop offset=".55" stop-color="#3b5bdb"/><stop offset="1" stop-color="#e64980"/></linearGradient>
+  <linearGradient id="vostokG" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0ca678"/><stop offset="1" stop-color="#1098ad"/></linearGradient>
   <linearGradient id="goldGlint" x1="-120" y1="0" x2="-80" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="rotate(35)"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/><animate attributeName="x1" values="-120;140;140" keyTimes="0;.6;1" dur="3.4s" repeatCount="indefinite"/><animate attributeName="x2" values="-80;180;180" keyTimes="0;.6;1" dur="3.4s" repeatCount="indefinite"/></linearGradient>
   <linearGradient id="coinEdge" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c98a0c"/><stop offset="1" stop-color="#7a4d00"/></linearGradient>
 </defs></svg>
@@ -2243,7 +2299,7 @@ ru: {
   equip: 'Надеть', equipped: 'Надето', buy: 'Купить', free: 'бесплатно', owned: 'куплено', testPrice: 'тест, бесплатно',
   getCoins: n => `+${n} (тест)`,
   earnHint: 'Скрепки дают только за победы над ботами: «Лёгкий?» +10, «Уже нет» +30, «Конец» +50, «Попробуй» +1, «Зря» +3. За победу над «Нет» — сразу оба золотых знака.',
-  secPremium: 'Премиум', premiumHint: 'Золотые X и 0 открывает победа над «Нет». Или монета.', beatNet: 'Победи «Нет»',
+  secChests: 'Сундуки', chestHint: 'Один раз на аккаунт. Выгоднее, чем по одному.', chest_start: 'Сундук новичка', chest_king: 'Сундук Падишаха', chestWhat: (k, n) => `${k} скинов навсегда + ${n} монет`, chestWorth: n => `по отдельности ≈ ${n}`, chestBuy: 'Открыть', rar_rare: 'редкий', rar_epic: 'эпик', rar_legend: 'легенда', secPremium: 'Премиум-скины', premiumHint: 'За монеты, навсегда. Золотые X и 0 по-прежнему бесплатно за победу над «Нет».', beatNet: 'Победи «Нет»',
   coinsStars: 'Монеты покупаются за Telegram Stars и хранятся на твоём аккаунте — не пропадут при смене телефона.',
   coinsTg: 'Монеты покупаются в Telegram-версии игры за Telegram Stars.', openTg: 'Открыть в Telegram',
   paid: n => `Оплата прошла: +${n} ${ruPl(n, 'монета', 'монеты', 'монет')}.`, paidLater: 'Оплата прошла, монеты появятся через минуту. Загляни в магазин чуть позже.',
@@ -2313,7 +2369,7 @@ ru: {
   secExchange: 'Обмен', exchangeHint: 'Монеты можно обменять на скрепки. Чем больше пакет, тем выгоднее.', exchangeBtn: 'Обменять',
   exchanged: (c, n) => `Обменяно: ${c} ${ruPl(c, 'монета', 'монеты', 'монет')} → ${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}.`, bonusLabel: n => `выгода +${n}%`,
   goldWon: 'Золотые X и 0 теперь твои!', winQuote: '«Ты не сдался. Это и был твой лучший ход.»',
-  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X', x_fire: 'Огненный X',
+  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X', x_fire: 'Огненный X', x_neon: 'Неон X', o_neon: 'Неон 0', x_cosmos: 'Космос X', o_cosmos: 'Космос 0', x_vostok: 'Восток X', o_vostok: 'Восток 0', x_samurai: 'Самурай X', o_samurai: 'Самурай 0', x_pirate: 'Пират X', o_pirate: 'Пират 0',
     o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0', o_fire: 'Огненный 0',
     xc_blue: 'Синяя ручка', xc_purple: 'Фиолетовая ручка', xc_graphite: 'Карандаш', oc_red: 'Красная ручка', oc_green: 'Зелёная ручка', oc_orange: 'Оранжевый маркер' },
   bots: {
@@ -2508,7 +2564,7 @@ uz: {
   equip: 'Kiyish', equipped: 'Kiyilgan', buy: 'Sotib olish', free: 'bepul', owned: 'sotib olingan', testPrice: 'test, bepul',
   getCoins: n => `+${n} (test)`,
   earnHint: "Skrepkalar faqat botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +30, «Tamom» +50, «Urinib ko'r» +1, «Bekorga» +3. «Yo'q»ni yutsangiz — darhol ikkala oltin belgi.",
-  secPremium: 'Premium', premiumHint: "Oltin X va 0 ni «Yo'q» ustidan g'alaba ochadi. Yoki bitta tanga.", beatNet: "«Yo'q»ni yuting",
+  secChests: 'Sandiqlar', chestHint: 'Akkauntga bir marta. Alohida olgandan arzonroq.', chest_start: "Yangi o'yinchi sandig'i", chest_king: "Podshoh sandig'i", chestWhat: (k, n) => `${k} ta skin abadiy + ${n} tanga`, chestWorth: n => `alohida ≈ ${n}`, chestBuy: 'Ochish', rar_rare: 'noyob', rar_epic: 'epik', rar_legend: 'afsona', secPremium: 'Premium skinlar', premiumHint: "Tangaga, abadiy. Oltin X va 0 hamon «Yo'q» ustidan g'alaba uchun bepul.", beatNet: "«Yo'q»ni yuting",
   coinsStars: "Tangalar Telegram Stars evaziga sotib olinadi va akkauntingizda saqlanadi — telefon almashsa ham yo'qolmaydi.",
   coinsTg: "Tangalarni o'yinning Telegram versiyasida Telegram Stars evaziga sotib olish mumkin.", openTg: 'Telegramda ochish',
   paid: n => `To'lov o'tdi: +${n} tanga.`, paidLater: "To'lov o'tdi, tangalar bir daqiqada paydo bo'ladi. Do'konga keyinroq qarang.",
@@ -2578,7 +2634,7 @@ uz: {
   secExchange: 'Almashtirish', exchangeHint: "Tangalarni skrepkalarga almashtirish mumkin. Paket qancha katta bo'lsa, shuncha foydali.", exchangeBtn: 'Almashtirish',
   exchanged: (c, n) => `Almashtirildi: ${c} tanga → ${n} skrepka.`, bonusLabel: n => `+${n}% foyda`,
   goldWon: 'Oltin X va 0 endi sizniki!', winQuote: "«Taslim bo'lmadingiz. Bu sizning eng yaxshi yurishingiz edi.»",
-  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X', x_fire: 'Olovli X',
+  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X', x_fire: 'Olovli X', x_neon: 'Neon X', o_neon: 'Neon 0', x_cosmos: 'Koinot X', o_cosmos: 'Koinot 0', x_vostok: 'Sharq X', o_vostok: 'Sharq 0', x_samurai: 'Samuray X', o_samurai: 'Samuray 0', x_pirate: 'Qaroqchi X', o_pirate: 'Qaroqchi 0',
     o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0', o_fire: 'Olovli 0',
     xc_blue: "Ko'k ruchka", xc_purple: 'Binafsha ruchka', xc_graphite: 'Qalam', oc_red: 'Qizil ruchka', oc_green: 'Yashil ruchka', oc_orange: "To'q sariq marker" },
   bots: {
@@ -2773,7 +2829,7 @@ en: {
   equip: 'Equip', equipped: 'Equipped', buy: 'Buy', free: 'free', owned: 'owned', testPrice: 'test, free',
   getCoins: n => `+${n} (test)`,
   earnHint: 'Paperclips come only from beating bots: “Easy?” +10, “Not Anymore” +30, “The End” +50, “Try Me” +1, “Big Mistake” +3. Beating “No” gives both golden marks at once.',
-  secPremium: 'Premium', premiumHint: 'Golden X and 0 unlock by beating “No”. Or for a coin.', beatNet: 'Beat “No”',
+  secChests: 'Chests', chestHint: 'Once per account. Cheaper than one by one.', chest_start: 'Starter Chest', chest_king: 'Padishah Chest', chestWhat: (k, n) => `${k} skins forever + ${n} coins`, chestWorth: n => `separately ≈ ${n}`, chestBuy: 'Open', rar_rare: 'rare', rar_epic: 'epic', rar_legend: 'legend', secPremium: 'Premium skins', premiumHint: 'For coins, forever. Golden X and 0 are still free for beating “No”.', beatNet: 'Beat “No”',
   coinsStars: 'Coins are bought with Telegram Stars and saved to your account — they survive a phone change.',
   coinsTg: 'Coins can be bought with Telegram Stars in the Telegram version of the game.', openTg: 'Open in Telegram',
   paid: n => `Payment received: +${n} coins.`, paidLater: "Payment received — coins will appear within a minute. Check the shop again shortly.",
@@ -2843,7 +2899,7 @@ en: {
   secExchange: 'Exchange', exchangeHint: 'Coins can be exchanged for paperclips. Bigger packs give more.', exchangeBtn: 'Exchange',
   exchanged: (c, n) => `Exchanged: ${c} coins → ${n} paperclips.`, bonusLabel: n => `+${n}% bonus`,
   goldWon: 'The golden X and 0 are yours!', winQuote: '“You never gave up. That was your best move.”',
-  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X', x_fire: 'Fire X',
+  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X', x_fire: 'Fire X', x_neon: 'Neon X', o_neon: 'Neon 0', x_cosmos: 'Cosmos X', o_cosmos: 'Cosmos 0', x_vostok: 'Orient X', o_vostok: 'Orient 0', x_samurai: 'Samurai X', o_samurai: 'Samurai 0', x_pirate: 'Pirate X', o_pirate: 'Pirate 0',
     o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0', o_fire: 'Fire 0',
     xc_blue: 'Blue pen', xc_purple: 'Purple pen', xc_graphite: 'Pencil', oc_red: 'Red pen', oc_green: 'Green pen', oc_orange: 'Orange marker' },
   bots: {
@@ -2885,7 +2941,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v16.9";
+const APP_VERSION = "v17.0";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3054,10 +3110,23 @@ const SHOP = [
   { id: "oc_red", kind: "oColor", price: 0 },
   { id: "oc_green", kind: "oColor", price: 150, cur: "clips" },
   { id: "oc_orange", kind: "oColor", price: 150, cur: "clips" },
-  { id: "x_gold", kind: "xShape", price: 1, cur: "coins", premium: true },
-  { id: "o_gold", kind: "oShape", price: 1, cur: "coins", premium: true }
+  { id: "x_neon", kind: "xShape", price: 25, cur: "coins", premium: true, r: "rare" },
+  { id: "o_neon", kind: "oShape", price: 25, cur: "coins", premium: true, r: "rare" },
+  { id: "x_cosmos", kind: "xShape", price: 35, cur: "coins", premium: true, r: "rare" },
+  { id: "o_cosmos", kind: "oShape", price: 35, cur: "coins", premium: true, r: "rare" },
+  { id: "x_vostok", kind: "xShape", price: 45, cur: "coins", premium: true, r: "epic" },
+  { id: "o_vostok", kind: "oShape", price: 45, cur: "coins", premium: true, r: "epic" },
+  { id: "x_samurai", kind: "xShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "o_samurai", kind: "oShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "x_pirate", kind: "xShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "o_pirate", kind: "oShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "x_gold", kind: "xShape", price: 100, cur: "coins", premium: true, r: "legend" },
+  { id: "o_gold", kind: "oShape", price: 100, cur: "coins", premium: true, r: "legend" }
 ];
-const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }];   // must match worker.js
+const CHEST_START = ["x_neon", "o_neon", "x_cosmos", "o_cosmos"];
+const CHEST_KING = ["x_neon", "o_neon", "x_cosmos", "o_cosmos", "x_vostok", "o_vostok", "x_samurai", "o_samurai", "x_pirate", "o_pirate", "x_gold", "o_gold"];
+const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }, { coins: 30, stars: 135 }, { coins: 250, stars: 900 },
+  { coins: 20, stars: 150, items: CHEST_START, once: "start" }, { coins: 100, stars: 990, items: CHEST_KING, once: "king" }];   // must match worker.js
 const EXCHANGE = [[5, 100], [10, 250], [20, 600]];   // coins -> paperclips; bigger packs give more (base 20 per coin)
 const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };   // paperclips, wins only; beating "Нет" gives both golden marks instead
 const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
@@ -3068,7 +3137,8 @@ function loadProfile() {
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}, { xColor: "xc_blue", oColor: "oc_red" }),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
     cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
-    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 }
+    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 },
+    packs: Array.isArray(p.packs) ? p.packs : []
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -3095,6 +3165,7 @@ function applyProfile(p) {
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
   if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
+  if (Array.isArray(p.packs)) profile.packs = p.packs;
   skinRev++; saveProfile(); refreshWalletViews();
   return true;
 }
@@ -3209,6 +3280,7 @@ function skinClasses(sk) {
   if (sk.color && sk.color !== "xc_blue" && sk.color !== "oc_red") c += " col-" + sk.color.slice(3);
   if (sk.shape === "x_gold" || sk.shape === "o_gold") c += " gold";
   if (sk.shape === "x_fire" || sk.shape === "o_fire") c += " fire";
+  const m = /^[xo]_(neon|cosmos|vostok|samurai|pirate)$/.exec(sk.shape || ""); if (m) c += " " + m[1];
   return c;
 }
 const jit = (k, i, a) => (seeded(k * 17 + i) - .5) * a;
@@ -3264,15 +3336,25 @@ function shapePaths(p, k, shape) {
     case "o_diamond": return [polyPath(k, 4, 42, -Math.PI / 2)];
     case "o_pent": return [polyPath(k, 5, 42, -Math.PI / 2)];
     case "o_hex": return [polyPath(k, 6, 41, 0)];
-    case "x_fire": return xPaths(k);
+    case "x_fire": case "x_neon": return xPaths(k);
+    case "o_neon": return [oPath(k)];
+    case "x_cosmos": return [...xPaths(k), { d: "M30 52 h.1 M70 46 h.1 M52 26 h.1 M48 76 h.1", c: "star" }];
+    case "o_cosmos": return [oPath(k), { d: "M50 50 h.1 M86 22 h.1 M16 84 h.1", c: "star" }, { d: "M8 58 C 30 40, 70 40, 92 46", c: "ring" }];
+    case "x_vostok": return [...xPaths(k), { d: "M50 44 L56 50 L50 56 L44 50 Z", c: "gem" }, { d: "M20 20 h.1 M80 80 h.1 M80 20 h.1 M20 80 h.1", c: "dot" }];
+    case "o_vostok": return [polyPath(k, 8, 38, Math.PI / 8), { d: "M50 40 L60 50 L50 60 L40 50 Z", c: "gem" }];
+    case "x_samurai": return [`M${(20 + jit(k, 1, 3)).toFixed(1)} 18 C 40 40, 58 60, ${(82 + jit(k, 2, 3)).toFixed(1)} 84`, `M${(82 + jit(k, 3, 3)).toFixed(1)} 16 C 62 36, 40 62, ${(18 + jit(k, 4, 3)).toFixed(1)} 86`, { d: "M30 22 L74 78", c: "blade" }];
+    case "o_samurai": return ["M62 18 C 30 10, 12 40, 22 66 C 32 90, 72 92, 84 64 C 90 48, 84 32, 72 24", { d: "M47 47 h6 v6 h-6 Z", c: "seal" }];
+    case "x_pirate": return ["M24 24 L76 76", "M76 24 L24 76", { d: "M19 23 h.1 M25 17 h.1 M75 83 h.1 M81 77 h.1 M75 17 h.1 M81 23 h.1 M19 77 h.1 M25 83 h.1", c: "knob" }];
+    case "o_pirate": return ["M50 22 A 28 28 0 1 1 49.9 22", "M50 30 V70 M30 50 H70 M36 36 L64 64 M64 36 L36 64", { d: "M50 14 V20 M50 80 V86 M14 50 H20 M80 50 H86", c: "handle" }];
     case "o_fire": return [oPath(k)];
     default: return p === 1 ? xPaths(k) : [oPath(k)];
   }
 }
 const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire"), gold = !star && (sh === "x_gold" || sh === "o_gold");
-  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => gold
+  const coreSh = fire || /_(neon|pirate|vostok)$/.test(sh || "");
+  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => typeof d === "object" ? `<path class="${d.c}" pathLength="1" d="${d.d}"/>` : gold
     ? `<path class="gb" pathLength="1" d="${d}"/><path pathLength="1" d="${d}"/><path class="gg" pathLength="1" d="${d}"/>`        // gold bar: dark edge, metal, running glint
-    : `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
+    : `<path pathLength="1" d="${d}"/>` + (coreSh ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
 function markSVG(p, k, cls, star, sk) {
   sk = sk || skinOf(p);
   return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
@@ -5730,10 +5812,10 @@ function itemCard(it, n) {
   const btn = on ? `<button class="btn small" type="button" disabled>${t("equipped")}</button>`
     : own ? `<button class="btn small" type="button" data-equip="${it.id}">${t("equip")}</button>`
     : `<button class="btn small ${it.cur === "coins" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
-  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${/_fire$/.test(it.id) ? " epic" : ""}${justBought === it.id ? " just-bought" : ""}">
+  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${it.r ? " r-" + it.r : ""}${/_fire$/.test(it.id) ? " epic" : ""}${justBought === it.id ? " just-bought" : ""}">
     <div class="item-prev">${markSVG(pv.sym, 41 + n, justBought === it.id ? "fresh" : "", false, pv.sk)}</div>
     <div class="item-name">${itemName(it.id)}</div>
-    <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : it.premium ? t("beatNet") : ""}</div>
+    <div class="item-price">${it.r ? `<span class="rar ${it.r}">${t("rar_" + it.r)}</span>` : ""}${it.price === 0 ? t("free") : own ? t("owned") : ""}</div>
     ${btn}</div>`;
 }
 function renderShop() {
@@ -5741,9 +5823,10 @@ function renderShop() {
   const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
   const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
   const base = PACKS[0].coins / PACKS[0].stars;
-  const packs = TG && serverOn() ? PACKS.map((p, k) => {
-    const bonus = Math.round((p.coins / p.stars / base - 1) * 100);
-    return `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${p.coins} ${t("coinsWord", p.coins)}</div><div class="item-price">${bonus > 0 ? t("bonusLabel", bonus) : ""}</div><button class="btn small gold-btn" type="button" data-pack="${k}"${shopBusy ? " disabled" : ""}>${p.stars} ⭐</button></div>`;
+  const packs = TG && serverOn() ? PACKS.map((p, k) => ({ p, k })).filter(x => !x.p.items).sort((a, b) => a.p.coins - b.p.coins).map(({ p, k }) => {
+    const save = Math.round((1 - (p.stars / p.coins) / (PACKS[0].stars / PACKS[0].coins)) * 100);
+    return `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${p.coins} ${t("coinsWord", p.coins)}</div><div class="item-price">${save > 0 ? `<span class="rar rare">−${save}%</span>` : ""}</div>
+      <button class="btn small gold-btn" type="button" data-pack="${k}">${p.stars} ⭐</button></div>`;
   }).join("") : "";
   const coinSec = TG && serverOn()
     ? `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsStars")}</p><div class="items">${packs}</div></section>`
@@ -5757,12 +5840,23 @@ function renderShop() {
   $("shopBody").innerHTML =
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
+    (TG && serverOn() ? chestSec() : "") +
     sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
     sec(t("secXShape"), by("xShape", false)) +
     sec(t("secOShape"), by("oShape", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     coinSec;
   justBought = null;
+}
+function chestSec() {        // generous one-time chests for Stars
+  const cards = PACKS.map((p, k) => ({ p, k })).filter(x => x.p.items).map(({ p, k }) => {
+    const done = (profile.packs || []).includes(p.once), worth = p.items.reduce((n, id) => n + (itemOf(id) || { price: 0 }).price, 0) + p.coins;
+    const prev = p.items.slice(0, 6).map((id, n) => { const it = itemOf(id); const pv = previewSkin(it); return markSVG(pv.sym, 70 + n, "", false, pv.sk); }).join("");
+    return `<div class="chest ${p.once}"><div class="chest-t">${t("chest_" + p.once)}</div><div class="chest-prev">${prev}${p.items.length > 6 ? `<span class="more">+${p.items.length - 6}</span>` : ""}</div>
+      <div class="chest-what">${t("chestWhat", p.items.length, p.coins)}</div><div class="chest-worth">${t("chestWorth", Math.round(worth * 4))} ⭐</div>
+      ${done ? `<button class="btn small" type="button" disabled>${t("owned")}</button>` : `<button class="btn small gold-btn big-chest" type="button" data-pack="${k}">${t("chestBuy")} · ${p.stars} ⭐</button>`}</div>`;
+  }).join("");
+  return `<section class="shop-sec"><h3>${t("secChests")}</h3><p class="shop-hint">${t("chestHint")}</p><div class="chests">${cards}</div></section>`;
 }
 function shopNoteSet(text, kind) { shopNote = [text, kind]; renderShop(); }
 async function serverSpend(item) {

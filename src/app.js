@@ -182,10 +182,23 @@ const SHOP = [
   { id: "oc_red", kind: "oColor", price: 0 },
   { id: "oc_green", kind: "oColor", price: 150, cur: "clips" },
   { id: "oc_orange", kind: "oColor", price: 150, cur: "clips" },
-  { id: "x_gold", kind: "xShape", price: 1, cur: "coins", premium: true },
-  { id: "o_gold", kind: "oShape", price: 1, cur: "coins", premium: true }
+  { id: "x_neon", kind: "xShape", price: 25, cur: "coins", premium: true, r: "rare" },
+  { id: "o_neon", kind: "oShape", price: 25, cur: "coins", premium: true, r: "rare" },
+  { id: "x_cosmos", kind: "xShape", price: 35, cur: "coins", premium: true, r: "rare" },
+  { id: "o_cosmos", kind: "oShape", price: 35, cur: "coins", premium: true, r: "rare" },
+  { id: "x_vostok", kind: "xShape", price: 45, cur: "coins", premium: true, r: "epic" },
+  { id: "o_vostok", kind: "oShape", price: 45, cur: "coins", premium: true, r: "epic" },
+  { id: "x_samurai", kind: "xShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "o_samurai", kind: "oShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "x_pirate", kind: "xShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "o_pirate", kind: "oShape", price: 60, cur: "coins", premium: true, r: "epic" },
+  { id: "x_gold", kind: "xShape", price: 100, cur: "coins", premium: true, r: "legend" },
+  { id: "o_gold", kind: "oShape", price: 100, cur: "coins", premium: true, r: "legend" }
 ];
-const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }];   // must match worker.js
+const CHEST_START = ["x_neon", "o_neon", "x_cosmos", "o_cosmos"];
+const CHEST_KING = ["x_neon", "o_neon", "x_cosmos", "o_cosmos", "x_vostok", "o_vostok", "x_samurai", "o_samurai", "x_pirate", "o_pirate", "x_gold", "o_gold"];
+const PACKS = [{ coins: 10, stars: 50 }, { coins: 100, stars: 400 }, { coins: 30, stars: 135 }, { coins: 250, stars: 900 },
+  { coins: 20, stars: 150, items: CHEST_START, once: "start" }, { coins: 100, stars: 990, items: CHEST_KING, once: "king" }];   // must match worker.js
 const EXCHANGE = [[5, 100], [10, 250], [20, 600]];   // coins -> paperclips; bigger packs give more (base 20 per coin)
 const REWARD = { x1: 10, x2: 30, x3: 50, c1: 1, c2: 3 };   // paperclips, wins only; beating "Нет" gives both golden marks instead
 const DEFAULT_EQUIP = { xShape: "x_classic", oShape: "o_classic", xColor: "xc_blue", oColor: "oc_red" };
@@ -196,7 +209,8 @@ function loadProfile() {
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}, { xColor: "xc_blue", oColor: "oc_red" }),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
     cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
-    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 }
+    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 },
+    packs: Array.isArray(p.packs) ? p.packs : []
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -223,6 +237,7 @@ function applyProfile(p) {
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
   if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
+  if (Array.isArray(p.packs)) profile.packs = p.packs;
   skinRev++; saveProfile(); refreshWalletViews();
   return true;
 }
@@ -337,6 +352,7 @@ function skinClasses(sk) {
   if (sk.color && sk.color !== "xc_blue" && sk.color !== "oc_red") c += " col-" + sk.color.slice(3);
   if (sk.shape === "x_gold" || sk.shape === "o_gold") c += " gold";
   if (sk.shape === "x_fire" || sk.shape === "o_fire") c += " fire";
+  const m = /^[xo]_(neon|cosmos|vostok|samurai|pirate)$/.exec(sk.shape || ""); if (m) c += " " + m[1];
   return c;
 }
 const jit = (k, i, a) => (seeded(k * 17 + i) - .5) * a;
@@ -392,15 +408,25 @@ function shapePaths(p, k, shape) {
     case "o_diamond": return [polyPath(k, 4, 42, -Math.PI / 2)];
     case "o_pent": return [polyPath(k, 5, 42, -Math.PI / 2)];
     case "o_hex": return [polyPath(k, 6, 41, 0)];
-    case "x_fire": return xPaths(k);
+    case "x_fire": case "x_neon": return xPaths(k);
+    case "o_neon": return [oPath(k)];
+    case "x_cosmos": return [...xPaths(k), { d: "M30 52 h.1 M70 46 h.1 M52 26 h.1 M48 76 h.1", c: "star" }];
+    case "o_cosmos": return [oPath(k), { d: "M50 50 h.1 M86 22 h.1 M16 84 h.1", c: "star" }, { d: "M8 58 C 30 40, 70 40, 92 46", c: "ring" }];
+    case "x_vostok": return [...xPaths(k), { d: "M50 44 L56 50 L50 56 L44 50 Z", c: "gem" }, { d: "M20 20 h.1 M80 80 h.1 M80 20 h.1 M20 80 h.1", c: "dot" }];
+    case "o_vostok": return [polyPath(k, 8, 38, Math.PI / 8), { d: "M50 40 L60 50 L50 60 L40 50 Z", c: "gem" }];
+    case "x_samurai": return [`M${(20 + jit(k, 1, 3)).toFixed(1)} 18 C 40 40, 58 60, ${(82 + jit(k, 2, 3)).toFixed(1)} 84`, `M${(82 + jit(k, 3, 3)).toFixed(1)} 16 C 62 36, 40 62, ${(18 + jit(k, 4, 3)).toFixed(1)} 86`, { d: "M30 22 L74 78", c: "blade" }];
+    case "o_samurai": return ["M62 18 C 30 10, 12 40, 22 66 C 32 90, 72 92, 84 64 C 90 48, 84 32, 72 24", { d: "M47 47 h6 v6 h-6 Z", c: "seal" }];
+    case "x_pirate": return ["M24 24 L76 76", "M76 24 L24 76", { d: "M19 23 h.1 M25 17 h.1 M75 83 h.1 M81 77 h.1 M75 17 h.1 M81 23 h.1 M19 77 h.1 M25 83 h.1", c: "knob" }];
+    case "o_pirate": return ["M50 22 A 28 28 0 1 1 49.9 22", "M50 30 V70 M30 50 H70 M36 36 L64 64 M64 36 L36 64", { d: "M50 14 V20 M50 80 V86 M14 50 H20 M80 50 H86", c: "handle" }];
     case "o_fire": return [oPath(k)];
     default: return p === 1 ? xPaths(k) : [oPath(k)];
   }
 }
 const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire"), gold = !star && (sh === "x_gold" || sh === "o_gold");
-  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => gold
+  const coreSh = fire || /_(neon|pirate|vostok)$/.test(sh || "");
+  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => typeof d === "object" ? `<path class="${d.c}" pathLength="1" d="${d.d}"/>` : gold
     ? `<path class="gb" pathLength="1" d="${d}"/><path pathLength="1" d="${d}"/><path class="gg" pathLength="1" d="${d}"/>`        // gold bar: dark edge, metal, running glint
-    : `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
+    : `<path pathLength="1" d="${d}"/>` + (coreSh ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
 function markSVG(p, k, cls, star, sk) {
   sk = sk || skinOf(p);
   return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
@@ -2858,10 +2884,10 @@ function itemCard(it, n) {
   const btn = on ? `<button class="btn small" type="button" disabled>${t("equipped")}</button>`
     : own ? `<button class="btn small" type="button" data-equip="${it.id}">${t("equip")}</button>`
     : `<button class="btn small ${it.cur === "coins" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
-  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${/_fire$/.test(it.id) ? " epic" : ""}${justBought === it.id ? " just-bought" : ""}">
+  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${it.r ? " r-" + it.r : ""}${/_fire$/.test(it.id) ? " epic" : ""}${justBought === it.id ? " just-bought" : ""}">
     <div class="item-prev">${markSVG(pv.sym, 41 + n, justBought === it.id ? "fresh" : "", false, pv.sk)}</div>
     <div class="item-name">${itemName(it.id)}</div>
-    <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : it.premium ? t("beatNet") : ""}</div>
+    <div class="item-price">${it.r ? `<span class="rar ${it.r}">${t("rar_" + it.r)}</span>` : ""}${it.price === 0 ? t("free") : own ? t("owned") : ""}</div>
     ${btn}</div>`;
 }
 function renderShop() {
@@ -2869,9 +2895,10 @@ function renderShop() {
   const sec = (title, list, note) => `<section class="shop-sec"><h3>${title}</h3>${note ? `<p class="shop-hint">${note}</p>` : ""}<div class="items">${list.map((it, n) => itemCard(it, n)).join("")}</div></section>`;
   const by = (kind, prem) => SHOP.filter(s => s.kind === kind && !!s.premium === prem);
   const base = PACKS[0].coins / PACKS[0].stars;
-  const packs = TG && serverOn() ? PACKS.map((p, k) => {
-    const bonus = Math.round((p.coins / p.stars / base - 1) * 100);
-    return `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${p.coins} ${t("coinsWord", p.coins)}</div><div class="item-price">${bonus > 0 ? t("bonusLabel", bonus) : ""}</div><button class="btn small gold-btn" type="button" data-pack="${k}"${shopBusy ? " disabled" : ""}>${p.stars} ⭐</button></div>`;
+  const packs = TG && serverOn() ? PACKS.map((p, k) => ({ p, k })).filter(x => !x.p.items).sort((a, b) => a.p.coins - b.p.coins).map(({ p, k }) => {
+    const save = Math.round((1 - (p.stars / p.coins) / (PACKS[0].stars / PACKS[0].coins)) * 100);
+    return `<div class="item pack"><div class="item-prev coin-prev">${ICON_COIN}</div><div class="item-name">${p.coins} ${t("coinsWord", p.coins)}</div><div class="item-price">${save > 0 ? `<span class="rar rare">−${save}%</span>` : ""}</div>
+      <button class="btn small gold-btn" type="button" data-pack="${k}">${p.stars} ⭐</button></div>`;
   }).join("") : "";
   const coinSec = TG && serverOn()
     ? `<section class="shop-sec"><h3>${t("secCoins")}</h3><p class="shop-hint">${t("coinsStars")}</p><div class="items">${packs}</div></section>`
@@ -2885,12 +2912,23 @@ function renderShop() {
   $("shopBody").innerHTML =
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
+    (TG && serverOn() ? chestSec() : "") +
     sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
     sec(t("secXShape"), by("xShape", false)) +
     sec(t("secOShape"), by("oShape", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     coinSec;
   justBought = null;
+}
+function chestSec() {        // generous one-time chests for Stars
+  const cards = PACKS.map((p, k) => ({ p, k })).filter(x => x.p.items).map(({ p, k }) => {
+    const done = (profile.packs || []).includes(p.once), worth = p.items.reduce((n, id) => n + (itemOf(id) || { price: 0 }).price, 0) + p.coins;
+    const prev = p.items.slice(0, 6).map((id, n) => { const it = itemOf(id); const pv = previewSkin(it); return markSVG(pv.sym, 70 + n, "", false, pv.sk); }).join("");
+    return `<div class="chest ${p.once}"><div class="chest-t">${t("chest_" + p.once)}</div><div class="chest-prev">${prev}${p.items.length > 6 ? `<span class="more">+${p.items.length - 6}</span>` : ""}</div>
+      <div class="chest-what">${t("chestWhat", p.items.length, p.coins)}</div><div class="chest-worth">${t("chestWorth", Math.round(worth * 4))} ⭐</div>
+      ${done ? `<button class="btn small" type="button" disabled>${t("owned")}</button>` : `<button class="btn small gold-btn big-chest" type="button" data-pack="${k}">${t("chestBuy")} · ${p.stars} ⭐</button>`}</div>`;
+  }).join("");
+  return `<section class="shop-sec"><h3>${t("secChests")}</h3><p class="shop-hint">${t("chestHint")}</p><div class="chests">${cards}</div></section>`;
 }
 function shopNoteSet(text, kind) { shopNote = [text, kind]; renderShop(); }
 async function serverSpend(item) {

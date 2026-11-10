@@ -992,3 +992,57 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .mark.gold.fresh { animation: goldPop .6s cubic-bezier(.3,1.6,.5,1); }
 .mark.gold.fresh path { animation-delay: 0s !important; }
 .lg-mark.gold path { stroke-width: 11.5; } .lg-mark.gold path.gb { stroke-width: 16; } .lg-mark.gold path.gg { stroke-width: 6; }
+
+/* v17: coin skins */
+.mark.neon, .overlay.neon, .fly.neon { overflow: visible; }
+.mark.neon path, .overlay.neon path, .fly.neon path { stroke: #f06595; }
+.mark.x.neon path, .overlay.x.neon path, .fly.x.neon path { stroke: #22b8cf; }
+.mark.neon path.core, .fly.neon path.core { stroke: #fff; stroke-width: 2.6; }
+.overlay.neon path.core { stroke: #fff; stroke-width: 2; }
+.mark.neon { filter: drop-shadow(0 0 3px rgba(240,101,149,.8)); animation: neonHum 2.6s ease-in-out infinite; }
+.mark.x.neon { filter: drop-shadow(0 0 3px rgba(34,184,207,.85)); }
+@keyframes neonHum { 0%, 100% { opacity: 1; } 92% { opacity: 1; } 94% { opacity: .55; } 96% { opacity: 1; } }
+
+.mark.cosmos path, .overlay.cosmos path, .fly.cosmos path { stroke: url(#cosmosG); }
+.mark.cosmos path.star, .overlay.cosmos path.star, .fly.cosmos path.star { stroke: #ffd43b; stroke-width: 6; animation: twinkle 1.8s ease-in-out infinite alternate; }
+.mark.cosmos path.ring, .fly.cosmos path.ring { stroke: #845ef7; stroke-width: 3; opacity: .7; }
+.overlay.cosmos path.ring { stroke-width: 2; opacity: .6; }
+@keyframes twinkle { from { opacity: .35; } to { opacity: 1; } }
+
+.mark.vostok path, .overlay.vostok path, .fly.vostok path { stroke: url(#vostokG); }
+.mark.vostok path.core, .fly.vostok path.core, .overlay.vostok path.core { stroke: #ffe8a3; stroke-width: 2; stroke-dasharray: .04 .04; }
+.mark.vostok path.gem, .overlay.vostok path.gem, .fly.vostok path.gem { stroke: #c99700; stroke-width: 4; fill: #ffd43b; }
+.mark.vostok path.dot, .overlay.vostok path.dot, .fly.vostok path.dot { stroke: #c99700; stroke-width: 7; }
+
+.mark.samurai path, .overlay.samurai path, .fly.samurai path { stroke: #1b1b1f; stroke-width: 11; }
+.mark.samurai path.blade, .overlay.samurai path.blade, .fly.samurai path.blade { stroke: #c92a2a; stroke-width: 2.5; }
+.mark.samurai path.seal, .overlay.samurai path.seal, .fly.samurai path.seal { stroke: #c92a2a; fill: #c92a2a; stroke-width: 3; }
+.overlay.samurai path { stroke-width: 8; }
+
+.mark.pirate path, .overlay.pirate path, .fly.pirate path { stroke: #5c3d1e; }
+.mark.pirate path.core, .fly.pirate path.core, .overlay.pirate path.core { stroke: #d9a066; stroke-width: 2.5; }
+.mark.pirate path.knob, .overlay.pirate path.knob, .fly.pirate path.knob { stroke: #f1e3c6; stroke-width: 13; }
+.mark.o.pirate path:nth-child(3), .overlay.o.pirate path:nth-child(3) { stroke-width: 5; }
+.mark.pirate path.handle, .overlay.pirate path.handle, .fly.pirate path.handle { stroke: #5c3d1e; stroke-width: 9; }
+
+/* rarity */
+.rar { display: inline-block; font: 700 11px/1 system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; padding: 3px 6px; border-radius: 6px; margin-right: 4px; color: #fff; }
+.rar.rare { background: #1c7ed6; }
+.rar.epic { background: #7048e8; }
+.rar.legend { background: linear-gradient(90deg, #c99700, #f59f00); }
+.item.r-rare { background: linear-gradient(160deg, #f5faff, #e3f0ff); border-color: #1c7ed6; box-shadow: 3px 3px 0 #1c7ed6; }
+.item.r-epic { background: linear-gradient(160deg, #faf7ff, #ece4ff); border-color: #7048e8; box-shadow: 3px 3px 0 #7048e8; }
+.item.pack .coin-prev svg { width: 54px; height: 54px; }
+
+/* chests */
+.chests { display: grid; gap: 12px; }
+.chest { position: relative; border: 2px solid #7048e8; border-radius: 14px; padding: 12px; background: linear-gradient(160deg, #faf7ff, #efe7ff); box-shadow: 3px 3px 0 #7048e8; text-align: center; }
+.chest.king { border-color: #a97c00; background: linear-gradient(160deg, #fffaf0, #ffe8a3); box-shadow: 4px 4px 0 #a97c00; }
+.chest.king::before { content: "👑"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-size: 24px; }
+.chest-t { font: 700 26px "Caveat", cursive; }
+.chest-prev { display: flex; justify-content: center; align-items: center; gap: 4px; flex-wrap: wrap; margin: 6px 0; }
+.chest-prev svg { width: 40px; height: 40px; }
+.chest-prev .more { font: 700 16px system-ui, sans-serif; color: #7a5a00; }
+.chest-what { font-size: 14px; }
+.chest-worth { font-size: 13px; color: #868e96; text-decoration: line-through; margin: 2px 0 8px; }
+.btn.big-chest { font-size: 16px; padding: 9px 16px; }
