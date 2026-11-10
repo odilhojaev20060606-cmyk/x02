@@ -955,3 +955,4 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 @keyframes lgHop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-14px); } 70% { transform: translateY(0); } 85% { transform: translateY(-4px); } }
 .tagline s { color: var(--ink-o); text-decoration-thickness: 2px; }
 .lg-fix { font: 700 18px var(--font-hand); color: var(--ink-x); }
+#scr-menu .lg-mark { cursor: pointer; pointer-events: bounding-box; }

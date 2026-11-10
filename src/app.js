@@ -193,7 +193,7 @@ function loadProfile() {
   const p = store.get("profile", null) || {};
   return {
     clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
-    owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
+    owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}, { xColor: "xc_blue", oColor: "oc_red" }),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
     cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
     streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 }
@@ -217,7 +217,7 @@ function applyProfile(p) {
   profile.coins = p.coins;
   if (typeof p.clips === "number") profile.clips = p.clips;
   if (Array.isArray(p.owned)) profile.owned = [...new Set([...p.owned, ...(p.gold || [])])];
-  if (p.equip) profile.equip = Object.assign({}, DEFAULT_EQUIP, p.equip);
+  if (p.equip) profile.equip = Object.assign({}, DEFAULT_EQUIP, p.equip, { xColor: "xc_blue", oColor: "oc_red" });
   if (typeof p.netLosses === "number") profile.netLosses = p.netLosses;
   if (typeof p.netBeaten === "boolean") profile.netBeaten = p.netBeaten;
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
@@ -2849,8 +2849,6 @@ function renderShop() {
     sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
     sec(t("secXShape"), by("xShape", false)) +
     sec(t("secOShape"), by("oShape", false)) +
-    sec(t("secXColor"), by("xColor", false)) +
-    sec(t("secOColor"), by("oColor", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     coinSec;
   justBought = null;
@@ -3001,6 +2999,7 @@ function bind() {
     if (on) { openOnlineSheet(on.dataset.online); return; }
     const o = ev.target.closest(".opp[data-mode]");
     if (o) { homeHere(); startGame(o.dataset.mode, o.dataset.bot); return; }
+    if (ev.target.closest("#scr-menu .lg-mark")) { openShop(); return; }        // tap your X or 0 in the logo: straight to the skins
     const bn = ev.target.closest("#coverBanner");
     if (bn) {
       const act = bn.dataset.bn || "";
