@@ -6,7 +6,7 @@ android {
     applicationId "uz.x02.game"
     minSdk 24
     targetSdk 34
-    versionCode (System.getenv("GITHUB_RUN_NUMBER") ?: "1").toInteger()
+    versionCode = Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER") ?: "1")
     versionName "17.0"
   }
   signingConfigs {
