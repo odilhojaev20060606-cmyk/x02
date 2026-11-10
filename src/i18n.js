@@ -198,8 +198,8 @@ ru: {
   secExchange: 'Обмен', exchangeHint: 'Монеты можно обменять на скрепки. Чем больше пакет, тем выгоднее.', exchangeBtn: 'Обменять',
   exchanged: (c, n) => `Обменяно: ${c} ${ruPl(c, 'монета', 'монеты', 'монет')} → ${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}.`, bonusLabel: n => `выгода +${n}%`,
   goldWon: 'Золотые X и 0 теперь твои!', winQuote: '«Ты не сдался. Это и был твой лучший ход.»',
-  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X',
-    o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0',
+  items: { x_classic: 'Классический X', x_plus: 'Плюс', x_star: 'Звёздочка', x_hash: 'Решётка', x_skew: 'Перекос', x_gold: 'Золотой X', x_fire: 'Огненный X',
+    o_classic: 'Классический O', o_square: 'Квадрат', o_diamond: 'Ромб', o_pent: 'Пятиугольник', o_hex: 'Шестиугольник', o_gold: 'Золотой 0', o_fire: 'Огненный 0',
     xc_blue: 'Синяя ручка', xc_purple: 'Фиолетовая ручка', xc_graphite: 'Карандаш', oc_red: 'Красная ручка', oc_green: 'Зелёная ручка', oc_orange: 'Оранжевый маркер' },
   bots: {
     x1: { name: 'Лёгкий?', line: 'Самый слабый. Наверное.', win: 'Ну вот. А говорили, лёгкий.', lose: 'Ладно. Это была разминка.', draw: 'Ничья. Для начала неплохо.' },
@@ -419,8 +419,8 @@ uz: {
   secExchange: 'Almashtirish', exchangeHint: "Tangalarni skrepkalarga almashtirish mumkin. Paket qancha katta bo'lsa, shuncha foydali.", exchangeBtn: 'Almashtirish',
   exchanged: (c, n) => `Almashtirildi: ${c} tanga → ${n} skrepka.`, bonusLabel: n => `+${n}% foyda`,
   goldWon: 'Oltin X va 0 endi sizniki!', winQuote: "«Taslim bo'lmadingiz. Bu sizning eng yaxshi yurishingiz edi.»",
-  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X',
-    o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0',
+  items: { x_classic: 'Klassik X', x_plus: 'Plyus', x_star: 'Yulduzcha', x_hash: 'Panjara', x_skew: 'Qiyshiq', x_gold: 'Oltin X', x_fire: 'Olovli X',
+    o_classic: 'Klassik O', o_square: 'Kvadrat', o_diamond: 'Romb', o_pent: 'Beshburchak', o_hex: 'Oltiburchak', o_gold: 'Oltin 0', o_fire: 'Olovli 0',
     xc_blue: "Ko'k ruchka", xc_purple: 'Binafsha ruchka', xc_graphite: 'Qalam', oc_red: 'Qizil ruchka', oc_green: 'Yashil ruchka', oc_orange: "To'q sariq marker" },
   bots: {
     x1: { name: 'Osonmi?', line: 'Eng kuchsizi. Ehtimol.', win: 'Mana. Oson deyishgandi-ku.', lose: 'Mayli. Bu razminka edi.', draw: 'Durang. Boshlanishiga yomon emas.' },
@@ -640,8 +640,8 @@ en: {
   secExchange: 'Exchange', exchangeHint: 'Coins can be exchanged for paperclips. Bigger packs give more.', exchangeBtn: 'Exchange',
   exchanged: (c, n) => `Exchanged: ${c} coins → ${n} paperclips.`, bonusLabel: n => `+${n}% bonus`,
   goldWon: 'The golden X and 0 are yours!', winQuote: '“You never gave up. That was your best move.”',
-  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X',
-    o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0',
+  items: { x_classic: 'Classic X', x_plus: 'Plus', x_star: 'Asterisk', x_hash: 'Hash', x_skew: 'Skew', x_gold: 'Golden X', x_fire: 'Fire X',
+    o_classic: 'Classic O', o_square: 'Square', o_diamond: 'Diamond', o_pent: 'Pentagon', o_hex: 'Hexagon', o_gold: 'Golden 0', o_fire: 'Fire 0',
     xc_blue: 'Blue pen', xc_purple: 'Purple pen', xc_graphite: 'Pencil', oc_red: 'Red pen', oc_green: 'Green pen', oc_orange: 'Orange marker' },
   bots: {
     x1: { name: 'Easy?', line: 'The weakest. Probably.', win: 'See? And they said easy.', lose: 'Fine. That was a warm-up.', draw: 'A draw. Not bad for a start.' },

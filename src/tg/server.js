@@ -12,8 +12,8 @@ const GOLD = ["x_gold", "o_gold"];
 const EXCHANGE = { ex0: [5, 100], ex1: [10, 250], ex2: [20, 600] };          // coins -> paperclips
 // paperclip shop (must match SHOP in app.js); price 0 = free, -1 = coins only
 const ITEMS = {
-  x_classic: ["xShape", 0], x_plus: ["xShape", 100], x_star: ["xShape", 150], x_hash: ["xShape", 150], x_skew: ["xShape", 200],
-  o_classic: ["oShape", 0], o_square: ["oShape", 100], o_diamond: ["oShape", 120], o_pent: ["oShape", 150], o_hex: ["oShape", 150],
+  x_classic: ["xShape", 0], x_plus: ["xShape", 100], x_star: ["xShape", 150], x_hash: ["xShape", 150], x_skew: ["xShape", 200], x_fire: ["xShape", 500],
+  o_classic: ["oShape", 0], o_square: ["oShape", 100], o_diamond: ["oShape", 120], o_pent: ["oShape", 150], o_hex: ["oShape", 150], o_fire: ["oShape", 500],
   xc_blue: ["xColor", 0], xc_purple: ["xColor", 150], xc_graphite: ["xColor", 150],
   oc_red: ["oColor", 0], oc_green: ["oColor", 150], oc_orange: ["oColor", 150],
   x_gold: ["xShape", -1], o_gold: ["oShape", -1],

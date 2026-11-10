@@ -797,3 +797,12 @@ details.acc[open] summary::after { content: "–"; }
 #fxLayer .fx-stamp { position: absolute; left: 50%; top: 42%; font: 700 clamp(56px, 16vw, 110px) "Caveat", cursive; white-space: nowrap; padding: 0 .25em; border: 6px solid currentColor; border-radius: 14px; background: #f6f7f2; box-shadow: 4px 4px 0 currentColor; }
 #fxLayer .fx-stamp.lose { color: #6b707a; }
 #fxLayer .fx-stamp.draw { color: #d99a0b; }
+
+/* epic: fire marks */
+.mark.fire path, .overlay.fire path, .fly.fire path { stroke: #e8590c; }
+.mark.fire path.core, .fly.fire path.core { stroke: #ffd43b; stroke-width: 3.5; }
+.overlay.fire path.core { stroke: #ffd43b; stroke-width: 2.5; }
+.mark.fire { overflow: visible; filter: drop-shadow(0 0 2px rgba(255,120,0,.55)); }
+.mark.fire.fresh { animation: fireFlicker .4s ease-in-out 5 alternate, goldPop .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes fireFlicker { from { filter: drop-shadow(0 0 2px rgba(255,140,0,.6)); } to { filter: drop-shadow(0 -3px 7px rgba(255,80,0,.95)); } }
+.item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }

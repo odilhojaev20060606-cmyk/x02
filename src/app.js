@@ -169,11 +169,13 @@ const SHOP = [
   { id: "x_star", kind: "xShape", price: 150, cur: "clips" },
   { id: "x_hash", kind: "xShape", price: 150, cur: "clips" },
   { id: "x_skew", kind: "xShape", price: 200, cur: "clips" },
+  { id: "x_fire", kind: "xShape", price: 500, cur: "clips" },
   { id: "o_classic", kind: "oShape", price: 0 },
   { id: "o_square", kind: "oShape", price: 100, cur: "clips" },
   { id: "o_diamond", kind: "oShape", price: 120, cur: "clips" },
   { id: "o_pent", kind: "oShape", price: 150, cur: "clips" },
   { id: "o_hex", kind: "oShape", price: 150, cur: "clips" },
+  { id: "o_fire", kind: "oShape", price: 500, cur: "clips" },
   { id: "xc_blue", kind: "xColor", price: 0 },
   { id: "xc_purple", kind: "xColor", price: 150, cur: "clips" },
   { id: "xc_graphite", kind: "xColor", price: 150, cur: "clips" },
@@ -332,6 +334,7 @@ function skinClasses(sk) {
   let c = "";
   if (sk.color && sk.color !== "xc_blue" && sk.color !== "oc_red") c += " col-" + sk.color.slice(3);
   if (sk.shape === "x_gold" || sk.shape === "o_gold") c += " gold";
+  if (sk.shape === "x_fire" || sk.shape === "o_fire") c += " fire";
   return c;
 }
 const jit = (k, i, a) => (seeded(k * 17 + i) - .5) * a;
@@ -387,10 +390,13 @@ function shapePaths(p, k, shape) {
     case "o_diamond": return [polyPath(k, 4, 42, -Math.PI / 2)];
     case "o_pent": return [polyPath(k, 5, 42, -Math.PI / 2)];
     case "o_hex": return [polyPath(k, 6, 41, 0)];
+    case "x_fire": return xPaths(k);
+    case "o_fire": return [oPath(k)];
     default: return p === 1 ? xPaths(k) : [oPath(k)];
   }
 }
-const pathsFor = (p, k, star, sk) => (star ? [starPath(k)] : shapePaths(p, k, (sk || skinOf(p)).shape)).map(d => `<path pathLength="1" d="${d}"/>`).join("");
+const pathsFor = (p, k, star, sk) => { const sh = (sk || skinOf(p)).shape, fire = !star && (sh === "x_fire" || sh === "o_fire");
+  return (star ? [starPath(k)] : shapePaths(p, k, sh)).map(d => `<path pathLength="1" d="${d}"/>` + (fire ? `<path class="core" pathLength="1" d="${d}"/>` : "")).join(""); };
 function markSVG(p, k, cls, star, sk) {
   sk = sk || skinOf(p);
   return `<svg viewBox="0 0 100 100" aria-hidden="true" class="mark ${p === 1 ? "x" : "o"}${star ? " is-star" : ""}${skinClasses(sk)} ${cls || ""}">${pathsFor(p, k, star, sk)}</svg>`;
@@ -1487,6 +1493,16 @@ const FX = (() => {
       an.onfinish = () => d.remove();
     }
   }
+  function embers(x, y, w) {
+    const lay = L();
+    for (let i = 0; i < 14; i++) {
+      const d = document.createElement("i"), s = Math.max(3, w * (0.06 + Math.random() * 0.08)), dx = (Math.random() - .5) * w * 1.1, up = w * (0.6 + Math.random() * 0.9);
+      d.className = "fx-drop"; d.style.cssText = `left:${x + (Math.random() - .5) * w * .5}px;top:${y + w * .15}px;width:${s}px;height:${s}px;background:${["#ffd43b", "#ff922b", "#f03e3e"][i % 3]}`;
+      lay.appendChild(d);
+      d.animate([{ transform: "translate(-50%,-50%) scale(1)", opacity: 1 }, { transform: `translate(calc(-50% + ${dx * .5}px), calc(-50% - ${up * .5}px)) scale(.8)`, opacity: .9 },
+        { transform: `translate(calc(-50% + ${dx}px), calc(-50% - ${up}px)) scale(.1)`, opacity: 0 }], { duration: 650 + Math.random() * 500, easing: "ease-out" }).onfinish = () => d.remove();
+    }
+  }
   function ring(x, y, col, size) {
     const d = document.createElement("i"); d.className = "fx-ring"; d.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;border-color:${col}`;
     L().appendChild(d);
@@ -1500,7 +1516,11 @@ const FX = (() => {
   }
   function shake(el, k) { if (el && el.animate) el.animate([{ transform: "none" }, { transform: `translate(${-3 * k}px,${1 * k}px) rotate(${-0.6 * k}deg)` }, { transform: `translate(${3 * k}px,${-1 * k}px) rotate(${0.5 * k}deg)` }, { transform: `translate(${-2 * k}px,0)` }, { transform: "none" }], { duration: 360 }); }
   return {
-    mark(el, p) { if (!ok() || !el) return; const [x, y, w] = center(el); drops(x, y, COL[p], 10, w * 0.8, Math.max(5, w * 0.15)); },
+    mark(el, p) {
+      if (!ok() || !el) return; const [x, y, w] = center(el);
+      if (el.querySelector(".mark.fire")) { embers(x, y, w); return; }
+      drops(x, y, COL[p], 10, w * 0.8, Math.max(5, w * 0.15));
+    },
     capture(el, p, boardEl) {
       if (!ok() || !el) return;
       const [x, y, w] = center(el);
@@ -2341,15 +2361,15 @@ function previewSkin(it) {
   const e = profile.equip;
   if (it.kind === "xShape") return { sym: 1, sk: { shape: it.id, color: it.premium ? null : e.xColor } };
   if (it.kind === "oShape") return { sym: 2, sk: { shape: it.id, color: it.premium ? null : e.oColor } };
-  if (it.kind === "xColor") return { sym: 1, sk: { shape: e.xShape === "x_gold" ? "x_classic" : e.xShape, color: it.id } };
-  return { sym: 2, sk: { shape: e.oShape === "o_gold" ? "o_classic" : e.oShape, color: it.id } };
+  if (it.kind === "xColor") return { sym: 1, sk: { shape: e.xShape === "x_gold" || e.xShape === "x_fire" ? "x_classic" : e.xShape, color: it.id } };
+  return { sym: 2, sk: { shape: e.oShape === "o_gold" || e.oShape === "o_fire" ? "o_classic" : e.oShape, color: it.id } };
 }
 function itemCard(it, n) {
   const pv = previewSkin(it), own = owns(it.id), on = profile.equip[it.kind] === it.id;
   const btn = on ? `<button class="btn small" type="button" disabled>${t("equipped")}</button>`
     : own ? `<button class="btn small" type="button" data-equip="${it.id}">${t("equip")}</button>`
     : `<button class="btn small ${it.cur === "coins" ? "gold-btn" : "primary"}" type="button" data-buy="${it.id}">${t("buy")} · ${it.price} ${curIcon(it.cur)}</button>`;
-  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${justBought === it.id ? " just-bought" : ""}">
+  return `<div class="item${on ? " on" : ""}${it.premium ? " premium" : ""}${/_fire$/.test(it.id) ? " epic" : ""}${justBought === it.id ? " just-bought" : ""}">
     <div class="item-prev">${markSVG(pv.sym, 41 + n, justBought === it.id ? "fresh" : "", false, pv.sk)}</div>
     <div class="item-name">${itemName(it.id)}</div>
     <div class="item-price">${it.price === 0 ? t("free") : own ? t("owned") : it.premium ? t("beatNet") : ""}</div>
