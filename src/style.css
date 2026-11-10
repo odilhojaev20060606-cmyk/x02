@@ -808,3 +808,10 @@ details.acc[open] summary::after { content: "–"; }
 .item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }
 .cbanner.daily { border-color: #6b3fa0; background: #f4eefc; color: #6b3fa0; box-shadow: 2px 2px 0 #6b3fa0; }
 .bridge { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--pencil-soft, #b9bfca); font-size: 14px; text-align: center; }
+.streak-card { text-align: center; }
+.streak-card h2 { font: 700 34px "Caveat", cursive; margin: 0 0 4px; color: #e8590c; }
+.sdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 14px 0; }
+.sd { border: 1.5px solid var(--pencil-soft, #b9bfca); border-radius: 8px; padding: 6px 0; display: flex; flex-direction: column; gap: 2px; font-size: 11px; background: #fff; }
+.sd b { font-size: 13px; }
+.sd.got { background: #ffe8cc; border-color: #e8590c; opacity: .75; }
+.sd.now { border: 2px solid #e8590c; background: #fff4e6; transform: scale(1.08); box-shadow: 2px 2px 0 #e8590c; }

@@ -195,7 +195,8 @@ function loadProfile() {
     clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
-    cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : []
+    cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
+    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 }
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -221,6 +222,7 @@ function applyProfile(p) {
   if (typeof p.netBeaten === "boolean") profile.netBeaten = p.netBeaten;
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
+  if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
   skinRev++; saveProfile(); refreshWalletViews();
   return true;
 }
@@ -493,7 +495,7 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  $("cSub").textContent = !info.logged ? t("guestSub") : [t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
+  $("cSub").textContent = !info.logged ? t("guestSub") : [streakNow() ? "🔥 " + streakNow() : "", t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
   be.hidden = false;
@@ -638,7 +640,7 @@ function goBack() {
   show(p);
 }
 function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
-function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden; }
+function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
   try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
@@ -1027,6 +1029,35 @@ async function claimBonus(kind) {
   profile.bonus = [...(profile.bonus || []), kind];
   saveProfile(); refreshWalletViews();
   return BONUS[kind] || 0;
+}
+// ---- daily streak: come back every day, the reward grows; day 7 gives a fire skin
+const STREAK = [10, 15, 20, 25, 30, 40, 50];
+const tashDay = off => new Date(Date.now() + 5 * 3600000 - (off || 0) * 86400000).toISOString().slice(0, 10);
+function streakNext() { const st = profile.streak || { last: "", n: 0 }; return st.last === tashDay(1) ? st.n + 1 : 1; }
+function streakNow() { const st = profile.streak || { last: "", n: 0 }; return st.last === tashDay(0) || st.last === tashDay(1) ? st.n : 0; }
+function maybeStreak() {
+  if (!store.get("welcomed", false) || app.learn || app.screen !== "menu" || anySheet()) return;
+  if ((profile.streak || {}).last === tashDay(0) || store.get("streakShown", "") === tashDay(0)) return;
+  store.set("streakShown", tashDay(0));
+  const n = streakNext(), slot = (n - 1) % 7;
+  let sh = $("streakSheet");
+  if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "streakSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
+  const days = STREAK.map((v, i) => `<div class="sd${i < slot ? " got" : i === slot ? " now" : ""}"><span>${t("streakDay", i + 1)}</span><b>${i === 6 ? "🎁" : "+" + v}</b></div>`).join("");
+  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}</p><div class="sdays">${days}</div>
+    <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button></div>`;
+  sh.hidden = false;
+}
+async function streakTake() {
+  const sh = $("streakSheet"); if (sh) sh.hidden = true;
+  let paid = 0, gift = "";
+  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; } } catch (e) {} }
+  else if ((profile.streak || {}).last !== tashDay(0)) {
+    const n = streakNext(), slot = (n - 1) % 7; paid = STREAK[slot];
+    if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !profile.owned.includes(id)) || ""; if (gift) profile.owned.push(gift); else paid += 100; }
+    profile.streak = { last: tashDay(0), n }; profile.clips += paid; saveProfile(); refreshWalletViews();
+  }
+  if (paid) { toast(gift ? t("streakGift", paid, itemName(gift)) : t("bonusGot", paid)); SND.play("coin", 0.4); hapticResult(true); }
+  if (app.screen === "menu") renderCover();
 }
 function welcomeClose(learn) {
   $("welcomeSheet").hidden = true;
@@ -2581,6 +2612,8 @@ function bind() {
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "dailyShare") shareDaily();
+    else if (a === "streakTake") streakTake();
+    else if (a === "streakLater") { const sh = $("streakSheet"); if (sh) sh.hidden = true; }
     else if (a === "bridge") { homeHere(); if (!learnDone()) startLearn(); else startGame("x02", "x1"); }
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
@@ -2735,7 +2768,7 @@ function boot(data) {
   tgInit();
   const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
   app.linkVisit = !!(gid || cid);
-  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else maybeWelcome(); });
+  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else { maybeWelcome(); setTimeout(maybeStreak, 700); } });
   buildDOM();
   applyStatic();
   buildMenu();

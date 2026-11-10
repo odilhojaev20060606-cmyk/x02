@@ -835,6 +835,13 @@ details.acc[open] summary::after { content: "–"; }
 .item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }
 .cbanner.daily { border-color: #6b3fa0; background: #f4eefc; color: #6b3fa0; box-shadow: 2px 2px 0 #6b3fa0; }
 .bridge { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--pencil-soft, #b9bfca); font-size: 14px; text-align: center; }
+.streak-card { text-align: center; }
+.streak-card h2 { font: 700 34px "Caveat", cursive; margin: 0 0 4px; color: #e8590c; }
+.sdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 14px 0; }
+.sd { border: 1.5px solid var(--pencil-soft, #b9bfca); border-radius: 8px; padding: 6px 0; display: flex; flex-direction: column; gap: 2px; font-size: 11px; background: #fff; }
+.sd b { font-size: 13px; }
+.sd.got { background: #ffe8cc; border-color: #e8590c; opacity: .75; }
+.sd.now { border: 2px solid #e8590c; background: #fff4e6; transform: scale(1.08); box-shadow: 2px 2px 0 #e8590c; }
 
 </style>
 </head>
@@ -1880,6 +1887,7 @@ ru: {
   dailyBn: n => `Головоломка дня №${n}: одна позиция для всех`, dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
+  streakTitle: n => `Серия: день ${n}`, streakSub: 'Заходи каждый день — награда растёт. На 7-й день огненный скин!', streakDay: n => `${n} д.`, streakTake: n => `Забрать +${n}`, streakGift: (n, s) => `+${n} скрепок и скин «${s}»!`,
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
   refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
   frPlay: 'Сыграть', frCalled: n => `${n} получил приглашение. Ждём…`, frNotSent: 'Не получилось написать другу — отправь ему ссылку.',
@@ -2105,6 +2113,7 @@ uz: {
   dailyBn: n => `Kun jumbog'i №${n}: hamma uchun bitta pozitsiya`, dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
+  streakTitle: n => `Seriya: ${n}-kun`, streakSub: "Har kuni kiring — mukofot oshadi. 7-kuni olovli skin!", streakDay: n => `${n}-k`, streakTake: n => `Olish +${n}`, streakGift: (n, s) => `+${n} skrepka va «${s}» skini!`,
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
   refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
   frPlay: "O'ynash", frCalled: n => `${n} taklifni oldi. Kutamiz…`, frNotSent: "Do'stga yozib bo'lmadi — unga havola yuboring.",
@@ -2330,6 +2339,7 @@ en: {
   dailyBn: n => `Puzzle of the day #${n}: one position for everyone`, dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
+  streakTitle: n => `Streak: day ${n}`, streakSub: 'Come back every day — the reward grows. Day 7 brings a fire skin!', streakDay: n => `D${n}`, streakTake: n => `Take +${n}`, streakGift: (n, s) => `+${n} paperclips and the “${s}” skin!`,
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
   refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
   frPlay: 'Play', frCalled: n => `${n} got your invitation. Waiting…`, frNotSent: "Couldn't message your friend — send them the link.",
@@ -2563,7 +2573,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v14.7";
+const APP_VERSION = "v14.8";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -2745,7 +2755,8 @@ function loadProfile() {
     clips: (p.clips != null ? p.clips : p.fives) | 0, coins: p.coins | 0,
     owned: Array.isArray(p.owned) ? p.owned : [], equip: Object.assign({}, DEFAULT_EQUIP, p.equip || {}),
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
-    cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : []
+    cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
+    streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 }
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -2771,6 +2782,7 @@ function applyProfile(p) {
   if (typeof p.netBeaten === "boolean") profile.netBeaten = p.netBeaten;
   if (p.scores && typeof p.scores === "object") { app.scores = p.scores; store.set("scores", app.scores); }
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
+  if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
   skinRev++; saveProfile(); refreshWalletViews();
   return true;
 }
@@ -3043,7 +3055,7 @@ function renderCover() {
   paintAvatar($("cAva"), info);
   $("cName").textContent = info.first || info.name;
   const tot = totals(), fr = friendsCache.list.length;
-  $("cSub").textContent = !info.logged ? t("guestSub") : [t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
+  $("cSub").textContent = !info.logged ? t("guestSub") : [streakNow() ? "🔥 " + streakNow() : "", t("cardWins", tot.w), fr ? t("cardFriends", fr) : ""].filter(Boolean).join(" · ");
   $("cFriends").innerHTML = friendsCache.list.slice(0, 3).map(f => miniAva(f)).join("") + `<span class="pc-plus" aria-hidden="true">+</span>`;
   const bn = coverBanner(), be = $("coverBanner");
   be.hidden = false;
@@ -3188,7 +3200,7 @@ function goBack() {
   show(p);
 }
 function homeHere() { if (isMenuScreen(app.screen)) app.home = app.screen === "shop" ? "menu" : app.screen; }
-function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden; }
+function anySheet() { return !$("rulesSheet").hidden || !$("onlineSheet").hidden || !$("welcomeSheet").hidden || !$("installSheet").hidden || !!document.querySelector("#streakSheet:not([hidden])"); }
 function tgBack() {
   if (!TG || !TG.BackButton) return;
   try { if (app.screen === "menu" && !anySheet()) TG.BackButton.hide(); else TG.BackButton.show(); } catch (e) {}
@@ -3577,6 +3589,35 @@ async function claimBonus(kind) {
   profile.bonus = [...(profile.bonus || []), kind];
   saveProfile(); refreshWalletViews();
   return BONUS[kind] || 0;
+}
+// ---- daily streak: come back every day, the reward grows; day 7 gives a fire skin
+const STREAK = [10, 15, 20, 25, 30, 40, 50];
+const tashDay = off => new Date(Date.now() + 5 * 3600000 - (off || 0) * 86400000).toISOString().slice(0, 10);
+function streakNext() { const st = profile.streak || { last: "", n: 0 }; return st.last === tashDay(1) ? st.n + 1 : 1; }
+function streakNow() { const st = profile.streak || { last: "", n: 0 }; return st.last === tashDay(0) || st.last === tashDay(1) ? st.n : 0; }
+function maybeStreak() {
+  if (!store.get("welcomed", false) || app.learn || app.screen !== "menu" || anySheet()) return;
+  if ((profile.streak || {}).last === tashDay(0) || store.get("streakShown", "") === tashDay(0)) return;
+  store.set("streakShown", tashDay(0));
+  const n = streakNext(), slot = (n - 1) % 7;
+  let sh = $("streakSheet");
+  if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "streakSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
+  const days = STREAK.map((v, i) => `<div class="sd${i < slot ? " got" : i === slot ? " now" : ""}"><span>${t("streakDay", i + 1)}</span><b>${i === 6 ? "🎁" : "+" + v}</b></div>`).join("");
+  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}</p><div class="sdays">${days}</div>
+    <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button></div>`;
+  sh.hidden = false;
+}
+async function streakTake() {
+  const sh = $("streakSheet"); if (sh) sh.hidden = true;
+  let paid = 0, gift = "";
+  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; } } catch (e) {} }
+  else if ((profile.streak || {}).last !== tashDay(0)) {
+    const n = streakNext(), slot = (n - 1) % 7; paid = STREAK[slot];
+    if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !profile.owned.includes(id)) || ""; if (gift) profile.owned.push(gift); else paid += 100; }
+    profile.streak = { last: tashDay(0), n }; profile.clips += paid; saveProfile(); refreshWalletViews();
+  }
+  if (paid) { toast(gift ? t("streakGift", paid, itemName(gift)) : t("bonusGot", paid)); SND.play("coin", 0.4); hapticResult(true); }
+  if (app.screen === "menu") renderCover();
 }
 function welcomeClose(learn) {
   $("welcomeSheet").hidden = true;
@@ -5131,6 +5172,8 @@ function bind() {
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "dailyShare") shareDaily();
+    else if (a === "streakTake") streakTake();
+    else if (a === "streakLater") { const sh = $("streakSheet"); if (sh) sh.hidden = true; }
     else if (a === "bridge") { homeHere(); if (!learnDone()) startLearn(); else startGame("x02", "x1"); }
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
@@ -5285,7 +5328,7 @@ function boot(data) {
   tgInit();
   const gid = gameFromLink(), cid = gid ? "" : challengeFromLink();
   app.linkVisit = !!(gid || cid);
-  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else maybeWelcome(); });
+  handleLoginReturn().then(syncProfile).then(() => { if (gid) joinOnline(gid); else if (cid) joinChallenge(cid); else { maybeWelcome(); setTimeout(maybeStreak, 700); } });
   buildDOM();
   applyStatic();
   buildMenu();

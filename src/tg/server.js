@@ -24,6 +24,7 @@ const FRIEND_MIN_MOVES = 12;                                  // online win coun
 const BOTS = ["x1", "x2", "x3", "c1", "c2", "c3"];
 const MIN_MS = { x1: 20000, x2: 20000, x3: 20000, c1: 3000, c2: 3000, c3: 3000 };
 const DAILY_CLIPS = 500;
+const STREAK = [10, 15, 20, 25, 30, 40, 50];   // daily visits in a row; day 7 also gives a fire skin (or +100 if both are owned)
 const BONUS = { welcome: 20, learn: 30 };   // one-time gifts for newcomers: first visit, finished tutorial (outside the daily cap)
 const REF_REWARD = 50;        // invite a friend: +50 for both once the friend has really played (outside the daily cap)
 const REF_DAILY = 20;         // paid invitations per inviter per day
@@ -205,6 +206,7 @@ function normProfile(p) {
     scores: p.scores || {}, netLosses: p.netLosses | 0, netBeaten: !!p.netBeaten,
     imported: p.imported | 0, day: p.day || "", dayClips: p.dayClips | 0, rk: Array.isArray(p.rk) ? p.rk : [],
     bonus: Array.isArray(p.bonus) ? p.bonus.filter(k => BONUS[k]) : [],
+    streak: p.streak && typeof p.streak === "object" ? { last: String(p.streak.last || ""), n: p.streak.n | 0 } : { last: "", n: 0 },
   };
 }
 // returns { p, fresh } — fresh = this player was never seen before (neither in D1 nor in old KV)
@@ -272,7 +274,7 @@ async function notifyOwnerNewPlayer(env, u) {
   } catch (e) {}
 }
 
-const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus });
+const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak });
 const ownsItem = (p, id) => ITEMS[id] && (ITEMS[id][1] === 0 || p.owned.includes(id) || p.gold.includes(id));
 const today = () => new Date().toISOString().slice(0, 10);
 async function countPlay(env, mode) {
@@ -759,6 +761,23 @@ async function api(request, env, path) {
     p.clips += BONUS[kind];
     await putProfile(env, user.id, p, metaOf(user));
     return json({ ...publicProfile(p), paid: BONUS[kind] });
+  }
+
+  if (path === "/api/streak") {        // daily visit: the reward grows each day in a row, day 7 brings a fire skin
+    const now = Date.now(), d0 = dayStart(now) + TZ_OFFSET;
+    const day = new Date(d0).toISOString().slice(0, 10), yday = new Date(d0 - 86400000).toISOString().slice(0, 10);
+    if (p.streak.last === day) return json({ ...publicProfile(p), paid: 0 });
+    if (env.DB) {
+      const r = await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, ?, ?)").bind(user.id, "d:" + day, now).run();
+      if (!(r.meta && r.meta.changes)) return json({ ...publicProfile((await getProfile(env, user.id)).p), paid: 0 });
+    }
+    const n = p.streak.last === yday ? p.streak.n + 1 : 1, slot = (n - 1) % 7;
+    let paid = STREAK[slot], gift = "";
+    if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !p.owned.includes(id)) || ""; if (gift) p.owned.push(gift); else paid += 100; }
+    p.streak = { last: day, n };
+    p.clips += paid;
+    await putProfile(env, user.id, p, metaOf(user));
+    return json({ ...publicProfile(p), paid, gift, n });
   }
 
   if (path === "/api/friends") {
