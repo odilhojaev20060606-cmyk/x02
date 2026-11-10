@@ -56,7 +56,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> против <b>${b}</b> — партия ${m} идёт…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> победил в партии ${m}!` : `🤝 Ничья в партии ${m}.`, chMore: "▶ Сыграть тоже",
     cardTitle: "🏆 Моя последняя победа", cardDesc: "Отправить картинку с победой",
-    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться", revenge: "🔥 Отомстить", topChat: "🏆 <b>Рейтинг чата · неделя</b>", topAll: "🏆 <b>Рейтинг X02.0 · неделя</b>", topWins: n => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "победа" : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? "победы" : "побед"}`, topJoin: "Напиши /top, чтобы попасть в рейтинг чата. Король недели получает корону 👑", topHint: "Считаются онлайн-победы с понедельника.", topEmpty: "На этой неделе ещё никто не победил онлайн. Будь первым!", topEmptyChat: "В рейтинге чата пока пусто. Напиши /top, сыграй онлайн с кем-то из чата — и ты в таблице!", rematchBtn: "🔁 Реванш", wantsRematch: n => `🔥 <b>${n}</b> хочет реванша! Принимаешь?`,
+    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться", revenge: "🔥 Отомстить", remindInstall: "📲 Положи X02.0 на экран телефона — открывается в одно касание, прямо как тетрадь из портфеля. За это +1 монета 🪙", remindInstallBtn: "📲 Положить на экран", topChat: "🏆 <b>Рейтинг чата · неделя</b>", topAll: "🏆 <b>Рейтинг X02.0 · неделя</b>", topWins: n => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "победа" : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? "победы" : "побед"}`, topJoin: "Напиши /top, чтобы попасть в рейтинг чата. Король недели получает корону 👑", topHint: "Считаются онлайн-победы с понедельника.", topEmpty: "На этой неделе ещё никто не победил онлайн. Будь первым!", topEmptyChat: "В рейтинге чата пока пусто. Напиши /top, сыграй онлайн с кем-то из чата — и ты в таблице!", rematchBtn: "🔁 Реванш", wantsRematch: n => `🔥 <b>${n}</b> хочет реванша! Принимаешь?`,
     link: c => `Ссылка для канала «${c}»:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}\n\nВсех, кто придёт по ней, увидишь в /stats.`,
     newPlayer: (n, u, s) => `🆕 Новый игрок: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -80,7 +80,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> va <b>${b}</b> — ${m} o'yini ketmoqda…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> ${m} o'yinida g'alaba qozondi!` : `🤝 ${m} o'yinida durang.`, chMore: "▶ Men ham o'ynayman",
     cardTitle: "🏆 Oxirgi g'alabam", cardDesc: "G'alaba rasmini yuborish",
-    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish", revenge: "🔥 O'ch olish", topChat: "🏆 <b>Chat reytingi · hafta</b>", topAll: "🏆 <b>X02.0 reytingi · hafta</b>", topWins: n => `${n} g'alaba`, topJoin: "Chat reytingiga kirish uchun /top yozing. Hafta qiroli toj oladi 👑", topHint: "Dushanbadan beri onlayn g'alabalar hisoblanadi.", topEmpty: "Bu hafta hali hech kim onlayn yutmadi. Birinchi bo'ling!", topEmptyChat: "Chat reytingi hozircha bo'sh. /top yozing va chatdagilar bilan onlayn o'ynang!", rematchBtn: "🔁 Revansh", wantsRematch: n => `🔥 <b>${n}</b> revansh xohlaydi! Qabul qilasanmi?`,
+    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish", revenge: "🔥 O'ch olish", remindInstallBtn: "📲 Ekranga qo‘yish", remindInstall: "📲 X02.0 ni telefon ekraniga qo‘y — portfeldagi daftardek bir bosishda ochiladi. Buning uchun +1 tanga 🪙", topChat: "🏆 <b>Chat reytingi · hafta</b>", topAll: "🏆 <b>X02.0 reytingi · hafta</b>", topWins: n => `${n} g'alaba`, topJoin: "Chat reytingiga kirish uchun /top yozing. Hafta qiroli toj oladi 👑", topHint: "Dushanbadan beri onlayn g'alabalar hisoblanadi.", topEmpty: "Bu hafta hali hech kim onlayn yutmadi. Birinchi bo'ling!", topEmptyChat: "Chat reytingi hozircha bo'sh. /top yozing va chatdagilar bilan onlayn o'ynang!", rematchBtn: "🔁 Revansh", wantsRematch: n => `🔥 <b>${n}</b> revansh xohlaydi! Qabul qilasanmi?`,
     link: c => `«${c}» kanali uchun havola:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 Yangi o'yinchi: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -104,7 +104,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> vs <b>${b}</b> — a ${m} game is on…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> won the ${m} game!` : `🤝 The ${m} game ended in a draw.`, chMore: "▶ I want to play too",
     cardTitle: "🏆 My latest win", cardDesc: "Send the victory picture",
-    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share", revenge: "🔥 Take revenge", topChat: "🏆 <b>Chat ranking · this week</b>", topAll: "🏆 <b>X02.0 ranking · this week</b>", topWins: n => n === 1 ? "1 win" : `${n} wins`, topJoin: "Type /top to join the chat ranking. The king of the week gets a crown 👑", topHint: "Online wins since Monday count.", topEmpty: "No online wins this week yet. Be the first!", topEmptyChat: "The chat ranking is empty. Type /top and play online with someone from the chat!", rematchBtn: "🔁 Rematch", wantsRematch: n => `🔥 <b>${n}</b> wants a rematch! Are you in?`,
+    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share", revenge: "🔥 Take revenge", remindInstall: "📲 Put X02.0 on your home screen — it opens with one tap, like a notebook from your school bag. +1 coin for it 🪙", remindInstallBtn: "📲 Add to home screen", topChat: "🏆 <b>Chat ranking · this week</b>", topAll: "🏆 <b>X02.0 ranking · this week</b>", topWins: n => n === 1 ? "1 win" : `${n} wins`, topJoin: "Type /top to join the chat ranking. The king of the week gets a crown 👑", topHint: "Online wins since Monday count.", topEmpty: "No online wins this week yet. Be the first!", topEmptyChat: "The chat ranking is empty. Type /top and play online with someone from the chat!", rematchBtn: "🔁 Rematch", wantsRematch: n => `🔥 <b>${n}</b> wants a rematch! Are you in?`,
     link: c => `Link for the "${c}" channel:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 New player: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -976,6 +976,9 @@ async function adminStats(env) {
   const plays = (await env.DB.prepare("SELECT mode, SUM(n) AS n FROM plays WHERE day >= ? GROUP BY mode").bind(since).all()).results || [];
   const playsOf = m => (plays.find(r => r.mode === m) || {}).n || 0;
   const bonusN = (await one("SELECT COUNT(*) AS n FROM bonuses WHERE kind = 'learn'")).n || 0;
+  const instN = (await one("SELECT COUNT(*) AS n FROM bonuses WHERE kind = 'install'")).n || 0;
+  const instBack = (await one("SELECT COUNT(*) AS n FROM bonuses b JOIN players p ON p.id = b.id WHERE b.kind = 'install' AND p.seen > b.t + 86400000")).n || 0;
+  const noteN = (await one("SELECT COUNT(*) AS n FROM notes")).n || 0;
   return `📊 <b>X02.0 — статистика</b>\n\n` +
     `Игроков всего: <b>${total}</b>\n` +
     `Новых сегодня: <b>${newToday}</b> · за 7 дней: <b>${new7}</b>\n` +
@@ -984,6 +987,8 @@ async function adminStats(env) {
     `Партий с друзьями сегодня: <b>${gToday}</b> · идут сейчас: ${gLive}\n` +
     `Партий за 7 дней: X02.0 — <b>${playsOf("x02")}</b>, Ностальгия — <b>${playsOf("classic")}</b>\n` +
     `Прошли обучение: <b>${bonusN}</b>\n` +
+    `Поставили на экран: <b>${instN}</b> · из них вернулись позже: <b>${instBack}</b>\n` +
+    `Комментариев с обложки: <b>${noteN}</b>\n` +
     `Новые за 7 дней по источникам: ${src7.length ? src7.map(r => `${escHtml(srcName(r.src))} — ${r.n}`).join(", ") : "—"}\n` +
     `Приглашения: пришло <b>${refAll.n || 0}</b>, засчитано <b>${refAll.p || 0}</b> · на одного активного игрока: ${((refAll.p || 0) / activeTotal).toFixed(2)}\n` +
     `Покупок: <b>${pay.n || 0}</b> · звёзд: <b>${pay.s || 0} ⭐</b>`;
@@ -1161,7 +1166,25 @@ async function autoSetup(env, origin) {
   if (!res || !res.ok) await setMeta(env, "setupVer", "failed");
 }
 
+// ---- day 2 reminder: players who came yesterday and have no home-screen shortcut get one bot message with a button
+async function dayTwoReminders(env) {
+  if (!env.DB || !env.BOT_TOKEN) return 0;
+  await ensureSchema(env);
+  const now = Date.now();
+  const rows = (await env.DB.prepare("SELECT p.id, p.lang FROM players p WHERE p.created BETWEEN ?1 AND ?2 AND NOT EXISTS (SELECT 1 FROM bonuses b WHERE b.id = p.id AND (b.kind = 'install' OR b.kind = 'remind2')) LIMIT 300")
+    .bind(now - 48 * 3600000, now - 20 * 3600000).all()).results || [];
+  let sent = 0;
+  for (const r of rows) {
+    await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, 'remind2', ?)").bind(r.id, now).run();
+    const t = TEXT[lang(r.lang)];
+    try { const res = await tg(env, "sendMessage", { chat_id: r.id, text: t.remindInstall, reply_markup: { inline_keyboard: [[{ text: t.remindInstallBtn, url: `${BOT_LINK}?startapp=install` }]] } }); if (res && res.ok) sent++; } catch (e) {}
+  }
+  return sent;
+}
+
 export default {
+  async scheduled(event, env, ctx) { ctx.waitUntil(dayTwoReminders(env).catch(() => 0)); },
+
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (!setupChecked && ctx && ctx.waitUntil) { setupChecked = true; ctx.waitUntil(autoSetup(env, url.origin).catch(() => { setupChecked = false; })); }

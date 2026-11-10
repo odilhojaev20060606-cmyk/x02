@@ -17,3 +17,6 @@ database_id = "782a4542-a60a-4ab0-b3af-9d56ebad70c0"
 [[kv_namespaces]]
 binding = "WALLET"
 id = "3769719f2f0c40dc8e00eacb2b92bd77"
+
+[triggers]
+crons = ["7 9 * * *"]
