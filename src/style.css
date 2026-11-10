@@ -815,3 +815,10 @@ details.acc[open] summary::after { content: "–"; }
 .sd b { font-size: 13px; }
 .sd.got { background: #ffe8cc; border-color: #e8590c; opacity: .75; }
 .sd.now { border: 2px solid #e8590c; background: #fff4e6; transform: scale(1.08); box-shadow: 2px 2px 0 #e8590c; }
+.friends-top { margin-bottom: 6px; }
+.ftop { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 10px; }
+.ftop.me { background: #eef2ff; box-shadow: inset 0 0 0 1.5px var(--ink-x); }
+.ft-n { width: 22px; text-align: center; font: 700 22px "Caveat", cursive; }
+.ft-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-w { font-weight: 600; font-size: 14px; }
+.ft-hint { font-size: 12px; color: var(--pencil-soft, #8a909c); margin: 4px 0 10px; }

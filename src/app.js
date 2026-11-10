@@ -561,7 +561,17 @@ function renderMe() {
   $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) : t("refHint")) : "";
   renderFriends();
 }
+function renderFriendsTop() {
+  const box = $("friendsTop");
+  if (!box) return;
+  const top = friendsCache.top || [];
+  if (!serverOn() || top.length < 2) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="lbl">${t("frTopTitle")}</p>` + top.slice(0, 10).map((e, i) =>
+    `<div class="ftop${e.me ? " me" : ""}"><b class="ft-n">${i === 0 && e.w ? "👑" : i + 1}</b>${miniAva(e)}<span class="ft-name">${e.me ? t("frTopYou") : esc(e.name || "?")}</span><span class="ft-w">${t("cardWins", e.w)}</span></div>`).join("") +
+    `<p class="ft-hint">${t("frTopHint")}</p>`;
+}
 function renderFriends() {
+  renderFriendsTop();
   const box = $("friendsList");
   if (!box) return;
   if (!serverOn()) {
@@ -586,7 +596,7 @@ function fetchFriends(force) {
   friendsCache.busy = true;
   apiCall("/api/friends", {}).then(r => {
     const ok = Array.isArray(r.friends);
-    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok, refs: r.refs || friendsCache.refs };
+    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok, refs: r.refs || friendsCache.refs, top: Array.isArray(r.top) ? r.top : friendsCache.top };
     if (app.screen === "menu") renderCover(); else if (app.screen === "me") renderMe();
   }).catch(() => { friendsCache.busy = false; friendsCache.at = Date.now(); });
 }

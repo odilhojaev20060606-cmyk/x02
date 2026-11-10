@@ -842,6 +842,13 @@ details.acc[open] summary::after { content: "–"; }
 .sd b { font-size: 13px; }
 .sd.got { background: #ffe8cc; border-color: #e8590c; opacity: .75; }
 .sd.now { border: 2px solid #e8590c; background: #fff4e6; transform: scale(1.08); box-shadow: 2px 2px 0 #e8590c; }
+.friends-top { margin-bottom: 6px; }
+.ftop { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 10px; }
+.ftop.me { background: #eef2ff; box-shadow: inset 0 0 0 1.5px var(--ink-x); }
+.ft-n { width: 22px; text-align: center; font: 700 22px "Caveat", cursive; }
+.ft-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-w { font-weight: 600; font-size: 14px; }
+.ft-hint { font-size: 12px; color: var(--pencil-soft, #8a909c); margin: 4px 0 10px; }
 
 </style>
 </head>
@@ -928,6 +935,7 @@ details.acc[open] summary::after { content: "–"; }
     <div class="me-bots" id="meBots"></div>
     <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
     <p class="ref-line" id="refLine"></p>
+    <div class="friends-top" id="friendsTop"></div>
     <p class="lbl" data-i18n="friendsTitle"></p>
     <div class="friends" id="friendsList"></div>
   </section>
@@ -1887,6 +1895,7 @@ ru: {
   dailyBn: n => `Головоломка дня №${n}: одна позиция для всех`, dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
   bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
+  frTopTitle: 'Рейтинг друзей · неделя', frTopYou: 'Ты', frTopHint: 'Онлайн-победы с понедельника. Обгони всех — напиши /top боту в группе с друзьями.',
   streakTitle: n => `Серия: день ${n}`, streakSub: 'Заходи каждый день — награда растёт. На 7-й день огненный скин!', streakDay: n => `${n} д.`, streakTake: n => `Забрать +${n}`, streakGift: (n, s) => `+${n} скрепок и скин «${s}»!`,
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
   refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
@@ -2113,6 +2122,7 @@ uz: {
   dailyBn: n => `Kun jumbog'i №${n}: hamma uchun bitta pozitsiya`, dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
   bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
+  frTopTitle: "Do'stlar reytingi · hafta", frTopYou: 'Siz', frTopHint: "Dushanbadan beri onlayn g'alabalar. Do'stlar guruhida botga /top yozing.",
   streakTitle: n => `Seriya: ${n}-kun`, streakSub: "Har kuni kiring — mukofot oshadi. 7-kuni olovli skin!", streakDay: n => `${n}-k`, streakTake: n => `Olish +${n}`, streakGift: (n, s) => `+${n} skrepka va «${s}» skini!`,
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
   refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
@@ -2339,6 +2349,7 @@ en: {
   dailyBn: n => `Puzzle of the day #${n}: one position for everyone`, dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
   bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
+  frTopTitle: 'Friends ranking · this week', frTopYou: 'You', frTopHint: 'Online wins since Monday. Type /top to the bot in a group with friends.',
   streakTitle: n => `Streak: day ${n}`, streakSub: 'Come back every day — the reward grows. Day 7 brings a fire skin!', streakDay: n => `D${n}`, streakTake: n => `Take +${n}`, streakGift: (n, s) => `+${n} paperclips and the “${s}” skin!`,
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
   refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
@@ -2573,7 +2584,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v14.8";
+const APP_VERSION = "v14.9";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3121,7 +3132,17 @@ function renderMe() {
   $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) : t("refHint")) : "";
   renderFriends();
 }
+function renderFriendsTop() {
+  const box = $("friendsTop");
+  if (!box) return;
+  const top = friendsCache.top || [];
+  if (!serverOn() || top.length < 2) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="lbl">${t("frTopTitle")}</p>` + top.slice(0, 10).map((e, i) =>
+    `<div class="ftop${e.me ? " me" : ""}"><b class="ft-n">${i === 0 && e.w ? "👑" : i + 1}</b>${miniAva(e)}<span class="ft-name">${e.me ? t("frTopYou") : esc(e.name || "?")}</span><span class="ft-w">${t("cardWins", e.w)}</span></div>`).join("") +
+    `<p class="ft-hint">${t("frTopHint")}</p>`;
+}
 function renderFriends() {
+  renderFriendsTop();
   const box = $("friendsList");
   if (!box) return;
   if (!serverOn()) {
@@ -3146,7 +3167,7 @@ function fetchFriends(force) {
   friendsCache.busy = true;
   apiCall("/api/friends", {}).then(r => {
     const ok = Array.isArray(r.friends);
-    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok, refs: r.refs || friendsCache.refs };
+    friendsCache = { at: Date.now(), list: ok ? r.friends : friendsCache.list, busy: false, ok: ok || friendsCache.ok, refs: r.refs || friendsCache.refs, top: Array.isArray(r.top) ? r.top : friendsCache.top };
     if (app.screen === "menu") renderCover(); else if (app.screen === "me") renderMe();
   }).catch(() => { friendsCache.busy = false; friendsCache.at = Date.now(); });
 }

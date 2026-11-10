@@ -734,7 +734,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> против <b>${b}</b> — партия ${m} идёт…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> победил в партии ${m}!` : `🤝 Ничья в партии ${m}.`, chMore: "▶ Сыграть тоже",
     cardTitle: "🏆 Моя последняя победа", cardDesc: "Отправить картинку с победой",
-    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться", revenge: "🔥 Отомстить", rematchBtn: "🔁 Реванш", wantsRematch: n => `🔥 <b>${n}</b> хочет реванша! Принимаешь?`,
+    resWin: (n, k) => `🏆 Ты победил ${n}${k ? ` за ${k} ходов` : ""}! Похвастайся друзьям.`, resLose: n => `${n} победил в этот раз. Реванш?`, resDraw: n => `Ничья с ${n}.`, share: "📤 Поделиться", revenge: "🔥 Отомстить", topChat: "🏆 <b>Рейтинг чата · неделя</b>", topAll: "🏆 <b>Рейтинг X02.0 · неделя</b>", topWins: n => `${n} ${n % 10 === 1 && n % 100 !== 11 ? "победа" : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? "победы" : "побед"}`, topJoin: "Напиши /top, чтобы попасть в рейтинг чата. Король недели получает корону 👑", topHint: "Считаются онлайн-победы с понедельника.", topEmpty: "На этой неделе ещё никто не победил онлайн. Будь первым!", topEmptyChat: "В рейтинге чата пока пусто. Напиши /top, сыграй онлайн с кем-то из чата — и ты в таблице!", rematchBtn: "🔁 Реванш", wantsRematch: n => `🔥 <b>${n}</b> хочет реванша! Принимаешь?`,
     link: c => `Ссылка для канала «${c}»:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}\n\nВсех, кто придёт по ней, увидишь в /stats.`,
     newPlayer: (n, u, s) => `🆕 Новый игрок: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -758,7 +758,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> va <b>${b}</b> — ${m} o'yini ketmoqda…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> ${m} o'yinida g'alaba qozondi!` : `🤝 ${m} o'yinida durang.`, chMore: "▶ Men ham o'ynayman",
     cardTitle: "🏆 Oxirgi g'alabam", cardDesc: "G'alaba rasmini yuborish",
-    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish", revenge: "🔥 O'ch olish", rematchBtn: "🔁 Revansh", wantsRematch: n => `🔥 <b>${n}</b> revansh xohlaydi! Qabul qilasanmi?`,
+    resWin: (n, k) => `🏆 Siz ${n} ustidan g'alaba qozondingiz${k ? ` (${k} yurishda)` : ""}! Do'stlaringizga maqtaning.`, resLose: n => `Bu safar ${n} yutdi. Revansh?`, resDraw: n => `${n} bilan durang.`, share: "📤 Ulashish", revenge: "🔥 O'ch olish", topChat: "🏆 <b>Chat reytingi · hafta</b>", topAll: "🏆 <b>X02.0 reytingi · hafta</b>", topWins: n => `${n} g'alaba`, topJoin: "Chat reytingiga kirish uchun /top yozing. Hafta qiroli toj oladi 👑", topHint: "Dushanbadan beri onlayn g'alabalar hisoblanadi.", topEmpty: "Bu hafta hali hech kim onlayn yutmadi. Birinchi bo'ling!", topEmptyChat: "Chat reytingi hozircha bo'sh. /top yozing va chatdagilar bilan onlayn o'ynang!", rematchBtn: "🔁 Revansh", wantsRematch: n => `🔥 <b>${n}</b> revansh xohlaydi! Qabul qilasanmi?`,
     link: c => `«${c}» kanali uchun havola:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 Yangi o'yinchi: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -782,7 +782,7 @@ const TEXT = {
     chLive: (a, b, m) => `⚔️ <b>${a}</b> vs <b>${b}</b> — a ${m} game is on…`,
     chEnd: (w, m) => w ? `🏆 <b>${w}</b> won the ${m} game!` : `🤝 The ${m} game ended in a draw.`, chMore: "▶ I want to play too",
     cardTitle: "🏆 My latest win", cardDesc: "Send the victory picture",
-    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share", revenge: "🔥 Take revenge", rematchBtn: "🔁 Rematch", wantsRematch: n => `🔥 <b>${n}</b> wants a rematch! Are you in?`,
+    resWin: (n, k) => `🏆 You beat ${n}${k ? ` in ${k} moves` : ""}! Show it off.`, resLose: n => `${n} won this time. Rematch?`, resDraw: n => `A draw with ${n}.`, share: "📤 Share", revenge: "🔥 Take revenge", topChat: "🏆 <b>Chat ranking · this week</b>", topAll: "🏆 <b>X02.0 ranking · this week</b>", topWins: n => n === 1 ? "1 win" : `${n} wins`, topJoin: "Type /top to join the chat ranking. The king of the week gets a crown 👑", topHint: "Online wins since Monday count.", topEmpty: "No online wins this week yet. Be the first!", topEmptyChat: "The chat ranking is empty. Type /top and play online with someone from the chat!", rematchBtn: "🔁 Rematch", wantsRematch: n => `🔥 <b>${n}</b> wants a rematch! Are you in?`,
     link: c => `Link for the "${c}" channel:\nhttps://t.me/xo_version2bot/play?startapp=ch_${c}`,
     newPlayer: (n, u, s) => `🆕 New player: ${n}${u ? " @" + u : ""} · ${s}`,
   },
@@ -873,6 +873,8 @@ async function ensureSchema(env) {
     env.DB.prepare("CREATE INDEX IF NOT EXISTS refs_inviter ON refs(inviter, paid_at)"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS challenges (code TEXT PRIMARY KEY, host INTEGER, mode TEXT, minutes INTEGER, inline_id TEXT, game TEXT, created INTEGER)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS challenges_game ON challenges(game)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_members (chat INTEGER, uid INTEGER, t INTEGER, PRIMARY KEY (chat, uid))"),
+    env.DB.prepare("CREATE INDEX IF NOT EXISTS games_done ON games(status, updated)"),
   ]);
   schemaReady = true;
 }
@@ -952,6 +954,34 @@ async function notifyOwnerNewPlayer(env, u) {
   } catch (e) {}
 }
 
+// ---- weekly rankings: online wins since Monday 00:00 (Tashkent)
+const weekStart = now => { const ds = dayStart(now), dow = new Date(ds + TZ_OFFSET).getUTCDay(); return ds - ((dow + 6) % 7) * 86400000; };
+async function weekWins(env, since, ids) {        // Map uid -> { w: wins, g: games }
+  let q = "SELECT host, guest, host_side, state FROM games WHERE status = 'done' AND guest IS NOT NULL AND updated > ?1";
+  const binds = [since];
+  if (ids) { const ph = ids.map((_, i) => "?" + (i + 2)).join(","); q += ` AND (host IN (${ph}) OR guest IN (${ph}))`; binds.push(...ids); }
+  const rows = (await env.DB.prepare(q + " LIMIT 3000").bind(...binds).all()).results || [];
+  const m = new Map(), add = (u, k) => { const e = m.get(u) || { w: 0, g: 0 }; e[k]++; m.set(u, e); };
+  for (const r of rows) {
+    let st = null; try { st = JSON.parse(r.state); } catch (e) { continue; }
+    if (!st || !(st.result >= 1 && st.result <= 3) || st.reason === "cancel") continue;
+    add(r.host, "g"); add(r.guest, "g");
+    if (st.result !== 3) add(st.result === r.host_side ? r.host : r.guest, "w");
+  }
+  return m;
+}
+async function topText(env, t, chatId) {        // /top: the chat's members in a group, everyone in a private chat
+  const now = Date.now();
+  let ids = null;
+  if (chatId) ids = ((await env.DB.prepare("SELECT uid FROM chat_members WHERE chat = ? LIMIT 200").bind(chatId).all()).results || []).map(r => r.uid);
+  const wk = await weekWins(env, weekStart(now), ids && ids.length ? ids : (chatId ? [-1] : null));
+  let list = [...wk.entries()].filter(([id, e]) => e.w > 0 && (!ids || ids.includes(id))).sort((a, b) => b[1].w - a[1].w || b[1].g - a[1].g).slice(0, 10);
+  if (!list.length) return chatId ? t.topEmptyChat : t.topEmpty;
+  const pr = (await env.DB.prepare(`SELECT id, name, username FROM players WHERE id IN (${list.map(() => "?").join(",")})`).bind(...list.map(e => e[0])).all()).results || [];
+  const nm = new Map(pr.map(r => [r.id, r.name || (r.username ? "@" + r.username : "Player")]));
+  const lines = list.map(([id, e], i) => `${i === 0 ? "👑" : i + 1 + "."} ${escHtml(nm.get(id) || "Player")} — ${t.topWins(e.w)}`);
+  return (chatId ? t.topChat : t.topAll) + "\n\n" + lines.join("\n") + "\n\n" + (chatId ? t.topJoin : t.topHint);
+}
 const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak });
 const ownsItem = (p, id) => ITEMS[id] && (ITEMS[id][1] === 0 || p.owned.includes(id) || p.gold.includes(id));
 const today = () => new Date().toISOString().slice(0, 10);
@@ -1496,7 +1526,16 @@ async function api(request, env, path) {
       return { name: c.name || (c.username ? "@" + c.username : "Player"), username: c.username || "", photo: c.photo || "", seen: c.seen || 0, w: f.w, l: f.l, d: f.d, last: f.last || c.seen || 0, game: f.game, _id: id };
     }).sort((a, b) => ((b.game && b.game.myTurn) ? 1 : 0) - ((a.game && a.game.myTurn) ? 1 : 0) || (b.game ? 1 : 0) - (a.game ? 1 : 0) || b.last - a.last);
     for (const f of friends) { f.fid = await fidOf(env, uid, f._id); delete f._id; }
-    return json({ friends, refs: { n: refN, paid: refPaidN } });
+    // this week's online wins: me and my friends, best first
+    let top = [];
+    try {
+      const tids = [uid, ...ids], wk = await weekWins(env, weekStart(now), tids);
+      const me = await env.DB.prepare("SELECT name, username, photo FROM players WHERE id = ?").bind(uid).first() || {};
+      top = tids.map(id => { const c = id === uid ? me : (cards.get(id) || {}), e = wk.get(id) || { w: 0, g: 0 };
+        return { name: c.name || (c.username ? "@" + c.username : "Player"), photo: c.photo || "", w: e.w, g: e.g, me: id === uid }; })
+        .sort((a, b) => b.w - a.w || b.g - a.g || (b.me ? 1 : 0) - (a.me ? 1 : 0));
+    } catch (e) {}
+    return json({ friends, refs: { n: refN, paid: refPaidN }, top });
   }
 
   if (path === "/api/card") {
@@ -1677,6 +1716,13 @@ async function onUpdate(env, update) {
   }
 
   const msg = update.message;
+  if (msg && msg.chat && (msg.chat.type === "group" || msg.chat.type === "supergroup") && typeof msg.text === "string" && /^\/top(@\w+)?\b/.test(msg.text.trim()) && env.DB) {
+    const t = TEXT[lang(msg.from && msg.from.language_code)];
+    await ensureSchema(env);
+    if (msg.from && !msg.from.is_bot) await env.DB.prepare("INSERT OR REPLACE INTO chat_members (chat, uid, t) VALUES (?, ?, ?)").bind(msg.chat.id, msg.from.id, Date.now()).run();
+    await tg(env, "sendMessage", { chat_id: msg.chat.id, parse_mode: "HTML", text: await topText(env, t, msg.chat.id), reply_markup: { inline_keyboard: [[{ text: t.play, url: BOT_LINK }]] } });
+    return;
+  }
   if (!msg || !msg.chat || msg.chat.type !== "private") return;
   const t = TEXT[lang(msg.from && msg.from.language_code)];
 
@@ -1711,6 +1757,10 @@ async function onUpdate(env, update) {
     if (!env.DB) { await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.noDb }); return; }
     if (text.split(/\s+/)[1] === env.WEBHOOK_SECRET) { await setMeta(env, "owner", msg.from.id); await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.owner }); }
     else await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.notOwner });
+    return;
+  }
+  if (text.startsWith("/top") && env.DB) {
+    await tg(env, "sendMessage", { chat_id: msg.chat.id, parse_mode: "HTML", text: await topText(env, t, null), reply_markup: playButton(t) });
     return;
   }
   if (text.startsWith("/link")) {
@@ -1759,7 +1809,7 @@ export default {
         allowed_updates: ["message", "pre_checkout_query", "inline_query", "chosen_inline_result"],
         drop_pending_updates: true,
       });
-      await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Начать" }, { command: "paysupport", description: "Помощь с оплатой" }] });
+      await tg(env, "setMyCommands", { commands: [{ command: "start", description: "Начать" }, { command: "top", description: "Рейтинг недели" }, { command: "paysupport", description: "Помощь с оплатой" }] });
       let db = "База D1 (DB) не подключена ❌ (игра с друзьями и статистика не будут работать)";
       if (env.DB) { try { await ensureSchema(env); db = "База D1 подключена ✅"; } catch (e) { db = "Ошибка базы D1: " + e.message; } }
       const kv = env.WALLET ? "KV подключён ✅" : "KV не подключён (это нормально, если всё уже в D1)";
