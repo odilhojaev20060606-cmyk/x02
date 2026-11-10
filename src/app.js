@@ -823,6 +823,11 @@ function shareDaily() {
   if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
   window.open(share, "_blank", "noopener");
 }
+function shouldBridge() {        // wins Nostalgia but has never tried the real game
+  const sc = id => app.scores[id] || { me: 0, bot: 0, draw: 0 }, sum = ids => ids.reduce((n, id) => n + sc(id).me + sc(id).bot + sc(id).draw, 0);
+  const cw = ["c1", "c2", "c3"].reduce((n, id) => n + sc(id).me, 0);
+  return cw >= 2 && sum(["x1", "x2", "x3"]) === 0 && (store.get("bridgeShown", 0) | 0) < 3;
+}
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
     const el = $(id); el.hidden = false;
@@ -1110,30 +1115,11 @@ async function learnScript(id) {
   learnMark([]); learnCard(3, t("l3b"));
   await sleep(2200);
   await learnBot(id, 40);
-  // 4. navigator: a star instead of a mark, then you choose the opponent's board
-  learnCard(4, t("l4a")); learnMark([$("starBtn")]);
-  await learnWait(id, null, "star");
-  learnCard(4, t("l4b")); learnMark([cellEls[44]]);
-  await learnWait(id, [144]);
-  learnCard(4, t("l4c")); learnMark([subEls[8]]);
-  await learnWait(id, [308]);
   learnMark([]);
-  await learnBot(id, 72);
-  learnCard(4, t("l4d"), next);
-  await learnNextWait(id);
-  // 5. strike: remove an opponent's mark
-  push({ turn: 1, sx: 2, x: [22, 54, 58, 62, 13, 44, 31], star: [44], o: [38, 36, 60, 70, 40, 72, 27, 28], owner: [[6, 1]], active: 3 });
-  learnCard(5, t("l5a")); learnMark([$("strikeBtn")]);
-  await learnWait(id, null, "strike");
-  learnCard(5, t("l5b")); learnMark([cellEls[28]]);
-  await learnWait(id, [228]);
-  learnMark([]); learnCard(5, t("l5c"), next);
-  await learnNextWait(id);
-  await learnBot(id, 9);
   const paid = await claimBonus("learn");
   learnAlive(id);
   store.set("learnDone", true);
-  learnCard(5, t("l6") + (paid ? `<div class="lc-reward">${t("bonusGot", paid)}</div>` : `<div class="lc-step">${t("learnAgain")}</div>`),
+  learnCard(3, t("l6") + (paid ? `<div class="lc-reward">${t("bonusGot", paid)}</div>` : `<div class="lc-step">${t("learnAgain")}</div>`),
     `<button class="btn primary small" type="button" data-act="learnPlay">${t("learnPlay", t("q", bt("x1", "name")))}</button><button class="btn small" type="button" data-act="menu">${t("toMenu")}</button>`);
   if (paid) { SND.play("win", 0.4); hapticResult(true); }
 }
@@ -1278,6 +1264,10 @@ function onGameEnd(r) {
   rw.innerHTML = !g ? "" : g.gold
     ? `<span class="reward-pop gold-pop">${t("goldWon")}</span><span class="quote">${t("winQuote")}</span>`
     : `<span class="reward-pop">${t("reward", g.clips)} ${curIcon("clips")}</span>`;
+  if (app.mode === "classic" && app.bot && r === app.side && shouldBridge()) {
+    store.set("bridgeShown", (store.get("bridgeShown", 0) | 0) + 1);
+    rw.insertAdjacentHTML("beforeend", `<div class="bridge"><span>${t("bridgeText")}</span><button class="btn small primary" type="button" data-act="bridge">${t("bridgeBtn")}</button></div>`);
+  }
   renderBars();
   if (r !== 3 && (!app.bot || r === app.side)) setTimeout(() => confetti(r), 650);
   const bEl = app.mode === "classic" ? $("tttBoard") : $("board");
@@ -2591,6 +2581,7 @@ function bind() {
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "dailyShare") shareDaily();
+    else if (a === "bridge") { homeHere(); if (!learnDone()) startLearn(); else startGame("x02", "x1"); }
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
     else if (a === "share") shareInvite();

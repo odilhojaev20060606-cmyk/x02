@@ -834,6 +834,7 @@ details.acc[open] summary::after { content: "–"; }
 @keyframes fireFlicker { from { filter: drop-shadow(0 0 2px rgba(255,140,0,.6)); } to { filter: drop-shadow(0 -3px 7px rgba(255,80,0,.95)); } }
 .item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }
 .cbanner.daily { border-color: #6b3fa0; background: #f4eefc; color: #6b3fa0; box-shadow: 2px 2px 0 #6b3fa0; }
+.bridge { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--pencil-soft, #b9bfca); font-size: 14px; text-align: center; }
 
 </style>
 </head>
@@ -1878,6 +1879,7 @@ ru: {
   dareBtn: '😏 Спорим, друг не обыграет?', dareText: n => `Я не смог обыграть ${n} в X02.0 — игре сложнее шахмат. Спорим, ты тоже не сможешь? 😏`, revengeBtn: '🔥 Отомстить',
   dailyBn: n => `Головоломка дня №${n}: одна позиция для всех`, dailyTries: n => `попыток: ${n}`, dailyStart: 'Головоломка дня: позиция одна для всех. Победи за меньшее число ходов!',
   dailyShareBtn: '🧩 Поделиться результатом', dailyText: (n, g, k, tr) => `🧩 X02.0 · Головоломка №${n}\n${g}\n✅ Победа за ${k} ${ruPl(k, 'ход', 'хода', 'ходов')} · ${tr === 1 ? 'с первой попытки' : `с ${tr}-й попытки`}`, dailyTry: 'Думаешь, ты умный? Попробуй быстрее:',
+  bridgeText: 'Слишком просто? Попробуй настоящую — X02.0, игру сложнее шахмат.', bridgeBtn: 'Попробовать X02.0 →',
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
   refWelcome: n => `Тебя пригласил ${n}. Сыграй первую партию — и вы оба получите +50 скрепок.`, refPaidToast: n => `+${n} скрепок за приглашение!`,
   frPlay: 'Сыграть', frCalled: n => `${n} получил приглашение. Ждём…`, frNotSent: 'Не получилось написать другу — отправь ему ссылку.',
@@ -1911,7 +1913,7 @@ ru: {
   privacyHTML: '<p>Что мы храним: твой Telegram ID, имя, @username и ссылку на фото — чтобы показывать профиль и друзей; результаты партий, скрепки, монеты и покупки — чтобы сохранять прогресс.</p><p>Покупки проходят через Telegram Stars: данные карт мы не видим. Мы не продаём и не передаём данные третьим лицам. Чтобы удалить свои данные, напиши в поддержку через бота @xo_version2bot.</p>',
   welcomeTitle: 'Добро пожаловать!', welcomeBot: n => `${n} уже ждёт.`, welcomeGift: 'Подарок за первый вход', welcomeLearn: 'Пройти обучение · ещё +30', later: 'Позже',
   bonusGot: n => `+${n} ${ruPl(n, 'скрепка', 'скрепки', 'скрепок')}`,
-  learnStep: n => `Обучение · шаг ${n} из 5`, learnExit: 'Выйти из обучения', learnNext: 'Дальше', learnTap: 'Нажми на подсвеченное место',
+  learnStep: n => `Обучение · шаг ${n} из 3`, learnExit: 'Выйти из обучения', learnNext: 'Дальше', learnTap: 'Нажми на подсвеченное место',
   learnPlay: n => `Сыграть с ${n}`, learnAgain: 'Обучение пройдено',
   l1a: 'Сначала <b>разминка</b> — обычные крестики-нолики 3×3. Победитель получит ★ на старт, проигравший начнёт главную игру. Поставь X в подсвеченную клетку и выиграй.',
   l1b: 'Есть! Ты выиграл разминку и получил <b>★</b>. Соперник проиграл — поэтому он ходит первым в главной игре.',
@@ -2102,6 +2104,7 @@ uz: {
   dareBtn: "😏 Do'sting ham yutolmaydi, garovmi?", dareText: n => `Men X02.0 da ${n} ni yengolmadim — bu shaxmatdan ham qiyin o'yin. Garov, sen ham yengolmaysan? 😏`, revengeBtn: "🔥 O'ch olish",
   dailyBn: n => `Kun jumbog'i №${n}: hamma uchun bitta pozitsiya`, dailyTries: n => `urinish: ${n}`, dailyStart: "Kun jumbog'i: pozitsiya hamma uchun bir xil. Kamroq yurishda yut!",
   dailyShareBtn: '🧩 Natijani ulashish', dailyText: (n, g, k, tr) => `🧩 X02.0 · Jumboq №${n}\n${g}\n✅ ${k} yurishda g'alaba · ${tr === 1 ? 'birinchi urinishda' : `${tr}-urinishda`}`, dailyTry: "O'zingni aqlli deb o'ylaysanmi? Tezroq yechib ko'r:",
+  bridgeText: "Juda osonmi? Haqiqiysini sinab ko'r — X02.0, shaxmatdan ham qiyin o'yin.", bridgeBtn: "X02.0 ni sinab ko'rish →",
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
   refWelcome: n => `Sizni ${n} taklif qildi. Birinchi o'yinni o'ynang — ikkalangiz +50 skrepka olasiz.`, refPaidToast: n => `Taklif uchun +${n} skrepka!`,
   frPlay: "O'ynash", frCalled: n => `${n} taklifni oldi. Kutamiz…`, frNotSent: "Do'stga yozib bo'lmadi — unga havola yuboring.",
@@ -2135,7 +2138,7 @@ uz: {
   privacyHTML: "<p>Biz nimani saqlaymiz: Telegram ID, ism, @username va rasm havolasi — profil va do'stlarni ko'rsatish uchun; o'yin natijalari, skrepkalar, tangalar va xaridlar — progressni saqlash uchun.</p><p>Xaridlar Telegram Stars orqali o'tadi: karta ma'lumotlarini biz ko'rmaymiz. Ma'lumotlarni sotmaymiz va uchinchi shaxslarga bermaymiz. Ma'lumotlaringizni o'chirish uchun @xo_version2bot boti orqali yordamga yozing.</p>",
   welcomeTitle: 'Xush kelibsiz!', welcomeBot: n => `${n} allaqachon kutmoqda.`, welcomeGift: "Birinchi kirish uchun sovg'a", welcomeLearn: "O'rgatishdan o'tish · yana +30", later: 'Keyinroq',
   bonusGot: n => `+${n} skrepka`,
-  learnStep: n => `O'rgatish · ${n}-qadam (5 tadan)`, learnExit: "O'rgatishdan chiqish", learnNext: 'Davom etish', learnTap: 'Belgilangan joyni bosing',
+  learnStep: n => `O'rgatish · ${n}-qadam (3 tadan)`, learnExit: "O'rgatishdan chiqish", learnNext: 'Davom etish', learnTap: 'Belgilangan joyni bosing',
   learnPlay: n => `${n} bilan o'ynash`, learnAgain: "O'rgatishdan o'tilgan",
   l1a: "Avval <b>razminka</b> — oddiy 3×3 iks-nol. G'olib boshlanishiga ★ oladi, yutqazgan asosiy o'yinni boshlaydi. X ni belgilangan katakka qo'ying va yuting.",
   l1b: "Zo'r! Razminkada yutdingiz va <b>★</b> oldingiz. Raqib yutqazdi — shuning uchun asosiy o'yinda u birinchi yuradi.",
@@ -2326,6 +2329,7 @@ en: {
   dareBtn: '😏 Bet a friend can\'t win?', dareText: n => `I couldn't beat ${n} in X02.0, a game harder than chess. Bet you can't either? 😏`, revengeBtn: '🔥 Take revenge',
   dailyBn: n => `Puzzle of the day #${n}: one position for everyone`, dailyTries: n => `tries: ${n}`, dailyStart: 'Puzzle of the day: the same position for everyone. Win in as few moves as you can!',
   dailyShareBtn: '🧩 Share the result', dailyText: (n, g, k, tr) => `🧩 X02.0 · Puzzle #${n}\n${g}\n✅ Won in ${k} moves · ${tr === 1 ? 'first try' : `try #${tr}`}`, dailyTry: 'Think you\'re smart? Try to beat it faster:',
+  bridgeText: 'Too easy? Try the real thing — X02.0, a game harder than chess.', bridgeBtn: 'Try X02.0 →',
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
   refWelcome: n => `${n} invited you. Play your first game and you both get +50 paperclips.`, refPaidToast: n => `+${n} paperclips for the invitation!`,
   frPlay: 'Play', frCalled: n => `${n} got your invitation. Waiting…`, frNotSent: "Couldn't message your friend — send them the link.",
@@ -2359,7 +2363,7 @@ en: {
   privacyHTML: '<p>What we store: your Telegram ID, name, @username and photo link — to show your profile and friends; game results, paperclips, coins and purchases — to keep your progress.</p><p>Purchases go through Telegram Stars: we never see card details. We do not sell or share data with third parties. To delete your data, write to support via the @xo_version2bot bot.</p>',
   welcomeTitle: 'Welcome!', welcomeBot: n => `${n} is already waiting.`, welcomeGift: 'A gift for your first visit', welcomeLearn: 'Take the tutorial · +30 more', later: 'Later',
   bonusGot: n => `+${n} ${n === 1 ? 'paperclip' : 'paperclips'}`,
-  learnStep: n => `Tutorial · step ${n} of 5`, learnExit: 'Leave the tutorial', learnNext: 'Next', learnTap: 'Tap the highlighted spot',
+  learnStep: n => `Tutorial · step ${n} of 3`, learnExit: 'Leave the tutorial', learnNext: 'Next', learnTap: 'Tap the highlighted spot',
   learnPlay: n => `Play ${n}`, learnAgain: 'Tutorial completed',
   l1a: 'First, a <b>warm-up</b>: classic 3×3 tic-tac-toe. The winner gets a ★ to start with, the loser opens the main game. Put X in the highlighted cell and win.',
   l1b: 'Nice! You won the warm-up and got a <b>★</b>. Your opponent lost, so they move first in the main game.',
@@ -2559,7 +2563,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v14.6";
+const APP_VERSION = "v14.7";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3369,6 +3373,11 @@ function shareDaily() {
   if (navigator.share) { navigator.share({ text, url: link }).catch(() => {}); return; }
   window.open(share, "_blank", "noopener");
 }
+function shouldBridge() {        // wins Nostalgia but has never tried the real game
+  const sc = id => app.scores[id] || { me: 0, bot: 0, draw: 0 }, sum = ids => ids.reduce((n, id) => n + sc(id).me + sc(id).bot + sc(id).draw, 0);
+  const cw = ["c1", "c2", "c3"].reduce((n, id) => n + sc(id).me, 0);
+  return cw >= 2 && sum(["x1", "x2", "x3"]) === 0 && (store.get("bridgeShown", 0) | 0) < 3;
+}
 function dareSet() {        // lost to a bot: dare a friend to do better
   for (const id of ["bannerShare", "cBannerShare"]) {
     const el = $(id); el.hidden = false;
@@ -3656,30 +3665,11 @@ async function learnScript(id) {
   learnMark([]); learnCard(3, t("l3b"));
   await sleep(2200);
   await learnBot(id, 40);
-  // 4. navigator: a star instead of a mark, then you choose the opponent's board
-  learnCard(4, t("l4a")); learnMark([$("starBtn")]);
-  await learnWait(id, null, "star");
-  learnCard(4, t("l4b")); learnMark([cellEls[44]]);
-  await learnWait(id, [144]);
-  learnCard(4, t("l4c")); learnMark([subEls[8]]);
-  await learnWait(id, [308]);
   learnMark([]);
-  await learnBot(id, 72);
-  learnCard(4, t("l4d"), next);
-  await learnNextWait(id);
-  // 5. strike: remove an opponent's mark
-  push({ turn: 1, sx: 2, x: [22, 54, 58, 62, 13, 44, 31], star: [44], o: [38, 36, 60, 70, 40, 72, 27, 28], owner: [[6, 1]], active: 3 });
-  learnCard(5, t("l5a")); learnMark([$("strikeBtn")]);
-  await learnWait(id, null, "strike");
-  learnCard(5, t("l5b")); learnMark([cellEls[28]]);
-  await learnWait(id, [228]);
-  learnMark([]); learnCard(5, t("l5c"), next);
-  await learnNextWait(id);
-  await learnBot(id, 9);
   const paid = await claimBonus("learn");
   learnAlive(id);
   store.set("learnDone", true);
-  learnCard(5, t("l6") + (paid ? `<div class="lc-reward">${t("bonusGot", paid)}</div>` : `<div class="lc-step">${t("learnAgain")}</div>`),
+  learnCard(3, t("l6") + (paid ? `<div class="lc-reward">${t("bonusGot", paid)}</div>` : `<div class="lc-step">${t("learnAgain")}</div>`),
     `<button class="btn primary small" type="button" data-act="learnPlay">${t("learnPlay", t("q", bt("x1", "name")))}</button><button class="btn small" type="button" data-act="menu">${t("toMenu")}</button>`);
   if (paid) { SND.play("win", 0.4); hapticResult(true); }
 }
@@ -3824,6 +3814,10 @@ function onGameEnd(r) {
   rw.innerHTML = !g ? "" : g.gold
     ? `<span class="reward-pop gold-pop">${t("goldWon")}</span><span class="quote">${t("winQuote")}</span>`
     : `<span class="reward-pop">${t("reward", g.clips)} ${curIcon("clips")}</span>`;
+  if (app.mode === "classic" && app.bot && r === app.side && shouldBridge()) {
+    store.set("bridgeShown", (store.get("bridgeShown", 0) | 0) + 1);
+    rw.insertAdjacentHTML("beforeend", `<div class="bridge"><span>${t("bridgeText")}</span><button class="btn small primary" type="button" data-act="bridge">${t("bridgeBtn")}</button></div>`);
+  }
   renderBars();
   if (r !== 3 && (!app.bot || r === app.side)) setTimeout(() => confetti(r), 650);
   const bEl = app.mode === "classic" ? $("tttBoard") : $("board");
@@ -5137,6 +5131,7 @@ function bind() {
     else if (a === "rules") openRules();
     else if (a === "again") { if (app.online) onlineRematch(); else if (app.daily) startDaily(); else startGame(app.mode, app.bot ? app.bot.id : ""); }
     else if (a === "dailyShare") shareDaily();
+    else if (a === "bridge") { homeHere(); if (!learnDone()) startLearn(); else startGame("x02", "x1"); }
     else if (a === "resign") onlineResign();
     else if (a === "chat") togglePhrases();
     else if (a === "share") shareInvite();

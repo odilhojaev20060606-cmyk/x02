@@ -807,3 +807,4 @@ details.acc[open] summary::after { content: "–"; }
 @keyframes fireFlicker { from { filter: drop-shadow(0 0 2px rgba(255,140,0,.6)); } to { filter: drop-shadow(0 -3px 7px rgba(255,80,0,.95)); } }
 .item.epic { border-color: #e8590c; box-shadow: 2px 2px 0 #e8590c; }
 .cbanner.daily { border-color: #6b3fa0; background: #f4eefc; color: #6b3fa0; box-shadow: 2px 2px 0 #6b3fa0; }
+.bridge { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1.5px dashed var(--pencil-soft, #b9bfca); font-size: 14px; text-align: center; }
