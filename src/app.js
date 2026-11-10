@@ -1465,6 +1465,15 @@ async function searchMain(g, ms, job) {
   return localSearch(() => E.createSearch(state), ms, job);
 }
 // "Конец": the strongest search on every available core, with the tree kept between moves
+function quickWin(g) {        // a move that ends the game in the bot's favour right now
+  for (const a of E.legal(g)) { try { if (E.apply(g, a).result === g.turn) return a; } catch (e) {} }
+  return -1;
+}
+function threatCells(tt, p) {        // empty cells where player p would complete three in a row
+  const out = [];
+  for (const L of E.LINES) { const v = L.map(i => tt.b[i]); if (v.filter(x => x === p).length === 2 && v.includes(0)) out.push(L[v.indexOf(0)]); }
+  return out;
+}
 async function searchDeep(g, ms, job) {
   const state = E.cloneLite(g), acts = actionsFromLog(g.log), key = String(app.gameId), p = makePool();
   if (p) {
@@ -1488,13 +1497,26 @@ async function kickBot() {
       setFace("think", true);
       const t0 = Date.now();
       let a;
+      let after = null;
       if (app.mode === "classic") {
         a = -1;
         if (app.chance && !app.chanceUsed) { a = E.tttBlunder(e.t); if (a >= 0) app.chanceUsed = true; }
         if (a < 0) a = E.tttBot(e.t, app.bot.level, "win");
+        if (threatCells(e.t, app.side).includes(a)) after = "close";        // blocked your three in a row
       }
       else if (e.phase === "prelude") a = E.tttBot(e.t, app.bot.level, e.goal);
-      else a = await (app.bot.deep ? searchDeep : searchMain)(e.g, e.g.choosing ? Math.max(350, app.bot.ms * 0.4) : app.bot.ms, job);
+      else {
+        const qw = app.bot.deep ? quickWin(e.g) : -1;
+        if (qw >= 0) { a = qw; after = "sure"; }        // a grandmaster does not think over a winning move
+        else {
+          let ms = app.bot.ms;
+          if (app.bot.deep) ms = e.g.moves < 6 ? 1800 : 5000;
+          if (e.g.choosing) ms = Math.max(350, ms * 0.4);
+          const muse = app.bot.deep && ms >= 4000 ? setTimeout(() => { if (job === botJob) botSay("deep", 0.45); }, 2600) : 0;
+          a = await (app.bot.deep ? searchDeep : searchMain)(e.g, ms, job);
+          clearTimeout(muse);
+        }
+      }
       const minShow = app.mode === "classic" || e.phase === "prelude" ? 520 : 650;
       const left = minShow - (Date.now() - t0);
       if (left > 0) await sleep(left);
@@ -1503,6 +1525,7 @@ async function kickBot() {
       if (app.mode === "classic") doClassic(a);
       else if (e.phase === "prelude") doPrelude(a);
       else await doMain(a);
+      if (after) botSay(after, after === "sure" ? 0.9 : 0.7);
     }
   } finally {
     if (activeJob === job) activeJob = -1;
