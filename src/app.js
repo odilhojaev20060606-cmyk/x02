@@ -847,11 +847,12 @@ async function drawCard(info) {
     ctx.globalAlpha = .75; wob(ctx, [[x0 - dx, y0 - dy], [x1 + dx, y1 + dy]], 16, "#c4362f", 99); ctx.globalAlpha = 1;
   }
   // footer
-  ctx.fillStyle = "#2b3a55"; let fs = 64; ctx.font = hand(fs);
-  while (ctx.measureText(t("cardHook")).width > W - 160 && fs > 40) { fs -= 4; ctx.font = hand(fs); }
-  ctx.fillText(t("cardHook"), W / 2, 1215);
+  ctx.fillStyle = "#c4362f"; let fs = 50; ctx.font = hand(fs);
+  while (ctx.measureText(t("cardHook")).width > W - 200 && fs > 34) { fs -= 4; ctx.font = hand(fs); }
+  ctx.fillText(t("cardHook"), W / 2, 1168);
+  ctx.fillStyle = "#2b3a55"; ctx.font = hand(64); ctx.fillText(`${t("cardFoot")}:`, W / 2, 1222);
   ctx.font = body(40); ctx.fillStyle = "#1f3fa8"; ctx.fillText("t.me/xo_version2bot", W / 2, 1275);
-  if (info.me) { ctx.fillStyle = "#6b707a"; ctx.font = hand(52); ctx.textAlign = "right"; ctx.fillText("— " + info.me, W - 70, 1120); ctx.textAlign = "center"; }
+  if (info.me) { ctx.fillStyle = "#6b707a"; ctx.font = hand(52); ctx.textAlign = "right"; ctx.fillText("— " + info.me, W - 70, 1112); ctx.textAlign = "center"; }
   return c.toDataURL("image/jpeg", 0.86);
 }
 let cardBusy = false;

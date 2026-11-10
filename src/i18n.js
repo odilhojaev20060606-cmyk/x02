@@ -3,9 +3,9 @@ const ruPl = (n, one, few, many) => { const a = Math.abs(n) % 100, b = a % 10; r
 const I18N = {
 ru: {
   // ---- v14
-  inviteRef: 'Заходи в X02.0 — по моей ссылке мы оба получим +50 скрепок!',
+  inviteRef: 'Заходи в X02.0 — крестики-нолики 2.0. По моей ссылке мы оба получим +50 скрепок!',
   hooks: ['🧠 Думаешь, ты умный? Попробуй игру сложнее шахмат.', '♟ Шахматы — для разминки. Сыграешь в X02.0?', '🔥 Почти все сдаются на третьем ходу. Проверь себя.', '⚔️ Обыграй меня, если сможешь.'],
-  cardHook: 'Думаешь, ты умный? Обыграй меня:',
+  cardHook: 'Думаешь, ты умный?',
   fxWin: 'Победа!', fxWinSym: s => `Победа ${s}!`, fxLose: 'Поражение', fxDraw: 'Ничья', fxCapture: 'Доска взята!', fxCombo: n => `Комбо ×${n}!`,
   dareBtn: '😏 Спорим, друг не обыграет?', dareText: n => `Я не смог обыграть ${n} в X02.0 — игре сложнее шахмат. Спорим, ты тоже не сможешь? 😏`, revengeBtn: '🔥 Отомстить',
   refCount: (n, m) => `Пришли по твоей ссылке: ${n} · засчитано: ${m}`, refHint: 'Друг получит +50, когда сыграет первую партию. Ты — тоже.',
@@ -31,7 +31,7 @@ ru: {
   bnLearn: 'Пройди обучение за 2 минуты', bnTurn: n => `Твой ход против ${n}`, bnLogin: 'Войди через Telegram, чтобы не потерять прогресс', bnInvite: 'Пригласи друга — +50 вам обоим',
   newOnline: m => `Новая партия · ${m}`, yourGames: 'Твои партии', onlineEmpty: 'Пока нет партий. Создай новую и отправь ссылку другу.',
   meTitle: 'Профиль и друзья', stW: 'победы', stL: 'поражения', stD: 'ничьи', meOnline: 'Онлайн с друзьями',
-  inviteBtn: 'Пригласить друга · +50 обоим', inviteGame: 'Сыграй со мной в X02.0 — игру сложнее шахмат',
+  inviteBtn: 'Пригласить друга · +50 обоим', inviteGame: 'Сыграй со мной в X02.0 — крестики-нолики 2.0',
   friendsTitle: 'Друзья', friendsEmpty: 'Здесь появятся друзья, с которыми ты сыграешь онлайн.', friendsLogin: 'Войди через Telegram — и здесь появятся твои друзья.',
   frOnline: 'в сети', frTurn: 'ждёт твой ход', frTheir: 'ход соперника', frGo: 'Ходить', frOpen: 'Открыть',
   ago: m => m < 1 ? 'только что' : m < 60 ? `${m} мин назад` : m < 1440 ? `${Math.floor(m / 60)} ч назад` : m < 2880 ? 'вчера' : `${Math.floor(m / 1440)} дн назад`,
@@ -225,9 +225,9 @@ ru: {
 
 uz: {
   // ---- v14
-  inviteRef: "X02.0 ga kiring — mening havolam orqali ikkalamiz +50 skrepka olamiz!",
+  inviteRef: "X02.0 ga kiring — iks-nol 2.0. Mening havolam orqali ikkalamiz +50 skrepka olamiz!",
   hooks: ["🧠 O'zingni aqlli deb o'ylaysanmi? Shaxmatdan ham qiyin o'yinni sinab ko'r.", "♟ Shaxmat — bu shunchaki razminka. X02.0 o'ynaysanmi?", "🔥 Deyarli hamma uchinchi yurishda taslim bo'ladi. O'zingni sinab ko'r.", "⚔️ Meni yeng, agar qo'lingdan kelsa."],
-  cardHook: "O'zingni aqlli deb o'ylaysanmi? Meni yeng:",
+  cardHook: "O'zingni aqlli deb o'ylaysanmi?",
   fxWin: "G'alaba!", fxWinSym: s => `${s} g'alaba qildi!`, fxLose: "Mag'lubiyat", fxDraw: 'Durang', fxCapture: 'Doska olindi!', fxCombo: n => `Kombo ×${n}!`,
   dareBtn: "😏 Do'sting ham yutolmaydi, garovmi?", dareText: n => `Men X02.0 da ${n} ni yengolmadim — bu shaxmatdan ham qiyin o'yin. Garov, sen ham yengolmaysan? 😏`, revengeBtn: "🔥 O'ch olish",
   refCount: (n, m) => `Havolangiz orqali keldi: ${n} · hisoblandi: ${m}`, refHint: "Do'stingiz birinchi o'yinni o'ynaganda +50 oladi. Siz ham.",
@@ -253,7 +253,7 @@ uz: {
   bnLearn: "2 daqiqalik o'rgatishdan o'ting", bnTurn: n => `${n} bilan o'yinda sizning navbat`, bnLogin: "Progress yo'qolmasligi uchun Telegram orqali kiring", bnInvite: "Do'stingizni taklif qiling — ikkalangizga +50",
   newOnline: m => `Yangi o'yin · ${m}`, yourGames: "Sizning o'yinlaringiz", onlineEmpty: "Hozircha o'yinlar yo'q. Yangisini yarating va havolani do'stingizga yuboring.",
   meTitle: "Profil va do'stlar", stW: "g'alaba", stL: "mag'lubiyat", stD: 'durang', meOnline: "Do'stlar bilan onlayn",
-  inviteBtn: "Do'stni taklif qilish · ikkalangizga +50", inviteGame: "Men bilan X02.0 o'yna — shaxmatdan ham qiyin o'yin",
+  inviteBtn: "Do'stni taklif qilish · ikkalangizga +50", inviteGame: "Men bilan X02.0 o'ynang — iks-nol 2.0",
   friendsTitle: "Do'stlar", friendsEmpty: "Bu yerda onlayn o'ynagan do'stlaringiz paydo bo'ladi.", friendsLogin: "Telegram orqali kiring — bu yerda do'stlaringiz paydo bo'ladi.",
   frOnline: 'tarmoqda', frTurn: 'navbatingizni kutmoqda', frTheir: 'raqib navbati', frGo: 'Yurish', frOpen: 'Ochish',
   ago: m => m < 1 ? 'hozirgina' : m < 60 ? `${m} daqiqa oldin` : m < 1440 ? `${Math.floor(m / 60)} soat oldin` : m < 2880 ? 'kecha' : `${Math.floor(m / 1440)} kun oldin`,
@@ -447,9 +447,9 @@ uz: {
 
 en: {
   // ---- v14
-  inviteRef: 'Join me in X02.0 — with my link we both get +50 paperclips!',
+  inviteRef: 'Join me in X02.0 — tic-tac-toe 2.0. With my link we both get +50 paperclips!',
   hooks: ['🧠 Think you\'re smart? Try a game harder than chess.', '♟ Chess is a warm-up. Up for X02.0?', '🔥 Almost everyone gives up by move three. Test yourself.', '⚔️ Beat me if you can.'],
-  cardHook: 'Think you\'re smart? Beat me:',
+  cardHook: 'Think you\'re smart?',
   fxWin: 'Victory!', fxWinSym: s => `${s} wins!`, fxLose: 'Defeat', fxDraw: 'Draw', fxCapture: 'Board taken!', fxCombo: n => `Combo ×${n}!`,
   dareBtn: '😏 Bet a friend can\'t win?', dareText: n => `I couldn't beat ${n} in X02.0, a game harder than chess. Bet you can't either? 😏`, revengeBtn: '🔥 Take revenge',
   refCount: (n, m) => `Came via your link: ${n} · counted: ${m}`, refHint: 'Your friend gets +50 after their first game. So do you.',
@@ -475,7 +475,7 @@ en: {
   bnLearn: 'Take the 2-minute tutorial', bnTurn: n => `Your move against ${n}`, bnLogin: 'Log in with Telegram to keep your progress', bnInvite: 'Invite a friend — +50 for both of you',
   newOnline: m => `New game · ${m}`, yourGames: 'Your games', onlineEmpty: 'No games yet. Create one and send the link to a friend.',
   meTitle: 'Profile and friends', stW: 'wins', stL: 'losses', stD: 'draws', meOnline: 'Online with friends',
-  inviteBtn: 'Invite a friend · +50 for both', inviteGame: 'Play X02.0 with me — a game harder than chess',
+  inviteBtn: 'Invite a friend · +50 for both', inviteGame: 'Play X02.0 with me — tic-tac-toe 2.0',
   friendsTitle: 'Friends', friendsEmpty: 'Friends you play online with will show up here.', friendsLogin: 'Log in with Telegram and your friends will show up here.',
   frOnline: 'online', frTurn: 'waiting for your move', frTheir: 'their move', frGo: 'Move', frOpen: 'Open',
   ago: m => m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.floor(m / 60)} h ago` : m < 2880 ? 'yesterday' : `${Math.floor(m / 1440)} days ago`,

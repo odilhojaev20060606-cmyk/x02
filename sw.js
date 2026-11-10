@@ -1,6 +1,6 @@
 // X02.0 service worker: the game keeps working without internet.
 // When you upload a new version of the game, change the number in CACHE (v1 -> v2) so phones pick it up.
-const CACHE = "x02-v14.4";
+const CACHE = "x02-v14.5";
 const ASSETS = [
   "./",
   "./index.html",
