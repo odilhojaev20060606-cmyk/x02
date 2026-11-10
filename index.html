@@ -961,6 +961,8 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .sign-tip { font-size: 12px !important; }
 .hw.note { font-size: 19px; }
 #sigSubjSuf[hidden] { display: none; }
+.d-lines { width: auto; margin-left: 16px; margin-right: 16px; }
+.dl .hw { max-width: 70%; }
 
 </style>
 </head>
@@ -2818,7 +2820,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v16.3";
+const APP_VERSION = "v16.4";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };

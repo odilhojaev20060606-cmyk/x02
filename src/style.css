@@ -934,3 +934,5 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .sign-tip { font-size: 12px !important; }
 .hw.note { font-size: 19px; }
 #sigSubjSuf[hidden] { display: none; }
+.d-lines { width: auto; margin-left: 16px; margin-right: 16px; }
+.dl .hw { max-width: 70%; }
