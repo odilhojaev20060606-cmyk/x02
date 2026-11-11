@@ -1074,6 +1074,56 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .chest-worth { font-size: 13px; color: #868e96; text-decoration: line-through; margin: 2px 0 8px; }
 .btn.big-chest { font-size: 16px; padding: 9px 16px; }
 
+/* v17.2: tasks, league, battle, hint, gifts, emotes */
+.rbtn { position: relative; }
+.tk-badge { position: absolute; top: -4px; right: 4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #e03131; color: #fff; font: 700 11px/18px system-ui, sans-serif; font-style: normal; text-align: center; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+.me-league, .me-tasks, .me-battle { margin: 10px 0; }
+.league { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; border: 2px solid var(--ink, #2a2a2a); border-radius: 12px; padding: 10px 12px; background: #fffef8; box-shadow: 2px 2px 0 rgba(0,0,0,.12); }
+.league b { font: 700 22px "Caveat", cursive; }
+.league.none { grid-template-columns: 1fr; }
+.league.none span { font-size: 14px; color: #555; }
+.lg-elo { font: 700 20px system-ui, sans-serif; }
+.lg-bar { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: #e9ecef; overflow: hidden; }
+.lg-bar i { display: block; height: 100%; background: linear-gradient(90deg, #4dabf7, #1c7ed6); border-radius: 4px; transition: width .6s ease; }
+.lg-next { grid-column: 1 / -1; font-size: 12.5px; color: #666; }
+.league.l-good .lg-bar i { background: linear-gradient(90deg, #69db7c, #2f9e44); }
+.league.l-head .lg-bar i { background: linear-gradient(90deg, #b197fc, #7048e8); }
+.league.l-medal .lg-bar i, .league.l-alloma .lg-bar i { background: linear-gradient(90deg, #ffd43b, #c99700); }
+.league.l-alloma { border-color: #a97c00; background: linear-gradient(160deg, #fffaf0, #fff3bf); }
+.task { display: flex; align-items: center; gap: 8px; padding: 7px 4px; border-bottom: 1px dashed rgba(0,0,0,.15); font-size: 15px; }
+.tk-ic { width: 20px; height: 20px; flex: none; border: 2px solid #868e96; border-radius: 5px; display: grid; place-items: center; font: 700 14px/1 system-ui; color: #2f9e44; }
+.task.done .tk-ic { border-color: #2f9e44; background: #ebfbee; }
+.task.done .tk-name { text-decoration: line-through; color: #868e96; }
+.tk-name { flex: 1; }
+.tk-n { font: 600 13px system-ui, sans-serif; color: #495057; display: inline-flex; align-items: center; gap: 2px; }
+.tk-n svg { width: 15px; height: 15px; }
+.tk-all { font-size: 13px; color: #666; margin: 6px 4px 0; display: flex; align-items: center; gap: 4px; }
+.tk-all svg { width: 16px; height: 16px; }
+.tk-all.done { color: #2f9e44; font-weight: 600; }
+.bt-row { display: grid; grid-template-columns: 26px minmax(80px, 1.1fr) 2fr 34px; gap: 8px; align-items: center; padding: 4px 2px; font-size: 14px; }
+.bt-row.mine { background: #fff9db; border-radius: 8px; font-weight: 600; }
+.bt-bar { height: 8px; background: #f1f3f5; border-radius: 4px; overflow: hidden; }
+.bt-bar i { display: block; height: 100%; background: #4dabf7; border-radius: 4px; }
+.bt-row.mine .bt-bar i { background: #f59f00; }
+.bt-n { text-align: right; font: 600 13px system-ui, sans-serif; }
+.bt-hint { font-size: 12.5px; color: #666; margin: 6px 2px 0; }
+.btn.icon-btn { min-width: 40px; padding: 6px 8px; font-size: 18px; line-height: 1; }
+.fr .gift-btn { margin-right: 6px; }
+.hint-btn { white-space: nowrap; }
+.cell.hint, .tcell.hint, .sub.hint, [id^="pc-"].hint, [id^="tc-"].hint { animation: hintGlow 1s ease-in-out 3; box-shadow: 0 0 0 3px #fab005 inset, 0 0 14px rgba(250,176,5,.8); border-radius: 6px; position: relative; z-index: 2; }
+@keyframes hintGlow { 0%, 100% { box-shadow: 0 0 0 3px #fab005 inset, 0 0 6px rgba(250,176,5,.4); } 50% { box-shadow: 0 0 0 3px #fab005 inset, 0 0 18px rgba(250,176,5,.95); } }
+.emotes { display: flex; gap: 6px; flex-wrap: wrap; width: 100%; margin-bottom: 4px; }
+.phrase.emote { font-size: 22px; padding: 4px 10px; min-width: 44px; }
+.bubble.emote-bubble { font-size: 34px; line-height: 1.1; }
+.elo-pop { display: inline-block; margin-left: 8px; padding: 3px 8px; border-radius: 8px; font: 700 14px system-ui, sans-serif; }
+.elo-pop.up { background: #ebfbee; color: #2b8a3e; }
+.elo-pop.down { background: #fff5f5; color: #c92a2a; }
+.item.service .svc { font-size: 40px; display: grid; place-items: center; height: 64px; }
+.svc-price { display: inline-flex; align-items: center; gap: 3px; font: 600 14px system-ui, sans-serif; color: #7a5a00; }
+.svc-price svg { width: 18px; height: 18px; }
+.fr .gift-btn { min-width: 34px; padding: 4px 6px; font-size: 16px; flex: none; }
+.fr .fr-id { min-width: 0; }
+
 </style>
 </head>
 <body>
@@ -1120,7 +1170,7 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
         <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
       </div>
       <nav class="cover-icons">
-        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span></button>
+        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span><i class="tk-badge" id="tkBadge" hidden></i></button>
         <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
         <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
       </nav>
@@ -1166,10 +1216,13 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
     <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="meTitle" data-i18n="meTitle"></h2></header>
     <div class="me-head"><div class="pf-ava big" id="pfAva"></div><div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div></div>
     <div class="me-stats" id="pfStats"></div>
+    <div class="me-league" id="meLeague"></div>
+    <div class="me-tasks" id="meTasks"></div>
     <div class="me-bots" id="meBots"></div>
     <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
     <p class="ref-line" id="refLine"></p>
     <div class="friends-top" id="friendsTop"></div>
+    <div class="me-battle" id="meBattle"></div>
     <p class="lbl" data-i18n="friendsTitle"></p>
     <div class="friends" id="friendsList"></div>
   </section>
@@ -1180,6 +1233,8 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
     <div class="set-list">
       <div class="pf-row"><span data-i18n="setSound"></span>
         <div class="seg-group" role="group"><button class="seg lang" type="button" data-sound="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-sound="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="setMusic"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-music="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-music="0" data-i18n="segOff"></button></div></div>
       <div class="pf-row"><span data-i18n="setHaptics"></span>
         <div class="seg-group" role="group"><button class="seg lang" type="button" data-haptics="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-haptics="0" data-i18n="segOff"></button></div></div>
       <div class="pf-row"><span data-i18n="talkPick"></span>
@@ -1301,6 +1356,7 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online hint-btn" type="button" data-act="hint" hidden><span data-i18n="hintBtn"></span> 1🪙</button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="newGame"></button>
           <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
@@ -1357,6 +1413,7 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
         <div class="status" id="cStatus" aria-live="polite"></div>
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online hint-btn" type="button" data-act="hint" hidden><span data-i18n="hintBtn"></span> 1🪙</button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="classicAgain"></button>
           <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
@@ -2299,7 +2356,17 @@ ru: {
   equip: 'Надеть', equipped: 'Надето', buy: 'Купить', free: 'бесплатно', owned: 'куплено', testPrice: 'тест, бесплатно',
   getCoins: n => `+${n} (тест)`,
   earnHint: 'Скрепки дают только за победы над ботами: «Лёгкий?» +10, «Уже нет» +30, «Конец» +50, «Попробуй» +1, «Зря» +3. За победу над «Нет» — сразу оба золотых знака.',
-  secChests: 'Сундуки', chestHint: 'Один раз на аккаунт. Выгоднее, чем по одному.', chest_start: 'Сундук новичка', chest_king: 'Сундук Падишаха', chestWhat: (k, n) => `${k} скинов навсегда + ${n} монет`, chestWorth: n => `по отдельности ≈ ${n}`, chestBuy: 'Открыть', rar_rare: 'редкий', rar_epic: 'эпик', rar_legend: 'легенда', secPremium: 'Премиум-скины', premiumHint: 'За монеты, навсегда. Золотые X и 0 по-прежнему бесплатно за победу над «Нет».', beatNet: 'Победи «Нет»',
+  secChests: 'Сундуки', chestHint: 'Один раз на аккаунт. Выгоднее, чем по одному.', chest_start: 'Сундук новичка', chest_king: 'Сундук Падишаха', chestWhat: (k, n) => `${k} скинов навсегда + ${n} монет`, chestWorth: n => `по отдельности ≈ ${n}`, chestBuy: 'Открыть', rar_rare: 'редкий', rar_epic: 'эпик', rar_legend: 'легенда', tasksTitle: 'Задания дня', task_play3: 'Сыграй 3 партии с ботами', task_win2: 'Победи ботов 2 раза', task_hard: 'Победи бота 2-го уровня или сильнее', task_online: 'Сыграй онлайн с другом', task_daily: 'Реши задачу дня', task_classic: 'Победи в «Ностальгии»', task_x02: 'Сыграй 2 партии в X02.0',
+  tasksAll: 'Все три — ещё +1', tasksAllDone: 'Все три выполнены! +1', taskGot: n => `Задание выполнено: +${n} скрепок`, tasksAllGot: 'Все задания дня! +1 монета 🪙',
+  leagueTitle: 'Лига', league_pupil: 'Ученик', league_good: 'Хорошист', league_head: 'Староста', league_medal: 'Медалист', league_alloma: 'Аллома',
+  eloNone: 'Сыграй онлайн с другом — получишь рейтинг и лигу.', eloNext: (l, n) => `до лиги «${l}» — ${n}`, eloTop: 'Высшая лига!', eloToast: d => `Рейтинг ${d}`,
+  battleTitle: 'Битва предметов · неделя', battleEmpty: 'На этой неделе побед ещё нет — открой счёт своему предмету.', battleMine: (s, n) => `Ты играешь за «${s}» · твоих побед: ${n}. Каждая победа — очко предмету.`,
+  battleNoSubj: 'Впиши предмет на обложке тетради — будешь играть за его команду. Победители недели получают по 30 скрепок.', battleLast: s => `Прошлую неделю выиграла «${s}».`, battlePrize: n => `🏆 Твой предмет выиграл неделю: +${n} скрепок!`,
+  mentorLine: (n, need, c) => `Наставник: ${n} из ${need} → +${c} 🪙`, mentorMax: n => `Наставник высшего уровня: ${n} друзей!`,
+  giftAria: 'Подарок другу', giftSent: '🎁 Подарок отправлен: другу +10 скрепок', giftAlready: 'Этому другу сегодня уже дарил', giftLimit: '3 подарка в день — завтра ещё',
+  hintBtn: '💡 Подсказка', hint: 'Подсказка', hintDesc: 'Сильнейший бот покажет лучший ход. Кнопка — во время партии с ботом.', hintNeed: 'Нужна 1 монета — она есть в магазине', hintShown: '💡 Лучший ход подсвечен', hintStar: '💡 Лучший ход — со звездой: подсвечена клетка', hintStrike: '💡 Лучший ход — удар по подсвеченной клетке',
+  secServices: 'Услуги', freezeTitle: 'Заморозка серии', freezeDesc: n => `Пропустишь день — серия не сгорит. В запасе: ${n}/2`, freezeMax: 'Запас полный', freezeGot: '❄️ Заморозка в запасе', frozeToast: '❄️ Заморозка спасла твою серию!',
+  streakFreezeNote: n => n ? `❄️ Заморозок: ${n}.` : '', needCoins: 'Не хватает монет', setMusic: 'Музыка', secPremium: 'Премиум-скины', premiumHint: 'За монеты, навсегда. Золотые X и 0 по-прежнему бесплатно за победу над «Нет».', beatNet: 'Победи «Нет»',
   coinsStars: 'Монеты покупаются за Telegram Stars и хранятся на твоём аккаунте — не пропадут при смене телефона.',
   coinsTg: 'Монеты покупаются в Telegram-версии игры за Telegram Stars.', openTg: 'Открыть в Telegram',
   paid: n => `Оплата прошла: +${n} ${ruPl(n, 'монета', 'монеты', 'монет')}.`, paidLater: 'Оплата прошла, монеты появятся через минуту. Загляни в магазин чуть позже.',
@@ -2564,7 +2631,17 @@ uz: {
   equip: 'Kiyish', equipped: 'Kiyilgan', buy: 'Sotib olish', free: 'bepul', owned: 'sotib olingan', testPrice: 'test, bepul',
   getCoins: n => `+${n} (test)`,
   earnHint: "Skrepkalar faqat botlarni yutganda beriladi: «Osonmi?» +10, «Endi yo'q» +30, «Tamom» +50, «Urinib ko'r» +1, «Bekorga» +3. «Yo'q»ni yutsangiz — darhol ikkala oltin belgi.",
-  secChests: 'Sandiqlar', chestHint: 'Akkauntga bir marta. Alohida olgandan arzonroq.', chest_start: "Yangi o'yinchi sandig'i", chest_king: "Podshoh sandig'i", chestWhat: (k, n) => `${k} ta skin abadiy + ${n} tanga`, chestWorth: n => `alohida ≈ ${n}`, chestBuy: 'Ochish', rar_rare: 'noyob', rar_epic: 'epik', rar_legend: 'afsona', secPremium: 'Premium skinlar', premiumHint: "Tangaga, abadiy. Oltin X va 0 hamon «Yo'q» ustidan g'alaba uchun bepul.", beatNet: "«Yo'q»ni yuting",
+  secChests: 'Sandiqlar', chestHint: 'Akkauntga bir marta. Alohida olgandan arzonroq.', chest_start: "Yangi o'yinchi sandig'i", chest_king: "Podshoh sandig'i", chestWhat: (k, n) => `${k} ta skin abadiy + ${n} tanga`, chestWorth: n => `alohida ≈ ${n}`, chestBuy: 'Ochish', rar_rare: 'noyob', rar_epic: 'epik', rar_legend: 'afsona', tasksTitle: 'Kunlik vazifalar', task_play3: 'Botlar bilan 3 partiya o\'ynang', task_win2: 'Botlarni 2 marta yuting', task_hard: '2-darajali yoki kuchliroq botni yuting', task_online: 'Do\'st bilan onlayn o\'ynang', task_daily: 'Kun masalasini yeching', task_classic: '«Nostalgiya»da yuting', task_x02: 'X02.0 da 2 partiya o\'ynang',
+  tasksAll: 'Uchalasi uchun yana +1', tasksAllDone: 'Uchalasi bajarildi! +1', taskGot: n => `Vazifa bajarildi: +${n} skrepka`, tasksAllGot: 'Barcha kunlik vazifalar! +1 tanga 🪙',
+  leagueTitle: 'Liga', league_pupil: 'O\'quvchi', league_good: 'Yaxshi o\'quvchi', league_head: 'Sinf sardori', league_medal: 'Medalchi', league_alloma: 'Alloma',
+  eloNone: 'Do\'st bilan onlayn o\'ynang — reyting va liga olasiz.', eloNext: (l, n) => `«${l}» ligasigacha — ${n}`, eloTop: 'Oliy liga!', eloToast: d => `Reyting ${d}`,
+  battleTitle: 'Fanlar jangi · hafta', battleEmpty: 'Bu hafta hali g\'alaba yo\'q — faningiz hisobini oching.', battleMine: (s, n) => `Siz «${s}» uchun o\'ynaysiz · g\'alabalaringiz: ${n}. Har g\'alaba — fanga ochko.`,
+  battleNoSubj: 'Daftar muqovasiga fanni yozing — uning jamoasida o\'ynaysiz. Hafta g\'oliblari 30 skrepkadan oladi.', battleLast: s => `O\'tgan haftani «${s}» yutdi.`, battlePrize: n => `🏆 Faningiz haftani yutdi: +${n} skrepka!`,
+  mentorLine: (n, need, c) => `Ustoz: ${n} / ${need} → +${c} 🪙`, mentorMax: n => `Oliy darajali ustoz: ${n} do\'st!`,
+  giftAria: 'Do\'stga sovg\'a', giftSent: '🎁 Sovg\'a yuborildi: do\'stga +10 skrepka', giftAlready: 'Bu do\'stga bugun sovg\'a qilgansiz', giftLimit: 'Kuniga 3 ta sovg\'a — ertaga yana',
+  hintBtn: '💡 Maslahat', hint: 'Maslahat', hintDesc: 'Eng kuchli bot eng yaxshi yurishni ko\'rsatadi. Tugma — bot bilan o\'yin paytida.', hintNeed: '1 tanga kerak — do\'konda bor', hintShown: '💡 Eng yaxshi yurish belgilandi', hintStar: '💡 Eng yaxshi yurish — yulduz bilan: katak belgilandi', hintStrike: '💡 Eng yaxshi yurish — belgilangan katakka zarba',
+  secServices: 'Xizmatlar', freezeTitle: 'Seriyani muzlatish', freezeDesc: n => `Bir kun o\'tkazsangiz, seriya yonmaydi. Zaxirada: ${n}/2`, freezeMax: 'Zaxira to\'la', freezeGot: '❄️ Muzlatish zaxirada', frozeToast: '❄️ Muzlatish seriyangizni saqladi!',
+  streakFreezeNote: n => n ? `❄️ Muzlatish: ${n}.` : '', needCoins: 'Tanga yetmaydi', setMusic: 'Musiqa', secPremium: 'Premium skinlar', premiumHint: "Tangaga, abadiy. Oltin X va 0 hamon «Yo'q» ustidan g'alaba uchun bepul.", beatNet: "«Yo'q»ni yuting",
   coinsStars: "Tangalar Telegram Stars evaziga sotib olinadi va akkauntingizda saqlanadi — telefon almashsa ham yo'qolmaydi.",
   coinsTg: "Tangalarni o'yinning Telegram versiyasida Telegram Stars evaziga sotib olish mumkin.", openTg: 'Telegramda ochish',
   paid: n => `To'lov o'tdi: +${n} tanga.`, paidLater: "To'lov o'tdi, tangalar bir daqiqada paydo bo'ladi. Do'konga keyinroq qarang.",
@@ -2829,7 +2906,17 @@ en: {
   equip: 'Equip', equipped: 'Equipped', buy: 'Buy', free: 'free', owned: 'owned', testPrice: 'test, free',
   getCoins: n => `+${n} (test)`,
   earnHint: 'Paperclips come only from beating bots: “Easy?” +10, “Not Anymore” +30, “The End” +50, “Try Me” +1, “Big Mistake” +3. Beating “No” gives both golden marks at once.',
-  secChests: 'Chests', chestHint: 'Once per account. Cheaper than one by one.', chest_start: 'Starter Chest', chest_king: 'Padishah Chest', chestWhat: (k, n) => `${k} skins forever + ${n} coins`, chestWorth: n => `separately ≈ ${n}`, chestBuy: 'Open', rar_rare: 'rare', rar_epic: 'epic', rar_legend: 'legend', secPremium: 'Premium skins', premiumHint: 'For coins, forever. Golden X and 0 are still free for beating “No”.', beatNet: 'Beat “No”',
+  secChests: 'Chests', chestHint: 'Once per account. Cheaper than one by one.', chest_start: 'Starter Chest', chest_king: 'Padishah Chest', chestWhat: (k, n) => `${k} skins forever + ${n} coins`, chestWorth: n => `separately ≈ ${n}`, chestBuy: 'Open', rar_rare: 'rare', rar_epic: 'epic', rar_legend: 'legend', tasksTitle: 'Daily tasks', task_play3: 'Play 3 games against bots', task_win2: 'Beat bots 2 times', task_hard: 'Beat a level-2 bot or stronger', task_online: 'Play online with a friend', task_daily: 'Solve the puzzle of the day', task_classic: 'Win in Nostalgia', task_x02: 'Play 2 games of X02.0',
+  tasksAll: 'All three — another +1', tasksAllDone: 'All three done! +1', taskGot: n => `Task done: +${n} paperclips`, tasksAllGot: 'All daily tasks! +1 coin 🪙',
+  leagueTitle: 'League', league_pupil: 'Pupil', league_good: 'Good student', league_head: 'Class head', league_medal: 'Medalist', league_alloma: 'Alloma',
+  eloNone: 'Play online with a friend to get a rating and a league.', eloNext: (l, n) => `${n} to the ${l} league`, eloTop: 'Top league!', eloToast: d => `Rating ${d}`,
+  battleTitle: 'Subject battle · this week', battleEmpty: 'No wins this week yet — open the score for your subject.', battleMine: (s, n) => `You play for ${s} · your wins: ${n}. Every win is a point for the subject.`,
+  battleNoSubj: 'Write a subject on the notebook cover to join its team. The week winners get 30 paperclips each.', battleLast: s => `${s} won last week.`, battlePrize: n => `🏆 Your subject won the week: +${n} paperclips!`,
+  mentorLine: (n, need, c) => `Mentor: ${n} of ${need} → +${c} 🪙`, mentorMax: n => `Top-level mentor: ${n} friends!`,
+  giftAria: 'Gift to a friend', giftSent: '🎁 Gift sent: +10 paperclips to your friend', giftAlready: 'You already sent this friend a gift today', giftLimit: '3 gifts a day — more tomorrow',
+  hintBtn: '💡 Hint', hint: 'Hint', hintDesc: 'The strongest bot shows the best move. The button is in games against bots.', hintNeed: 'You need 1 coin — get it in the shop', hintShown: '💡 The best move is highlighted', hintStar: '💡 Best move: a star on the highlighted cell', hintStrike: '💡 Best move: strike the highlighted cell',
+  secServices: 'Services', freezeTitle: 'Streak freeze', freezeDesc: n => `Miss a day and the streak survives. In stock: ${n}/2`, freezeMax: 'Stock is full', freezeGot: '❄️ Freeze in stock', frozeToast: '❄️ A freeze saved your streak!',
+  streakFreezeNote: n => n ? `❄️ Freezes: ${n}.` : '', needCoins: 'Not enough coins', setMusic: 'Music', secPremium: 'Premium skins', premiumHint: 'For coins, forever. Golden X and 0 are still free for beating “No”.', beatNet: 'Beat “No”',
   coinsStars: 'Coins are bought with Telegram Stars and saved to your account — they survive a phone change.',
   coinsTg: 'Coins can be bought with Telegram Stars in the Telegram version of the game.', openTg: 'Open in Telegram',
   paid: n => `Payment received: +${n} coins.`, paidLater: "Payment received — coins will appear within a minute. Check the shop again shortly.",
@@ -2941,7 +3028,7 @@ const API_OK = !!(API_BASE && API_BASE.indexOf("__") !== 0);
 const BOT_NAME = "xo_version2bot";
 const BOT_LINK = "https://t.me/" + BOT_NAME + "/play";
 const GAME_URL = location.origin + location.pathname;
-const APP_VERSION = "v17.1";
+const APP_VERSION = "v17.2";
 const hapticsOn = () => store.get("haptics", true) !== false;
 const haptic = kind => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.impactOccurred(kind || "light"); } catch (e) {} };
 const hapticResult = ok => { try { if (hapticsOn() && TG && TG.HapticFeedback) TG.HapticFeedback.notificationOccurred(ok ? "success" : "error"); } catch (e) {} };
@@ -3002,10 +3089,44 @@ const SND = (() => {
     draw: n => { tone(440, n, 0.3, 0.08, "triangle"); tone(440, n + 0.2, 0.4, 0.07, "triangle"); },
     click: n => { tone(1600, n, 0.04, 0.05, "square"); }
   };
+  // soft background music: a slow pad and a pentatonic music-box line, generated on the fly
+  let mOn = store.get("music", false) === true, mTimer = 0, mBus = null, mStep = 0;
+  const SCALE = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25];
+  const CHORDS = [[130.81, 196.0, 261.63], [110.0, 164.81, 220.0], [146.83, 220.0, 293.66], [98.0, 146.83, 196.0]];
+  function mBusGet() {
+    if (!mBus) { mBus = ctx.createGain(); mBus.gain.value = 0.0001; const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800; mBus.connect(lp); lp.connect(ctx.destination); }
+    return mBus;
+  }
+  function mNote(f, t0, dur, gain, type) {
+    const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + (type === "sine" ? 0.9 : 0.02)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(mBusGet()); o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function mBar() {        // one bar = 4 beats at 66 bpm
+    if (!ctx || document.hidden) return;
+    const beat = 60 / 66, t0 = ctx.currentTime + 0.05, ch = CHORDS[(mStep >> 0) % 4];
+    ch.forEach(f => mNote(f, t0, beat * 4.2, 0.035, "sine"));
+    let x = (mStep * 9301 + 49297) % 233280;
+    for (let i = 0; i < 4; i++) {
+      x = (x * 9301 + 49297) % 233280;
+      if (x % 5 === 0) continue;
+      mNote(SCALE[x % SCALE.length], t0 + i * beat + (x % 3 === 0 ? beat / 2 : 0), beat * 1.6, 0.03, "triangle");
+    }
+    mStep++;
+  }
+  function mStart() {
+    if (!mOn || mTimer || !ac()) return;
+    mBusGet().gain.cancelScheduledValues(ctx.currentTime); mBus.gain.setTargetAtTime(0.9, ctx.currentTime, 1.2);
+    mBar(); mTimer = setInterval(mBar, 4 * 60000 / 66);
+  }
+  function mStop() { clearInterval(mTimer); mTimer = 0; if (mBus && ctx) mBus.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4); }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) mStop(); else if (mOn) mStart(); });
   return {
     get on() { return on; },
+    get music() { return mOn; },
+    setMusic(v) { mOn = !!v; store.set("music", mOn); if (mOn) mStart(); else mStop(); },
     toggle() { on = !on; store.set("sound", on); if (on) this.play("click"); return on; },
-    unlock() { if (on) ac(); },
+    unlock() { if (on || mOn) ac(); if (mOn) mStart(); },
     play(k, delay) { if (!on || !FX[k]) return; try { if (!ac()) return; FX[k](ctx.currentTime + 0.01 + (delay || 0)); } catch (e) {} }
   };
 })();
@@ -3138,7 +3259,8 @@ function loadProfile() {
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
     cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
     streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 },
-    packs: Array.isArray(p.packs) ? p.packs : []
+    packs: Array.isArray(p.packs) ? p.packs : [],
+    tasks: p.tasks || null, freeze: p.freeze | 0, elo: p.elo || 0, eloN: p.eloN | 0, league: p.league || "", subj: Number.isInteger(p.subj) ? p.subj : -1
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -3166,7 +3288,11 @@ function applyProfile(p) {
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
   if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
   if (Array.isArray(p.packs)) profile.packs = p.packs;
-  skinRev++; saveProfile(); refreshWalletViews();
+  if (p.tasks && Array.isArray(p.tasks.list)) profile.tasks = p.tasks;
+  if (typeof p.freeze === "number") profile.freeze = p.freeze;
+  if (typeof p.elo === "number") { profile.elo = p.elo; profile.eloN = p.eloN | 0; profile.league = p.league || ""; }
+  if (Number.isInteger(p.subj)) { profile.subj = p.subj; syncSubj(); }
+  skinRev++; saveProfile(); refreshWalletViews(); renderTaskBadge();
   return true;
 }
 const accountId = () => TG ? "tg:" + ((TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.id) || "") : (session && session.token ? "s:" + session.token.split(".")[0] : "");
@@ -3193,6 +3319,7 @@ async function sendResult(item, live) {
     if (p.status === 401 || p.status === 400) return;
     if (!applyProfile(p)) throw new Error("bad");
     if (p.refPaid) toast(t("refPaidToast", p.refPaid));
+    tasksToast(p.tasksGot);
     if (live && p.capped) {
       const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
       rw.innerHTML = `<span class="quote">${t("capped")}</span>`;
@@ -3501,6 +3628,106 @@ function renderBridge() {     // after a few easy wins in Nostalgia, nudge towar
   el.hidden = !(cw >= 3 && xp < 3);
   if (!el.hidden) el.innerHTML = `<span class="bot-face">${faceSVG("c2", "smug")}</span><span>${t("bridgeText")}</span>`;
 }
+// ---- daily tasks, league, subject battle, gifts
+const MENTOR = [[1, 1], [3, 2], [10, 5], [25, 10]];
+const LEAGUE_AT = { pupil: 0, good: 1050, head: 1150, medal: 1250, alloma: 1400 }, LEAGUE_ORDER = ["pupil", "good", "head", "medal", "alloma"];
+const EMOTES = ["😂", "😮", "🔥", "👏", "😤", "🤝"];
+function tasksToast(got) {
+  if (!Array.isArray(got) || !got.length) return;
+  const all = got.includes("all"), n = got.filter(k => k !== "all").length;
+  setTimeout(() => { toast(all ? t("tasksAllGot") : t("taskGot", n * 15)); SND.play("coin", 0.2); }, 1400);
+}
+function renderTaskBadge() {
+  const el = $("tkBadge"); if (!el) return;
+  const ts = profile.tasks, left = ts && ts.day === tashDay(0) ? ts.list.filter(x => !x.done).length : 0;
+  el.hidden = !serverOn() || !left; el.textContent = left;
+}
+function syncSubj() {        // the cover subject is the team in the subject battle; the server keeps a copy
+  const s = sigData(), k = s && s.subj ? SUBJECTS.findIndex(x => x.k === s.subj) : -1;
+  if (!serverOn() || k === profile.subj || syncSubj.busy) return;
+  syncSubj.busy = true;
+  apiCall("/api/subj", { subj: k }).then(r => { if (r && Number.isInteger(r.subj)) profile.subj = r.subj; }).catch(() => {}).finally(() => { syncSubj.busy = false; });
+}
+function renderTasks() {
+  const box = $("meTasks"); if (!box) return;
+  const ts = profile.tasks;
+  if (!serverOn() || !ts || ts.day !== tashDay(0)) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="lbl">${t("tasksTitle")}</p>` + ts.list.map(x => `<div class="task${x.done ? " done" : ""}"><span class="tk-ic">${x.done ? "✓" : ""}</span><span class="tk-name">${t("task_" + x.k)}</span>
+    <span class="tk-n">${x.done ? "+15" + ICON_CLIP : `${x.n}/${x.need}`}</span></div>`).join("") + `<p class="tk-all${ts.all ? " done" : ""}">${ts.all ? t("tasksAllDone") : t("tasksAll")} ${ICON_COIN}</p>`;
+}
+function renderLeague() {
+  const box = $("meLeague"); if (!box) return;
+  if (!serverOn()) { box.innerHTML = ""; return; }
+  if (!profile.eloN) { box.innerHTML = `<div class="league none"><b>🎓 ${t("leagueTitle")}</b><span>${t("eloNone")}</span></div>`; return; }
+  const lg = profile.league || "pupil", i = LEAGUE_ORDER.indexOf(lg), nx = LEAGUE_ORDER[i + 1];
+  const from = LEAGUE_AT[lg], to = nx ? LEAGUE_AT[nx] : from + 200, pct = Math.max(4, Math.min(100, Math.round(100 * (profile.elo - from) / (to - from))));
+  box.innerHTML = `<div class="league l-${lg}"><b>🎓 ${t("league_" + lg)}</b><span class="lg-elo">${Math.round(profile.elo)}</span>
+    <div class="lg-bar"><i style="width:${pct}%"></i></div><span class="lg-next">${nx ? t("eloNext", t("league_" + nx), Math.max(0, to - Math.round(profile.elo))) : t("eloTop")}</span></div>`;
+}
+let battleCache = { at: 0, d: null };
+function renderBattle() {
+  const box = $("meBattle"); if (!box) return;
+  if (!serverOn()) { box.innerHTML = ""; return; }
+  const d = battleCache.d;
+  if (Date.now() - battleCache.at > 30000) {
+    battleCache.at = Date.now();
+    apiCall("/api/battle", {}).then(r => { if (Array.isArray(r.week)) { battleCache.d = r; if (r.prize) { applyProfile(r); toast(t("battlePrize", r.prize)); } if (app.screen === "me") renderBattle(); } }).catch(() => {});
+  }
+  if (!d) { box.innerHTML = ""; return; }
+  const name = k => (SUBJECTS[k] || {}).n || "?", max = Math.max(1, ...d.week.map(r => r.n));
+  const rows = d.week.slice(0, 5).map((r, i) => `<div class="bt-row${r.s === d.mine ? " mine" : ""}"><b>${i === 0 ? "🏆" : i + 1}</b><span class="bt-name">${esc(name(r.s))}</span><span class="bt-bar"><i style="width:${Math.round(100 * r.n / max)}%"></i></span><span class="bt-n">${r.n}</span></div>`).join("");
+  box.innerHTML = `<p class="lbl">${t("battleTitle")}</p>` + (rows || `<p class="empty-note">${t("battleEmpty")}</p>`) +
+    `<p class="bt-hint">${d.mine >= 0 ? t("battleMine", esc(name(d.mine)), d.myWins | 0) : t("battleNoSubj")}</p>` +
+    (d.last && d.last.length ? `<p class="bt-hint">${t("battleLast", esc(name(d.last[0].s)))}</p>` : "");
+}
+function mentorLine(paid) {
+  const nx = MENTOR.find(m => paid < m[0]);
+  return nx ? t("mentorLine", paid, nx[0], nx[1]) : t("mentorMax", paid);
+}
+async function sendGift(fid, btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const r = await apiCall("/api/gift", { fid });
+    if (r.ok) { toast(t("giftSent")); SND.play("coin", 0.1); haptic("light"); }
+    else toast(r.error === "already" ? t("giftAlready") : r.error === "limit" ? t("giftLimit") : t("netError"));
+  } catch (e) { toast(t("netError")); }
+}
+// ---- hint: the strongest bot shows its move (1 coin)
+let hintBusy = false;
+function hintAvailable() {
+  const e = cur();
+  if (!app.bot || app.learn || !inGame() || !serverOn() || !e) return false;
+  if (e.phase === "main" && e.g.result) return false;
+  if ((e.t && e.t.result) && e.phase !== "main") return false;
+  return actorOf(e) === app.side;
+}
+function renderHint() {
+  const on = hintAvailable();
+  document.querySelectorAll('[data-act="hint"]').forEach(b => { b.hidden = !app.bot || app.learn; b.disabled = !on || hintBusy; });
+}
+async function useHint() {
+  if (!hintAvailable() || hintBusy) return;
+  if (profile.coins < 1) { toast(t("hintNeed")); return; }
+  hintBusy = true; renderHint();
+  const e0 = cur();
+  try {
+    const r = await serverSpend("hint");
+    if (r.error) { toast(r.error === "coins" ? t("hintNeed") : t("netError")); return; }
+    applyProfile(r);
+    let a, els;
+    if (app.mode === "classic") { a = E.tttBot(e0.t, 3, "win"); els = [cCells[a]]; }
+    else if (e0.phase === "prelude") { a = E.tttBot(e0.t, 3, e0.goal); els = [pCells[a]]; }
+    else {
+      a = quickWin(e0.g);
+      if (a < 0) a = await searchMain(e0.g, 1500, botJob);
+      if (a === null || a === undefined) return;
+      els = [a >= 300 ? subEls[a - 300] : cellEls[a % 100]];
+    }
+    if (cur() !== e0) return;
+    els.filter(Boolean).forEach(el => { el.classList.remove("hint"); void el.offsetWidth; el.classList.add("hint"); setTimeout(() => el.classList.remove("hint"), 3200); });
+    toast(a >= 200 && a < 300 ? t("hintStrike") : a >= 100 && a < 200 ? t("hintStar") : t("hintShown"));
+  } finally { hintBusy = false; renderHint(); }
+}
 function renderMe() {
   const info = playerInfo();
   paintAvatar($("pfAva"), info);
@@ -3515,7 +3742,8 @@ function renderMe() {
     : [...BOTS.x02, ...BOTS.classic].map(b => row(t("q", bt(b.id, "name")), scoreOf(b.id))).join("") +
     row(t("meOnline"), { me: fx.me + fc.me, bot: fx.bot + fc.bot, draw: fx.draw + fc.draw });
   const rf = friendsCache.refs;
-  $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) : t("refHint")) : "";
+  $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) + " · " + mentorLine(rf.paid | 0) : t("refHint") + " " + mentorLine(0)) : "";
+  renderLeague(); renderTasks(); renderBattle();
   renderFriends();
 }
 function renderFriendsTop() {
@@ -3544,7 +3772,8 @@ function renderFriends() {
     const score = f.w || f.l || f.d ? ` · ${f.w | 0} : ${f.l | 0}` : "";
     const right = g ? `<button class="btn" type="button" data-og="${esc(g.id)}">${turn ? t("frGo") : t("frOpen")}</button>`
       : f.fid ? `<button class="btn" type="button" data-fplay="${esc(f.fid)}" data-fname="${esc(f.name || "")}">${t("frPlay")}</button>` : "";
-    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}${score}</span></span>${right}</div>`;
+    const gift = f.fid ? `<button class="btn icon-btn gift-btn" type="button" data-gift="${esc(f.fid)}" aria-label="${t("giftAria")}">🎁</button>` : "";
+    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}${score}</span></span>${gift}${right}</div>`;
   }).join("");
 }
 function fetchFriends(force) {
@@ -3560,6 +3789,7 @@ function fetchFriends(force) {
 function renderSettings() {
   const press = (sel, on) => document.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
   press("[data-sound]", b => (b.dataset.sound === "1") === SND.on);
+  press("[data-music]", b => (b.dataset.music === "1") === SND.music);
   press("[data-haptics]", b => (b.dataset.haptics === "1") === hapticsOn());
   press("[data-talk]", b => (b.dataset.talk === "1") === talkOn());
   press(".seg[data-side]", b => +b.dataset.side === app.side);
@@ -3824,6 +4054,7 @@ function startDaily() {
 function dailyEnd(r) {
   const d = dailyState(), g = cur() && cur().g;
   d.tries++;
+  if (r === app.side && !d.won && g && serverOn()) apiCall("/api/task", { kind: "daily" }).then(x => { if (applyProfile(x)) tasksToast(x.tasksGot); }).catch(() => {});
   if (r === app.side && !d.won && g) { d.won = true; d.moves = g.moves - app.daily.start; d.grid = g.owner.slice(); d.side = app.side; }
   store.set("daily", d);
   if (d.won) for (const id of ["bannerShare", "cBannerShare"]) { const el = $(id); el.hidden = false; el.innerHTML = `<button class="btn small primary" type="button" data-act="dailyShare">${t("dailyShareBtn")}</button>`; }
@@ -4102,7 +4333,7 @@ async function saveSign() {
   const first = !sigData(), old = sigData() || {}, note = v("sgNote").slice(0, 60);
   store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName"), subj: $("sgSubj").value || "", note });
   if (note && note !== old.note) sendNote(note);
-  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); }
+  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); syncSubj(); battleCache.at = 0; }
   $("signSheet").hidden = true;
   renderSig();
   SND.play("star", 0.35);
@@ -4375,14 +4606,14 @@ function maybeStreak() {
   let sh = $("streakSheet");
   if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "streakSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
   const days = STREAK.map((v, i) => `<div class="sd${i < slot ? " got" : i === slot ? " now" : ""}"><span>${t("streakDay", i + 1)}</span><b>${i === 6 ? "🎁" : "+" + v}</b></div>`).join("");
-  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}</p><div class="sdays">${days}</div>
+  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}${serverOn() ? " " + t("streakFreezeNote", profile.freeze | 0) : ""}</p><div class="sdays">${days}</div>
     <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button>${n === 2 ? installNudge() : ""}</div>`;
   sh.hidden = false;
 }
 async function streakTake() {
   const sh = $("streakSheet"); if (sh) sh.hidden = true;
   let paid = 0, gift = "";
-  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; } } catch (e) {} }
+  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; if (r.froze) setTimeout(() => toast(t("frozeToast")), 1800); } } catch (e) {} }
   else if ((profile.streak || {}).last !== tashDay(0)) {
     const n = streakNext(), slot = (n - 1) % 7; paid = STREAK[slot];
     if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !profile.owned.includes(id)) || ""; if (gift) profile.owned.push(gift); else paid += 100; }
@@ -4963,8 +5194,11 @@ const FX = (() => {
   return {
     mark(el, p) {
       if (!ok() || !el) return; const [x, y, w] = center(el);
-      if (el.querySelector(".mark.fire")) { embers(x, y, w); return; }
-      drops(x, y, COL[p], 10, w * 0.8, Math.max(5, w * 0.15));
+      if ((el.classList && el.classList.contains("fire")) || el.querySelector(".mark.fire, .fire")) { embers(x, y, w); return; }
+      const sk = el.classList && el.classList.contains("mark") ? el : el.querySelector(".mark") || el;
+      const col = sk.classList.contains("gold") ? "#d99a0b" : sk.classList.contains("neon") ? (p === 1 ? "#22b8cf" : "#f06595") : sk.classList.contains("cosmos") ? "#7048e8"
+        : sk.classList.contains("vostok") ? "#0ca678" : sk.classList.contains("samurai") ? "#1b1b1f" : sk.classList.contains("pirate") ? "#8a5a2b" : COL[p];
+      drops(x, y, col, 10, w * 0.8, Math.max(5, w * 0.15));
     },
     capture(el, p, boardEl) {
       if (!ok() || !el) return;
@@ -5064,6 +5298,7 @@ function renderX02(ctx) {
   if (pre) { $("banner").classList.remove("show"); renderPrelude(e, ctx); }
   else renderMain(e.g, ctx);
   document.querySelectorAll('#scr-x02 [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
+  renderHint();
   document.querySelectorAll('#scr-x02 [data-act="resign"]').forEach(b => { b.disabled = !app.online || app.online.status !== "active" || !!(app.online.state && app.online.state.result); });
 }
 
@@ -5328,6 +5563,7 @@ function renderClassic(ctx) {
     : filled === 0 ? (opp() ? (app.side === 1 ? t("youStartShort") : t("botStart", botQ())) : t("xStarts"))
     : app.bot && app.bot.level === 3 ? t("goodLuck") : "";
   document.querySelectorAll('#scr-classic [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
+  renderHint();
   document.querySelectorAll('#scr-classic [data-act="resign"]').forEach(b => { b.disabled = !app.online || app.online.status !== "active" || !!(app.online.state && app.online.state.result); });
   const banner = $("cBanner");
   if (tt.result) {
@@ -5629,6 +5865,11 @@ function onlineEnd(v, quiet) {
       moves: classic ? s.t.b.filter(Boolean).length : (s.g ? s.g.moves : 0) } : null);
     askWrite();
     if (s.refPaid && s.refPaid[app.side]) toast(t("refPaidToast", s.refPaid[app.side]));
+    if (s.elo && typeof s.elo[app.side] === "number") {
+      const d = s.elo[app.side], el = $(classic ? "cBannerReward" : "bannerReward");
+      el.insertAdjacentHTML("beforeend", `<span class="elo-pop ${d >= 0 ? "up" : "down"}">${t("eloToast", (d >= 0 ? "+" : "") + d)}</span>`);
+    }
+    if (s.tasksGot && s.tasksGot[app.side]) tasksToast(s.tasksGot[app.side]);
   }
 }
 function showRematch() {
@@ -5739,7 +5980,8 @@ function copyInvite() {
 function togglePhrases() {
   const box = document.querySelector(`#scr-${app.screen} .phrases`);
   if (!box) return;
-  if (box.hidden) box.innerHTML = t("chatPhrases").map((p, k) => `<button class="phrase" type="button" data-phrase="${k}">${esc(p)}</button>`).join("");
+  if (box.hidden) box.innerHTML = `<div class="emotes">${EMOTES.map((e, i) => `<button class="phrase emote" type="button" data-phrase="${100 + i}">${e}</button>`).join("")}</div>` +
+    t("chatPhrases").map((p, k) => `<button class="phrase" type="button" data-phrase="${k}">${esc(p)}</button>`).join("");
   box.hidden = !box.hidden;
 }
 async function sayPhrase(k) {
@@ -5752,7 +5994,10 @@ async function sayPhrase(k) {
   if (!o) { const bot = app.bot; setTimeout(() => { if (app.bot === bot) botSay("reply"); }, 1100 + Math.random() * 700); return; }
   try { const v = await apiCall("/api/g/say", { id: o.id, k }); if (v.chat) o.chatSeen = Math.max(o.chatSeen, ...v.chat.map(c => c.t)); } catch (e) {}
 }
-function showBubble(k, mine) { showBubbleText((t("chatPhrases") || [])[k], mine ? "" : oppName(), mine); }
+function showBubble(k, mine) {
+  if (k >= 100) { showBubbleText(EMOTES[k - 100], mine ? "" : oppName(), mine); const el = $(app.mode === "classic" ? "cBubble" : "bubble"); if (el) el.classList.add("emote-bubble"); return; }
+  showBubbleText((t("chatPhrases") || [])[k], mine ? "" : oppName(), mine);
+}
 function showBubbleText(text, name, mine) {
   const el = $(app.mode === "classic" ? "cBubble" : "bubble");
   if (!el || !text) return;
@@ -5844,12 +6089,28 @@ function renderShop() {
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
     (TG && serverOn() ? chestSec() : "") +
+    (serverOn() ? servicesSec() : "") +
     sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
     sec(t("secXShape"), by("xShape", false)) +
     sec(t("secOShape"), by("oShape", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     coinSec;
   justBought = null;
+}
+function servicesSec() {
+  const n = profile.freeze | 0, full = n >= 2;
+  return `<section class="shop-sec"><h3>${t("secServices")}</h3><div class="items">
+    <div class="item service"><div class="item-prev svc">❄️</div><div class="item-name">${t("freezeTitle")}</div><div class="item-price">${t("freezeDesc", n)}</div>
+      <button class="btn small gold-btn" type="button" data-act="buyFreeze"${full ? " disabled" : ""}>${full ? t("freezeMax") : `2 ${ICON_COIN}`}</button></div>
+    <div class="item service"><div class="item-prev svc">💡</div><div class="item-name">${t("hint")}</div><div class="item-price">${t("hintDesc")}</div>
+      <span class="svc-price">1 ${ICON_COIN}</span></div></div></section>`;
+}
+async function buyFreeze() {
+  if ((profile.freeze | 0) >= 2) return;
+  if (profile.coins < 2) { shopNoteSet(t("needCoins"), "err"); return; }
+  const r = await serverSpend("freeze");
+  if (r.error) { shopNoteSet(r.error === "coins" ? t("needCoins") : t("netError"), "err"); return; }
+  applyProfile(r); SND.play("coin", 0.1); toast(t("freezeGot"));
 }
 function chestSec() {        // generous one-time chests for Stars
   const cards = PACKS.map((p, k) => ({ p, k })).filter(x => x.p.items).map(({ p, k }) => {
@@ -5991,6 +6252,8 @@ function bind() {
     else if (a === "createOnline") createOnline();
     else if (a === "loginTop") { closeOnlineSheet(); openScreen("settings"); setTimeout(showLoginWidget, 50); }
     else if (a === "undo") undo();
+    else if (a === "hint") useHint();
+    else if (a === "buyFreeze") buyFreeze();
     else if (a === "shop") openShop();
     else if (a === "medal") toggleMedal();
     else if (a === "installSticker") { if (app.screen !== "menu") { goMenu(); setTimeout(installSticker, 700); } else installSticker(); }
@@ -6036,6 +6299,10 @@ function bind() {
   document.addEventListener("click", ev => {
     const tk = ev.target.closest("[data-talk]");
     if (tk) { store.set("botTalk", tk.dataset.talk === "1"); renderSettings(); }
+    const mu = ev.target.closest("[data-music]");
+    if (mu) { SND.setMusic(mu.dataset.music === "1"); renderSettings(); }
+    const gf = ev.target.closest("[data-gift]");
+    if (gf) { sendGift(gf.dataset.gift, gf); return; }
     const sd = ev.target.closest("[data-sound]");
     if (sd) { if ((sd.dataset.sound === "1") !== SND.on) SND.toggle(); renderSettings(); }
     const hp = ev.target.closest("[data-haptics]");

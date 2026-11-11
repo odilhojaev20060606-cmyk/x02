@@ -46,10 +46,10 @@ p=await res(await post('/api/result',{initData:good,bot:'x3',r:'win',ms:60000,ke
 p=await res(await post('/api/result',{initData:good,bot:'x3',r:'win',ms:60000,key:'g2'})); ok(p.clips===3650,'same game not counted twice');
 p=await res(await post('/api/result',{initData:good,bot:'x3',r:'win',ms:60000,undo:true,key:'g3'})); ok(p.reward===null,'undo gives nothing');
 for(let i=0;i<12;i++) p=await res(await post('/api/result',{initData:good,bot:'x3',r:'win',ms:60000,key:'k'+i}));
-ok(p.clips===3600+500&&p.capped,'daily cap 500');
+const tc=q=>q.tasks.list.filter(t=>t.done).length*15; ok(p.clips===3600+500+tc(p)&&p.capped,'daily cap 500 (+ daily tasks)');
 p=await res(await post('/api/result',{initData:good,bot:'c3',r:'lose',ms:5000,key:'n1'})); ok(p.netLosses===8,'loss to Net counted');
 p=await res(await post('/api/result',{initData:good,bot:'c3',r:'win',ms:5000,key:'n2'})); ok(p.reward.gold&&p.gold.includes('o_gold')&&p.netBeaten,'beating Net gives gold');
-p=await res(await post('/api/spend',{initData:good,item:'x_skew'})); ok(p.ok&&p.clips===3900&&p.equip.xShape==='x_skew','buy x_skew for 200 clips');
+p=await res(await post('/api/spend',{initData:good,item:'x_skew'})); ok(p.ok&&p.clips===3900+tc(p)&&p.equip.xShape==='x_skew','buy x_skew for 200 clips');
 let r2=await post('/api/equip',{initData:good,id:'o_hex'}); ok(r2.status===409,'cannot equip unowned');
 p=await res(await post('/api/equip',{initData:good,id:'x_plus'})); ok(p.equip.xShape==='x_plus','equip owned');
 // login widget
@@ -57,6 +57,6 @@ const login={id:42,first_name:'A',username:'abd',auth_date:String(Math.floor(Dat
 const dcs=Object.keys(login).sort().map(k=>`${k}=${login[k]}`).join('\n');
 login.hash=crypto.createHmac('sha256',crypto.createHash('sha256').update(TOKEN).digest()).update(dcs).digest('hex');
 let L=await res(await post('/api/login',{tg:login})); ok(L.session&&L.name==='@abd','login widget -> session');
-p=await res(await post('/api/profile',{session:L.session})); ok(p.clips===3900,'session sees same profile');
+p=await res(await post('/api/profile',{session:L.session})); ok(p.clips===3900+tc(p),'session sees same profile');
 r2=await post('/api/profile',{session:L.session.replace(/.$/,'0')}); ok(r2.status===401,'bad session rejected');
 r2=await post('/api/login',{tg:{...login,id:43}}); ok(r2.status===401,'forged login rejected');

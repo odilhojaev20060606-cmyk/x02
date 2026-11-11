@@ -41,7 +41,7 @@
         <button class="mbtn mo" type="button" data-go="online"><span class="mb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M3.6 12h16.8M12 3.4c2.4 2.4 3.6 5.3 3.6 8.6s-1.2 6.2-3.6 8.6c-2.4-2.4-3.6-5.3-3.6-8.6S9.6 5.8 12 3.4Z"/></svg></span><span class="mb-t"><b><span data-i18n="mbOnline"></span><span class="badge" id="onlineBadge" hidden></span></b><span data-i18n="mbOnlineSub"></span></span></button>
       </div>
       <nav class="cover-icons">
-        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span></button>
+        <button class="rbtn" type="button" data-go="me" id="pcard"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg></span><span data-i18n="profileIc"></span><i class="tk-badge" id="tkBadge" hidden></i></button>
         <button class="rbtn" type="button" data-act="shop"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8.5Z"/><path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5"/></svg></span><span data-i18n="shop"></span></button>
         <button class="rbtn" type="button" data-go="about"><span class="rb-ic"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4.3 9.3 4.4 12 6c2.7-1.6 5.5-1.7 8-.5v13c-2.5-1.2-5.3-1.1-8 .5-2.7-1.6-5.5-1.7-8-.5v-13Z"/><path d="M12 6v13"/></svg></span><span data-i18n="about"></span></button>
       </nav>
@@ -87,10 +87,13 @@
     <header class="sub-bar"><button class="btn small" type="button" data-act="back" data-i18n="backBtn"></button><h2 class="sub-title" id="meTitle" data-i18n="meTitle"></h2></header>
     <div class="me-head"><div class="pf-ava big" id="pfAva"></div><div class="pf-id"><div class="pf-name" id="pfName"></div><div class="pf-sub" id="pfSub"></div></div></div>
     <div class="me-stats" id="pfStats"></div>
+    <div class="me-league" id="meLeague"></div>
+    <div class="me-tasks" id="meTasks"></div>
     <div class="me-bots" id="meBots"></div>
     <button class="btn primary big" type="button" data-act="invite" id="inviteBtn" data-i18n="inviteBtn"></button>
     <p class="ref-line" id="refLine"></p>
     <div class="friends-top" id="friendsTop"></div>
+    <div class="me-battle" id="meBattle"></div>
     <p class="lbl" data-i18n="friendsTitle"></p>
     <div class="friends" id="friendsList"></div>
   </section>
@@ -101,6 +104,8 @@
     <div class="set-list">
       <div class="pf-row"><span data-i18n="setSound"></span>
         <div class="seg-group" role="group"><button class="seg lang" type="button" data-sound="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-sound="0" data-i18n="segOff"></button></div></div>
+      <div class="pf-row"><span data-i18n="setMusic"></span>
+        <div class="seg-group" role="group"><button class="seg lang" type="button" data-music="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-music="0" data-i18n="segOff"></button></div></div>
       <div class="pf-row"><span data-i18n="setHaptics"></span>
         <div class="seg-group" role="group"><button class="seg lang" type="button" data-haptics="1" data-i18n="segOn"></button><button class="seg lang" type="button" data-haptics="0" data-i18n="segOff"></button></div></div>
       <div class="pf-row"><span data-i18n="talkPick"></span>
@@ -222,6 +227,7 @@
 
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online hint-btn" type="button" data-act="hint" hidden><span data-i18n="hintBtn"></span> 1🪙</button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="newGame"></button>
           <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>
@@ -278,6 +284,7 @@
         <div class="status" id="cStatus" aria-live="polite"></div>
         <div class="buttons">
           <button class="btn off-online" type="button" data-act="undo" data-i18n="undo"></button>
+          <button class="btn off-online hint-btn" type="button" data-act="hint" hidden><span data-i18n="hintBtn"></span> 1🪙</button>
           <button class="btn off-online" type="button" data-act="again" data-i18n="classicAgain"></button>
           <button class="btn on-chat" type="button" data-act="chat" data-i18n="chat"></button>
           <button class="btn on-online" type="button" data-act="resign" data-i18n="resign"></button>

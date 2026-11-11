@@ -74,10 +74,44 @@ const SND = (() => {
     draw: n => { tone(440, n, 0.3, 0.08, "triangle"); tone(440, n + 0.2, 0.4, 0.07, "triangle"); },
     click: n => { tone(1600, n, 0.04, 0.05, "square"); }
   };
+  // soft background music: a slow pad and a pentatonic music-box line, generated on the fly
+  let mOn = store.get("music", false) === true, mTimer = 0, mBus = null, mStep = 0;
+  const SCALE = [261.63, 293.66, 329.63, 392.0, 440.0, 523.25, 587.33, 659.25];
+  const CHORDS = [[130.81, 196.0, 261.63], [110.0, 164.81, 220.0], [146.83, 220.0, 293.66], [98.0, 146.83, 196.0]];
+  function mBusGet() {
+    if (!mBus) { mBus = ctx.createGain(); mBus.gain.value = 0.0001; const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 1800; mBus.connect(lp); lp.connect(ctx.destination); }
+    return mBus;
+  }
+  function mNote(f, t0, dur, gain, type) {
+    const o = ctx.createOscillator(); o.type = type; o.frequency.value = f;
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(gain, t0 + (type === "sine" ? 0.9 : 0.02)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g); g.connect(mBusGet()); o.start(t0); o.stop(t0 + dur + 0.05);
+  }
+  function mBar() {        // one bar = 4 beats at 66 bpm
+    if (!ctx || document.hidden) return;
+    const beat = 60 / 66, t0 = ctx.currentTime + 0.05, ch = CHORDS[(mStep >> 0) % 4];
+    ch.forEach(f => mNote(f, t0, beat * 4.2, 0.035, "sine"));
+    let x = (mStep * 9301 + 49297) % 233280;
+    for (let i = 0; i < 4; i++) {
+      x = (x * 9301 + 49297) % 233280;
+      if (x % 5 === 0) continue;
+      mNote(SCALE[x % SCALE.length], t0 + i * beat + (x % 3 === 0 ? beat / 2 : 0), beat * 1.6, 0.03, "triangle");
+    }
+    mStep++;
+  }
+  function mStart() {
+    if (!mOn || mTimer || !ac()) return;
+    mBusGet().gain.cancelScheduledValues(ctx.currentTime); mBus.gain.setTargetAtTime(0.9, ctx.currentTime, 1.2);
+    mBar(); mTimer = setInterval(mBar, 4 * 60000 / 66);
+  }
+  function mStop() { clearInterval(mTimer); mTimer = 0; if (mBus && ctx) mBus.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4); }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) mStop(); else if (mOn) mStart(); });
   return {
     get on() { return on; },
+    get music() { return mOn; },
+    setMusic(v) { mOn = !!v; store.set("music", mOn); if (mOn) mStart(); else mStop(); },
     toggle() { on = !on; store.set("sound", on); if (on) this.play("click"); return on; },
-    unlock() { if (on) ac(); },
+    unlock() { if (on || mOn) ac(); if (mOn) mStart(); },
     play(k, delay) { if (!on || !FX[k]) return; try { if (!ac()) return; FX[k](ctx.currentTime + 0.01 + (delay || 0)); } catch (e) {} }
   };
 })();
@@ -210,7 +244,8 @@ function loadProfile() {
     netLosses: p.netLosses | 0, netCounter: p.netCounter | 0, netBeaten: !!p.netBeaten,
     cc: p.cc || {}, cnext: p.cnext || {}, bonus: Array.isArray(p.bonus) ? p.bonus : [],
     streak: p.streak && typeof p.streak === "object" ? p.streak : { last: "", n: 0 },
-    packs: Array.isArray(p.packs) ? p.packs : []
+    packs: Array.isArray(p.packs) ? p.packs : [],
+    tasks: p.tasks || null, freeze: p.freeze | 0, elo: p.elo || 0, eloN: p.eloN | 0, league: p.league || "", subj: Number.isInteger(p.subj) ? p.subj : -1
   };
 }
 let profile = loadProfile(), skinRev = 0;
@@ -238,7 +273,11 @@ function applyProfile(p) {
   if (Array.isArray(p.bonus)) profile.bonus = p.bonus;
   if (p.streak && typeof p.streak === "object") profile.streak = p.streak;
   if (Array.isArray(p.packs)) profile.packs = p.packs;
-  skinRev++; saveProfile(); refreshWalletViews();
+  if (p.tasks && Array.isArray(p.tasks.list)) profile.tasks = p.tasks;
+  if (typeof p.freeze === "number") profile.freeze = p.freeze;
+  if (typeof p.elo === "number") { profile.elo = p.elo; profile.eloN = p.eloN | 0; profile.league = p.league || ""; }
+  if (Number.isInteger(p.subj)) { profile.subj = p.subj; syncSubj(); }
+  skinRev++; saveProfile(); refreshWalletViews(); renderTaskBadge();
   return true;
 }
 const accountId = () => TG ? "tg:" + ((TG.initDataUnsafe && TG.initDataUnsafe.user && TG.initDataUnsafe.user.id) || "") : (session && session.token ? "s:" + session.token.split(".")[0] : "");
@@ -265,6 +304,7 @@ async function sendResult(item, live) {
     if (p.status === 401 || p.status === 400) return;
     if (!applyProfile(p)) throw new Error("bad");
     if (p.refPaid) toast(t("refPaidToast", p.refPaid));
+    tasksToast(p.tasksGot);
     if (live && p.capped) {
       const rw = app.mode === "classic" ? $("cBannerReward") : $("bannerReward");
       rw.innerHTML = `<span class="quote">${t("capped")}</span>`;
@@ -573,6 +613,106 @@ function renderBridge() {     // after a few easy wins in Nostalgia, nudge towar
   el.hidden = !(cw >= 3 && xp < 3);
   if (!el.hidden) el.innerHTML = `<span class="bot-face">${faceSVG("c2", "smug")}</span><span>${t("bridgeText")}</span>`;
 }
+// ---- daily tasks, league, subject battle, gifts
+const MENTOR = [[1, 1], [3, 2], [10, 5], [25, 10]];
+const LEAGUE_AT = { pupil: 0, good: 1050, head: 1150, medal: 1250, alloma: 1400 }, LEAGUE_ORDER = ["pupil", "good", "head", "medal", "alloma"];
+const EMOTES = ["😂", "😮", "🔥", "👏", "😤", "🤝"];
+function tasksToast(got) {
+  if (!Array.isArray(got) || !got.length) return;
+  const all = got.includes("all"), n = got.filter(k => k !== "all").length;
+  setTimeout(() => { toast(all ? t("tasksAllGot") : t("taskGot", n * 15)); SND.play("coin", 0.2); }, 1400);
+}
+function renderTaskBadge() {
+  const el = $("tkBadge"); if (!el) return;
+  const ts = profile.tasks, left = ts && ts.day === tashDay(0) ? ts.list.filter(x => !x.done).length : 0;
+  el.hidden = !serverOn() || !left; el.textContent = left;
+}
+function syncSubj() {        // the cover subject is the team in the subject battle; the server keeps a copy
+  const s = sigData(), k = s && s.subj ? SUBJECTS.findIndex(x => x.k === s.subj) : -1;
+  if (!serverOn() || k === profile.subj || syncSubj.busy) return;
+  syncSubj.busy = true;
+  apiCall("/api/subj", { subj: k }).then(r => { if (r && Number.isInteger(r.subj)) profile.subj = r.subj; }).catch(() => {}).finally(() => { syncSubj.busy = false; });
+}
+function renderTasks() {
+  const box = $("meTasks"); if (!box) return;
+  const ts = profile.tasks;
+  if (!serverOn() || !ts || ts.day !== tashDay(0)) { box.innerHTML = ""; return; }
+  box.innerHTML = `<p class="lbl">${t("tasksTitle")}</p>` + ts.list.map(x => `<div class="task${x.done ? " done" : ""}"><span class="tk-ic">${x.done ? "✓" : ""}</span><span class="tk-name">${t("task_" + x.k)}</span>
+    <span class="tk-n">${x.done ? "+15" + ICON_CLIP : `${x.n}/${x.need}`}</span></div>`).join("") + `<p class="tk-all${ts.all ? " done" : ""}">${ts.all ? t("tasksAllDone") : t("tasksAll")} ${ICON_COIN}</p>`;
+}
+function renderLeague() {
+  const box = $("meLeague"); if (!box) return;
+  if (!serverOn()) { box.innerHTML = ""; return; }
+  if (!profile.eloN) { box.innerHTML = `<div class="league none"><b>🎓 ${t("leagueTitle")}</b><span>${t("eloNone")}</span></div>`; return; }
+  const lg = profile.league || "pupil", i = LEAGUE_ORDER.indexOf(lg), nx = LEAGUE_ORDER[i + 1];
+  const from = LEAGUE_AT[lg], to = nx ? LEAGUE_AT[nx] : from + 200, pct = Math.max(4, Math.min(100, Math.round(100 * (profile.elo - from) / (to - from))));
+  box.innerHTML = `<div class="league l-${lg}"><b>🎓 ${t("league_" + lg)}</b><span class="lg-elo">${Math.round(profile.elo)}</span>
+    <div class="lg-bar"><i style="width:${pct}%"></i></div><span class="lg-next">${nx ? t("eloNext", t("league_" + nx), Math.max(0, to - Math.round(profile.elo))) : t("eloTop")}</span></div>`;
+}
+let battleCache = { at: 0, d: null };
+function renderBattle() {
+  const box = $("meBattle"); if (!box) return;
+  if (!serverOn()) { box.innerHTML = ""; return; }
+  const d = battleCache.d;
+  if (Date.now() - battleCache.at > 30000) {
+    battleCache.at = Date.now();
+    apiCall("/api/battle", {}).then(r => { if (Array.isArray(r.week)) { battleCache.d = r; if (r.prize) { applyProfile(r); toast(t("battlePrize", r.prize)); } if (app.screen === "me") renderBattle(); } }).catch(() => {});
+  }
+  if (!d) { box.innerHTML = ""; return; }
+  const name = k => (SUBJECTS[k] || {}).n || "?", max = Math.max(1, ...d.week.map(r => r.n));
+  const rows = d.week.slice(0, 5).map((r, i) => `<div class="bt-row${r.s === d.mine ? " mine" : ""}"><b>${i === 0 ? "🏆" : i + 1}</b><span class="bt-name">${esc(name(r.s))}</span><span class="bt-bar"><i style="width:${Math.round(100 * r.n / max)}%"></i></span><span class="bt-n">${r.n}</span></div>`).join("");
+  box.innerHTML = `<p class="lbl">${t("battleTitle")}</p>` + (rows || `<p class="empty-note">${t("battleEmpty")}</p>`) +
+    `<p class="bt-hint">${d.mine >= 0 ? t("battleMine", esc(name(d.mine)), d.myWins | 0) : t("battleNoSubj")}</p>` +
+    (d.last && d.last.length ? `<p class="bt-hint">${t("battleLast", esc(name(d.last[0].s)))}</p>` : "");
+}
+function mentorLine(paid) {
+  const nx = MENTOR.find(m => paid < m[0]);
+  return nx ? t("mentorLine", paid, nx[0], nx[1]) : t("mentorMax", paid);
+}
+async function sendGift(fid, btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const r = await apiCall("/api/gift", { fid });
+    if (r.ok) { toast(t("giftSent")); SND.play("coin", 0.1); haptic("light"); }
+    else toast(r.error === "already" ? t("giftAlready") : r.error === "limit" ? t("giftLimit") : t("netError"));
+  } catch (e) { toast(t("netError")); }
+}
+// ---- hint: the strongest bot shows its move (1 coin)
+let hintBusy = false;
+function hintAvailable() {
+  const e = cur();
+  if (!app.bot || app.learn || !inGame() || !serverOn() || !e) return false;
+  if (e.phase === "main" && e.g.result) return false;
+  if ((e.t && e.t.result) && e.phase !== "main") return false;
+  return actorOf(e) === app.side;
+}
+function renderHint() {
+  const on = hintAvailable();
+  document.querySelectorAll('[data-act="hint"]').forEach(b => { b.hidden = !app.bot || app.learn; b.disabled = !on || hintBusy; });
+}
+async function useHint() {
+  if (!hintAvailable() || hintBusy) return;
+  if (profile.coins < 1) { toast(t("hintNeed")); return; }
+  hintBusy = true; renderHint();
+  const e0 = cur();
+  try {
+    const r = await serverSpend("hint");
+    if (r.error) { toast(r.error === "coins" ? t("hintNeed") : t("netError")); return; }
+    applyProfile(r);
+    let a, els;
+    if (app.mode === "classic") { a = E.tttBot(e0.t, 3, "win"); els = [cCells[a]]; }
+    else if (e0.phase === "prelude") { a = E.tttBot(e0.t, 3, e0.goal); els = [pCells[a]]; }
+    else {
+      a = quickWin(e0.g);
+      if (a < 0) a = await searchMain(e0.g, 1500, botJob);
+      if (a === null || a === undefined) return;
+      els = [a >= 300 ? subEls[a - 300] : cellEls[a % 100]];
+    }
+    if (cur() !== e0) return;
+    els.filter(Boolean).forEach(el => { el.classList.remove("hint"); void el.offsetWidth; el.classList.add("hint"); setTimeout(() => el.classList.remove("hint"), 3200); });
+    toast(a >= 200 && a < 300 ? t("hintStrike") : a >= 100 && a < 200 ? t("hintStar") : t("hintShown"));
+  } finally { hintBusy = false; renderHint(); }
+}
 function renderMe() {
   const info = playerInfo();
   paintAvatar($("pfAva"), info);
@@ -587,7 +727,8 @@ function renderMe() {
     : [...BOTS.x02, ...BOTS.classic].map(b => row(t("q", bt(b.id, "name")), scoreOf(b.id))).join("") +
     row(t("meOnline"), { me: fx.me + fc.me, bot: fx.bot + fc.bot, draw: fx.draw + fc.draw });
   const rf = friendsCache.refs;
-  $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) : t("refHint")) : "";
+  $("refLine").textContent = myId() ? (rf && rf.n ? t("refCount", rf.n, rf.paid) + " · " + mentorLine(rf.paid | 0) : t("refHint") + " " + mentorLine(0)) : "";
+  renderLeague(); renderTasks(); renderBattle();
   renderFriends();
 }
 function renderFriendsTop() {
@@ -616,7 +757,8 @@ function renderFriends() {
     const score = f.w || f.l || f.d ? ` · ${f.w | 0} : ${f.l | 0}` : "";
     const right = g ? `<button class="btn" type="button" data-og="${esc(g.id)}">${turn ? t("frGo") : t("frOpen")}</button>`
       : f.fid ? `<button class="btn" type="button" data-fplay="${esc(f.fid)}" data-fname="${esc(f.name || "")}">${t("frPlay")}</button>` : "";
-    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}${score}</span></span>${right}</div>`;
+    const gift = f.fid ? `<button class="btn icon-btn gift-btn" type="button" data-gift="${esc(f.fid)}" aria-label="${t("giftAria")}">🎁</button>` : "";
+    return `<div class="fr${turn ? " turn" : ""}">${miniAva(f)}<span class="fr-id"><span class="fr-name">${esc(f.name || "?")}</span><span class="fr-sub">${sub}${score}</span></span>${gift}${right}</div>`;
   }).join("");
 }
 function fetchFriends(force) {
@@ -632,6 +774,7 @@ function fetchFriends(force) {
 function renderSettings() {
   const press = (sel, on) => document.querySelectorAll(sel).forEach(b => b.setAttribute("aria-pressed", String(on(b))));
   press("[data-sound]", b => (b.dataset.sound === "1") === SND.on);
+  press("[data-music]", b => (b.dataset.music === "1") === SND.music);
   press("[data-haptics]", b => (b.dataset.haptics === "1") === hapticsOn());
   press("[data-talk]", b => (b.dataset.talk === "1") === talkOn());
   press(".seg[data-side]", b => +b.dataset.side === app.side);
@@ -896,6 +1039,7 @@ function startDaily() {
 function dailyEnd(r) {
   const d = dailyState(), g = cur() && cur().g;
   d.tries++;
+  if (r === app.side && !d.won && g && serverOn()) apiCall("/api/task", { kind: "daily" }).then(x => { if (applyProfile(x)) tasksToast(x.tasksGot); }).catch(() => {});
   if (r === app.side && !d.won && g) { d.won = true; d.moves = g.moves - app.daily.start; d.grid = g.owner.slice(); d.side = app.side; }
   store.set("daily", d);
   if (d.won) for (const id of ["bannerShare", "cBannerShare"]) { const el = $(id); el.hidden = false; el.innerHTML = `<button class="btn small primary" type="button" data-act="dailyShare">${t("dailyShareBtn")}</button>`; }
@@ -1174,7 +1318,7 @@ async function saveSign() {
   const first = !sigData(), old = sigData() || {}, note = v("sgNote").slice(0, 60);
   store.set("sig", { school: v("sgSchool").slice(0, 6), cls: v("sgClass").slice(0, 8), name: v("sgName"), subj: $("sgSubj").value || "", note });
   if (note && note !== old.note) sendNote(note);
-  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); }
+  if (($("sgSubj").value || "") !== (old.subj || "")) { allomaRound(); renderMedal(); syncSubj(); battleCache.at = 0; }
   $("signSheet").hidden = true;
   renderSig();
   SND.play("star", 0.35);
@@ -1447,14 +1591,14 @@ function maybeStreak() {
   let sh = $("streakSheet");
   if (!sh) { sh = document.createElement("div"); sh.className = "sheet"; sh.id = "streakSheet"; sh.setAttribute("role", "dialog"); document.body.appendChild(sh); }
   const days = STREAK.map((v, i) => `<div class="sd${i < slot ? " got" : i === slot ? " now" : ""}"><span>${t("streakDay", i + 1)}</span><b>${i === 6 ? "🎁" : "+" + v}</b></div>`).join("");
-  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}</p><div class="sdays">${days}</div>
+  sh.innerHTML = `<div class="sheet-card streak-card"><h2>🔥 ${t("streakTitle", n)}</h2><p>${t("streakSub")}${serverOn() ? " " + t("streakFreezeNote", profile.freeze | 0) : ""}</p><div class="sdays">${days}</div>
     <button class="btn primary big" type="button" data-act="streakTake">${t("streakTake", STREAK[slot])}</button><button class="btn big" type="button" data-act="streakLater">${t("later")}</button>${n === 2 ? installNudge() : ""}</div>`;
   sh.hidden = false;
 }
 async function streakTake() {
   const sh = $("streakSheet"); if (sh) sh.hidden = true;
   let paid = 0, gift = "";
-  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; } } catch (e) {} }
+  if (serverOn()) { try { const r = await apiCall("/api/streak", {}); if (applyProfile(r)) { paid = r.paid | 0; gift = r.gift || ""; if (r.froze) setTimeout(() => toast(t("frozeToast")), 1800); } } catch (e) {} }
   else if ((profile.streak || {}).last !== tashDay(0)) {
     const n = streakNext(), slot = (n - 1) % 7; paid = STREAK[slot];
     if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !profile.owned.includes(id)) || ""; if (gift) profile.owned.push(gift); else paid += 100; }
@@ -2035,8 +2179,11 @@ const FX = (() => {
   return {
     mark(el, p) {
       if (!ok() || !el) return; const [x, y, w] = center(el);
-      if (el.querySelector(".mark.fire")) { embers(x, y, w); return; }
-      drops(x, y, COL[p], 10, w * 0.8, Math.max(5, w * 0.15));
+      if ((el.classList && el.classList.contains("fire")) || el.querySelector(".mark.fire, .fire")) { embers(x, y, w); return; }
+      const sk = el.classList && el.classList.contains("mark") ? el : el.querySelector(".mark") || el;
+      const col = sk.classList.contains("gold") ? "#d99a0b" : sk.classList.contains("neon") ? (p === 1 ? "#22b8cf" : "#f06595") : sk.classList.contains("cosmos") ? "#7048e8"
+        : sk.classList.contains("vostok") ? "#0ca678" : sk.classList.contains("samurai") ? "#1b1b1f" : sk.classList.contains("pirate") ? "#8a5a2b" : COL[p];
+      drops(x, y, col, 10, w * 0.8, Math.max(5, w * 0.15));
     },
     capture(el, p, boardEl) {
       if (!ok() || !el) return;
@@ -2136,6 +2283,7 @@ function renderX02(ctx) {
   if (pre) { $("banner").classList.remove("show"); renderPrelude(e, ctx); }
   else renderMain(e.g, ctx);
   document.querySelectorAll('#scr-x02 [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
+  renderHint();
   document.querySelectorAll('#scr-x02 [data-act="resign"]').forEach(b => { b.disabled = !app.online || app.online.status !== "active" || !!(app.online.state && app.online.state.result); });
 }
 
@@ -2400,6 +2548,7 @@ function renderClassic(ctx) {
     : filled === 0 ? (opp() ? (app.side === 1 ? t("youStartShort") : t("botStart", botQ())) : t("xStarts"))
     : app.bot && app.bot.level === 3 ? t("goodLuck") : "";
   document.querySelectorAll('#scr-classic [data-act="undo"]').forEach(b => { b.disabled = app.history.length <= 1; });
+  renderHint();
   document.querySelectorAll('#scr-classic [data-act="resign"]').forEach(b => { b.disabled = !app.online || app.online.status !== "active" || !!(app.online.state && app.online.state.result); });
   const banner = $("cBanner");
   if (tt.result) {
@@ -2701,6 +2850,11 @@ function onlineEnd(v, quiet) {
       moves: classic ? s.t.b.filter(Boolean).length : (s.g ? s.g.moves : 0) } : null);
     askWrite();
     if (s.refPaid && s.refPaid[app.side]) toast(t("refPaidToast", s.refPaid[app.side]));
+    if (s.elo && typeof s.elo[app.side] === "number") {
+      const d = s.elo[app.side], el = $(classic ? "cBannerReward" : "bannerReward");
+      el.insertAdjacentHTML("beforeend", `<span class="elo-pop ${d >= 0 ? "up" : "down"}">${t("eloToast", (d >= 0 ? "+" : "") + d)}</span>`);
+    }
+    if (s.tasksGot && s.tasksGot[app.side]) tasksToast(s.tasksGot[app.side]);
   }
 }
 function showRematch() {
@@ -2811,7 +2965,8 @@ function copyInvite() {
 function togglePhrases() {
   const box = document.querySelector(`#scr-${app.screen} .phrases`);
   if (!box) return;
-  if (box.hidden) box.innerHTML = t("chatPhrases").map((p, k) => `<button class="phrase" type="button" data-phrase="${k}">${esc(p)}</button>`).join("");
+  if (box.hidden) box.innerHTML = `<div class="emotes">${EMOTES.map((e, i) => `<button class="phrase emote" type="button" data-phrase="${100 + i}">${e}</button>`).join("")}</div>` +
+    t("chatPhrases").map((p, k) => `<button class="phrase" type="button" data-phrase="${k}">${esc(p)}</button>`).join("");
   box.hidden = !box.hidden;
 }
 async function sayPhrase(k) {
@@ -2824,7 +2979,10 @@ async function sayPhrase(k) {
   if (!o) { const bot = app.bot; setTimeout(() => { if (app.bot === bot) botSay("reply"); }, 1100 + Math.random() * 700); return; }
   try { const v = await apiCall("/api/g/say", { id: o.id, k }); if (v.chat) o.chatSeen = Math.max(o.chatSeen, ...v.chat.map(c => c.t)); } catch (e) {}
 }
-function showBubble(k, mine) { showBubbleText((t("chatPhrases") || [])[k], mine ? "" : oppName(), mine); }
+function showBubble(k, mine) {
+  if (k >= 100) { showBubbleText(EMOTES[k - 100], mine ? "" : oppName(), mine); const el = $(app.mode === "classic" ? "cBubble" : "bubble"); if (el) el.classList.add("emote-bubble"); return; }
+  showBubbleText((t("chatPhrases") || [])[k], mine ? "" : oppName(), mine);
+}
 function showBubbleText(text, name, mine) {
   const el = $(app.mode === "classic" ? "cBubble" : "bubble");
   if (!el || !text) return;
@@ -2916,12 +3074,28 @@ function renderShop() {
     `<p class="shop-hint earn">${t("earnHint")}</p>` +
     (shopNote ? `<p class="shop-note ${shopNote[1]}">${shopNote[0]}</p>` : "") +
     (TG && serverOn() ? chestSec() : "") +
+    (serverOn() ? servicesSec() : "") +
     sec(t("secPremium"), SHOP.filter(s => s.premium), t("premiumHint")) +
     sec(t("secXShape"), by("xShape", false)) +
     sec(t("secOShape"), by("oShape", false)) +
     `<section class="shop-sec"><h3>${t("secExchange")}</h3><p class="shop-hint">${t("exchangeHint")}</p><div class="items">${exch}</div></section>` +
     coinSec;
   justBought = null;
+}
+function servicesSec() {
+  const n = profile.freeze | 0, full = n >= 2;
+  return `<section class="shop-sec"><h3>${t("secServices")}</h3><div class="items">
+    <div class="item service"><div class="item-prev svc">❄️</div><div class="item-name">${t("freezeTitle")}</div><div class="item-price">${t("freezeDesc", n)}</div>
+      <button class="btn small gold-btn" type="button" data-act="buyFreeze"${full ? " disabled" : ""}>${full ? t("freezeMax") : `2 ${ICON_COIN}`}</button></div>
+    <div class="item service"><div class="item-prev svc">💡</div><div class="item-name">${t("hint")}</div><div class="item-price">${t("hintDesc")}</div>
+      <span class="svc-price">1 ${ICON_COIN}</span></div></div></section>`;
+}
+async function buyFreeze() {
+  if ((profile.freeze | 0) >= 2) return;
+  if (profile.coins < 2) { shopNoteSet(t("needCoins"), "err"); return; }
+  const r = await serverSpend("freeze");
+  if (r.error) { shopNoteSet(r.error === "coins" ? t("needCoins") : t("netError"), "err"); return; }
+  applyProfile(r); SND.play("coin", 0.1); toast(t("freezeGot"));
 }
 function chestSec() {        // generous one-time chests for Stars
   const cards = PACKS.map((p, k) => ({ p, k })).filter(x => x.p.items).map(({ p, k }) => {
@@ -3063,6 +3237,8 @@ function bind() {
     else if (a === "createOnline") createOnline();
     else if (a === "loginTop") { closeOnlineSheet(); openScreen("settings"); setTimeout(showLoginWidget, 50); }
     else if (a === "undo") undo();
+    else if (a === "hint") useHint();
+    else if (a === "buyFreeze") buyFreeze();
     else if (a === "shop") openShop();
     else if (a === "medal") toggleMedal();
     else if (a === "installSticker") { if (app.screen !== "menu") { goMenu(); setTimeout(installSticker, 700); } else installSticker(); }
@@ -3108,6 +3284,10 @@ function bind() {
   document.addEventListener("click", ev => {
     const tk = ev.target.closest("[data-talk]");
     if (tk) { store.set("botTalk", tk.dataset.talk === "1"); renderSettings(); }
+    const mu = ev.target.closest("[data-music]");
+    if (mu) { SND.setMusic(mu.dataset.music === "1"); renderSettings(); }
+    const gf = ev.target.closest("[data-gift]");
+    if (gf) { sendGift(gf.dataset.gift, gf); return; }
     const sd = ev.target.closest("[data-sound]");
     if (sd) { if ((sd.dataset.sound === "1") !== SND.on) SND.toggle(); renderSettings(); }
     const hp = ev.target.closest("[data-haptics]");

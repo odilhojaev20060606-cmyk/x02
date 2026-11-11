@@ -19,4 +19,4 @@ binding = "WALLET"
 id = "3769719f2f0c40dc8e00eacb2b92bd77"
 
 [triggers]
-crons = ["7 9 * * *"]
+crons = ["7 9 * * *", "7 14 * * *"]

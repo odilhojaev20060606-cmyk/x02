@@ -1046,3 +1046,53 @@ body.on-back .sub-title, body.on-back .bar-title { color: var(--cover-ink); }
 .chest-what { font-size: 14px; }
 .chest-worth { font-size: 13px; color: #868e96; text-decoration: line-through; margin: 2px 0 8px; }
 .btn.big-chest { font-size: 16px; padding: 9px 16px; }
+
+/* v17.2: tasks, league, battle, hint, gifts, emotes */
+.rbtn { position: relative; }
+.tk-badge { position: absolute; top: -4px; right: 4px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #e03131; color: #fff; font: 700 11px/18px system-ui, sans-serif; font-style: normal; text-align: center; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+.me-league, .me-tasks, .me-battle { margin: 10px 0; }
+.league { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; border: 2px solid var(--ink, #2a2a2a); border-radius: 12px; padding: 10px 12px; background: #fffef8; box-shadow: 2px 2px 0 rgba(0,0,0,.12); }
+.league b { font: 700 22px "Caveat", cursive; }
+.league.none { grid-template-columns: 1fr; }
+.league.none span { font-size: 14px; color: #555; }
+.lg-elo { font: 700 20px system-ui, sans-serif; }
+.lg-bar { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: #e9ecef; overflow: hidden; }
+.lg-bar i { display: block; height: 100%; background: linear-gradient(90deg, #4dabf7, #1c7ed6); border-radius: 4px; transition: width .6s ease; }
+.lg-next { grid-column: 1 / -1; font-size: 12.5px; color: #666; }
+.league.l-good .lg-bar i { background: linear-gradient(90deg, #69db7c, #2f9e44); }
+.league.l-head .lg-bar i { background: linear-gradient(90deg, #b197fc, #7048e8); }
+.league.l-medal .lg-bar i, .league.l-alloma .lg-bar i { background: linear-gradient(90deg, #ffd43b, #c99700); }
+.league.l-alloma { border-color: #a97c00; background: linear-gradient(160deg, #fffaf0, #fff3bf); }
+.task { display: flex; align-items: center; gap: 8px; padding: 7px 4px; border-bottom: 1px dashed rgba(0,0,0,.15); font-size: 15px; }
+.tk-ic { width: 20px; height: 20px; flex: none; border: 2px solid #868e96; border-radius: 5px; display: grid; place-items: center; font: 700 14px/1 system-ui; color: #2f9e44; }
+.task.done .tk-ic { border-color: #2f9e44; background: #ebfbee; }
+.task.done .tk-name { text-decoration: line-through; color: #868e96; }
+.tk-name { flex: 1; }
+.tk-n { font: 600 13px system-ui, sans-serif; color: #495057; display: inline-flex; align-items: center; gap: 2px; }
+.tk-n svg { width: 15px; height: 15px; }
+.tk-all { font-size: 13px; color: #666; margin: 6px 4px 0; display: flex; align-items: center; gap: 4px; }
+.tk-all svg { width: 16px; height: 16px; }
+.tk-all.done { color: #2f9e44; font-weight: 600; }
+.bt-row { display: grid; grid-template-columns: 26px minmax(80px, 1.1fr) 2fr 34px; gap: 8px; align-items: center; padding: 4px 2px; font-size: 14px; }
+.bt-row.mine { background: #fff9db; border-radius: 8px; font-weight: 600; }
+.bt-bar { height: 8px; background: #f1f3f5; border-radius: 4px; overflow: hidden; }
+.bt-bar i { display: block; height: 100%; background: #4dabf7; border-radius: 4px; }
+.bt-row.mine .bt-bar i { background: #f59f00; }
+.bt-n { text-align: right; font: 600 13px system-ui, sans-serif; }
+.bt-hint { font-size: 12.5px; color: #666; margin: 6px 2px 0; }
+.btn.icon-btn { min-width: 40px; padding: 6px 8px; font-size: 18px; line-height: 1; }
+.fr .gift-btn { margin-right: 6px; }
+.hint-btn { white-space: nowrap; }
+.cell.hint, .tcell.hint, .sub.hint, [id^="pc-"].hint, [id^="tc-"].hint { animation: hintGlow 1s ease-in-out 3; box-shadow: 0 0 0 3px #fab005 inset, 0 0 14px rgba(250,176,5,.8); border-radius: 6px; position: relative; z-index: 2; }
+@keyframes hintGlow { 0%, 100% { box-shadow: 0 0 0 3px #fab005 inset, 0 0 6px rgba(250,176,5,.4); } 50% { box-shadow: 0 0 0 3px #fab005 inset, 0 0 18px rgba(250,176,5,.95); } }
+.emotes { display: flex; gap: 6px; flex-wrap: wrap; width: 100%; margin-bottom: 4px; }
+.phrase.emote { font-size: 22px; padding: 4px 10px; min-width: 44px; }
+.bubble.emote-bubble { font-size: 34px; line-height: 1.1; }
+.elo-pop { display: inline-block; margin-left: 8px; padding: 3px 8px; border-radius: 8px; font: 700 14px system-ui, sans-serif; }
+.elo-pop.up { background: #ebfbee; color: #2b8a3e; }
+.elo-pop.down { background: #fff5f5; color: #c92a2a; }
+.item.service .svc { font-size: 40px; display: grid; place-items: center; height: 64px; }
+.svc-price { display: inline-flex; align-items: center; gap: 3px; font: 600 14px system-ui, sans-serif; color: #7a5a00; }
+.svc-price svg { width: 18px; height: 18px; }
+.fr .gift-btn { min-width: 34px; padding: 4px 6px; font-size: 16px; flex: none; }
+.fr .fr-id { min-width: 0; }

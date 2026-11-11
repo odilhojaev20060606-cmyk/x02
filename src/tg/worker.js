@@ -718,10 +718,30 @@ const CARD_TTL = 30 * 86400;  // victory pictures live 30 days
 const CARD_DAILY = 20;
 const IMPORT_CAP = 3000;      // max paperclips imported from a device when linking
 const MINUTES = [2, 3, 5];    // time per move in online games
-const PHRASES = 8;            // quick chat phrases (texts live in the app)
+const PHRASES = 8;
+const EMOTES = 6;             // quick emoji reactions in online games (k = 100..105)
+// three tasks a day, the same for everyone, picked from the pool by the date
+const TASKS = { play3: ["bot", 3], win2: ["botwin", 2], hard: ["hardwin", 1], online: ["online", 1], daily: ["daily", 1], classic: ["classicwin", 1], x02: ["x02play", 2] };
+const TASK_CLIPS = 15, TASK_ALL_COINS = 1;
+const HARD = ["x2", "x3", "c2", "c3"];
+const SPEND = { hint: 1, retry: 1, freeze: 2 };  // coin services
+const FREEZE_MAX = 2;
+const ELO0 = 1000, ELO_K = 32;
+const LEAGUES = [[0, "pupil"], [1050, "good"], [1150, "head"], [1250, "medal"], [1400, "alloma"]];
+const MENTOR = [[1, 1], [3, 2], [10, 5], [25, 10]];   // [paid invites, coins] — ladder «Наставник»
+const GIFT_CLIPS = 10, GIFT_DAILY = 3;
+const SUBJ_N = 14;            // subjects on the cover (index into SUBJECTS in app.js)
+const BATTLE_PRIZE = 30;            // quick chat phrases (texts live in the app)
 
 const TEXT = {
   ru: {
+    giftGot: (n, k) => `🎁 ${n} прислал тебе подарок: +${k} скрепок! Отправь в ответ — это бесплатно.`, giftBack: "🎁 Ответить подарком",
+    eloLine: (d, e, l) => `Рейтинг: ${d >= 0 ? "+" : ""}${d} → ${e} (${l})`, league: { pupil: "Ученик", good: "Хорошист", head: "Староста", medal: "Медалист", alloma: "Аллома" },
+    leagueUp: l => `🎓 Новая лига: ${l}!`, leagueDown: l => `Лига: ${l}. Отыграйся!`, overtaken: n => `📉 ${n} обогнал тебя в рейтинге. Реванш вернёт место.`,
+    mentorUp: (n, c) => `🧑‍🏫 Лестница «Наставник»: ${n} друзей уже играют благодаря тебе. +${c} 🪙`,
+    remindStreak: (n, k) => `🔥 Серия ${n} дней сгорит в полночь! Зайди — сегодня ${k} скрепок и новые задания дня.`, remindFreeze: n => `❄️ Заморозок в запасе: ${n} — пропуск одного дня серию не сожжёт.`,
+    remindBack: "📒 Тетрадь соскучилась. Сегодня новые задания дня, задача дня и награда за вход — заходи на пару партий.",
+    quietHint: "/quiet — не присылать напоминания", quietOn: "🔕 Напоминания выключены. Включить обратно — снова /quiet.", quietOff: "🔔 Напоминания включены.",
     hello: "<b>X02.0</b> — крестики-нолики сложнее шахмат.\n\n81 клетка, звёзды, удары и боты, которые почти не проигрывают.\n\nПобедишь хотя бы «Лёгкого?» 😏",
     again: "Игра ждёт. Жми кнопку 👇",
     play: "▶ Играть", move: "▶ Сделать ход", open: "▶ Открыть партию",
@@ -747,6 +767,13 @@ const TEXT = {
     newPlayer: (n, u, s) => `🆕 Новый игрок: ${n}${u ? " @" + u : ""} · ${s}`,
   },
   uz: {
+    giftGot: (n, k) => `🎁 ${n} sizga sovg'a yubordi: +${k} skrepka! Javob qaytaring — bu bepul.`, giftBack: "🎁 Sovg'a bilan javob berish",
+    eloLine: (d, e, l) => `Reyting: ${d >= 0 ? "+" : ""}${d} → ${e} (${l})`, league: { pupil: "O'quvchi", good: "Yaxshi o'quvchi", head: "Sinf sardori", medal: "Medalchi", alloma: "Alloma" },
+    leagueUp: l => `🎓 Yangi liga: ${l}!`, leagueDown: l => `Liga: ${l}. Qaytarib oling!`, overtaken: n => `📉 ${n} reytingda sizdan o'tib ketdi. Revansh joyni qaytaradi.`,
+    mentorUp: (n, c) => `🧑‍🏫 «Ustoz» zinapoyasi: ${n} do'st siz tufayli o'ynayapti. +${c} 🪙`,
+    remindStreak: (n, k) => `🔥 ${n} kunlik seriya yarim tunda yonib ketadi! Kiring — bugun ${k} skrepka va yangi kunlik vazifalar.`, remindFreeze: n => `❄️ Muzlatish zaxirada: ${n} — bir kun o'tkazib yuborsangiz, seriya yonmaydi.`,
+    remindBack: "📒 Daftar sog'indi. Bugun yangi vazifalar, kun masalasi va kirish mukofoti — bir-ikki partiyaga kiring.",
+    quietHint: "/quiet — eslatmalarni yubormaslik", quietOn: "🔕 Eslatmalar o'chirildi. Qayta yoqish — yana /quiet.", quietOff: "🔔 Eslatmalar yoqildi.",
     hello: "<b>X02.0</b> — shaxmatdan ham murakkab X-O.\n\n81 katak, yulduzlar, zarbalar va deyarli yutqazmaydigan botlar.\n\nHech bo'lmasa «Osonmi?»ni yenga olasanmi? 😏",
     again: "O'yin kutyapti. Tugmani bos 👇",
     play: "▶ O'ynash", move: "▶ Yurish qilish", open: "▶ O'yinni ochish",
@@ -772,6 +799,13 @@ const TEXT = {
     newPlayer: (n, u, s) => `🆕 Yangi o'yinchi: ${n}${u ? " @" + u : ""} · ${s}`,
   },
   en: {
+    giftGot: (n, k) => `🎁 ${n} sent you a gift: +${k} paperclips! Send one back — it's free.`, giftBack: "🎁 Send a gift back",
+    eloLine: (d, e, l) => `Rating: ${d >= 0 ? "+" : ""}${d} → ${e} (${l})`, league: { pupil: "Pupil", good: "Good student", head: "Class head", medal: "Medalist", alloma: "Alloma" },
+    leagueUp: l => `🎓 New league: ${l}!`, leagueDown: l => `League: ${l}. Win it back!`, overtaken: n => `📉 ${n} overtook you in the rating. A rematch gets it back.`,
+    mentorUp: (n, c) => `🧑‍🏫 Mentor ladder: ${n} friends play thanks to you. +${c} 🪙`,
+    remindStreak: (n, k) => `🔥 Your ${n}-day streak burns at midnight! Drop in — ${k} paperclips today and new daily tasks.`, remindFreeze: n => `❄️ Freezes in stock: ${n} — missing one day won't burn the streak.`,
+    remindBack: "📒 The notebook misses you. New daily tasks, the puzzle of the day and a login reward are waiting.",
+    quietHint: "/quiet — stop reminders", quietOn: "🔕 Reminders are off. Turn them back on with /quiet.", quietOff: "🔔 Reminders are on.",
     hello: "<b>X02.0</b> — tic-tac-toe harder than chess.\n\n81 cells, stars, strikes and bots that almost never lose.\n\nCan you beat at least «Easy?» 😏",
     again: "The game is waiting. Tap the button 👇",
     play: "▶ Play", move: "▶ Make a move", open: "▶ Open the game",
@@ -886,9 +920,35 @@ async function ensureSchema(env) {
     env.DB.prepare("CREATE TABLE IF NOT EXISTS chat_members (chat INTEGER, uid INTEGER, t INTEGER, PRIMARY KEY (chat, uid))"),
     env.DB.prepare("CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, uid INTEGER, t INTEGER, text TEXT)"),
     env.DB.prepare("CREATE INDEX IF NOT EXISTS games_done ON games(status, updated)"),
+    env.DB.prepare("CREATE TABLE IF NOT EXISTS battle (week TEXT, subj INTEGER, n INTEGER, PRIMARY KEY (week, subj))"),
   ]);
   schemaReady = true;
 }
+function taskDay(now) { return new Date(dayStart(now || Date.now()) + TZ_OFFSET).toISOString().slice(0, 10); }
+function tasksFor(day) {        // 3 distinct tasks, at most one that needs a human opponent
+  let h = 0; for (const ch of day) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const pool = Object.keys(TASKS), out = [];
+  while (out.length < 3) { h = (h * 1103515245 + 12345) >>> 0; const k = pool[h % pool.length]; if (!out.includes(k)) out.push(k); }
+  return out;
+}
+function taskState(p, now) {
+  const day = taskDay(now);
+  if (!p.tasks || p.tasks.day !== day) p.tasks = { day, p: {}, done: [], all: false };
+  return p.tasks;
+}
+// an event happened (a bot game, a win, an online game, the puzzle): move tasks forward, pay what got done
+function taskEvent(p, evs, now) {
+  const ts = taskState(p, now), got = [];
+  for (const k of tasksFor(ts.day)) {
+    const [ev, need] = TASKS[k];
+    if (ts.done.includes(k) || !evs.includes(ev)) continue;
+    ts.p[k] = Math.min(need, (ts.p[k] | 0) + 1);
+    if (ts.p[k] >= need) { ts.done.push(k); p.clips += TASK_CLIPS; got.push(k); }
+  }
+  if (!ts.all && ts.done.length >= 3) { ts.all = true; p.coins += TASK_ALL_COINS; got.push("all"); }
+  return got;
+}
+const leagueOf = elo => LEAGUES.reduce((a, l) => (elo >= l[0] ? l[1] : a), "pupil");
 function normProfile(p) {
   p = p || {};
   return {
@@ -899,6 +959,11 @@ function normProfile(p) {
     bonus: Array.isArray(p.bonus) ? p.bonus.filter(k => BONUS[k]) : [],
     streak: p.streak && typeof p.streak === "object" ? { last: String(p.streak.last || ""), n: p.streak.n | 0 } : { last: "", n: 0 },
     packs: Array.isArray(p.packs) ? p.packs : [],
+    tasks: p.tasks && typeof p.tasks === "object" ? p.tasks : null,
+    freeze: Math.min(FREEZE_MAX, p.freeze | 0), elo: Number.isFinite(p.elo) ? p.elo : ELO0, eloN: p.eloN | 0,
+    subj: Number.isInteger(p.subj) && p.subj >= 0 && p.subj < SUBJ_N ? p.subj : -1,
+    sbw: p.sbw && typeof p.sbw === "object" ? p.sbw : { week: "", n: 0 }, sbPaid: String(p.sbPaid || ""),
+    quiet: !!p.quiet,
   };
 }
 // returns { p, fresh } — fresh = this player was never seen before (neither in D1 nor in old KV)
@@ -994,7 +1059,9 @@ async function topText(env, t, chatId) {        // /top: the chat's members in a
   const lines = list.map(([id, e], i) => `${i === 0 ? "👑" : i + 1 + "."} ${escHtml(nm.get(id) || "Player")} — ${t.topWins(e.w)}`);
   return (chatId ? t.topChat : t.topAll) + "\n\n" + lines.join("\n") + "\n\n" + (chatId ? t.topJoin : t.topHint);
 }
-const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak, packs: p.packs });
+const publicProfile = p => ({ coins: p.coins, gold: p.gold, clips: p.clips, owned: p.owned, equip: p.equip, scores: p.scores, netLosses: p.netLosses, netBeaten: p.netBeaten, bonus: p.bonus, streak: p.streak, packs: p.packs,
+  tasks: (() => { const ts = taskState(p); return { day: ts.day, list: tasksFor(ts.day).map(k => ({ k, n: ts.p[k] | 0, need: TASKS[k][1], done: ts.done.includes(k) })), all: ts.all }; })(),
+  freeze: p.freeze, elo: p.elo, eloN: p.eloN, league: leagueOf(p.elo), subj: p.subj, quiet: p.quiet });
 const ownsItem = (p, id) => ITEMS[id] && (ITEMS[id][1] === 0 || p.owned.includes(id) || p.gold.includes(id));
 const today = () => new Date().toISOString().slice(0, 10);
 async function countPlay(env, mode) {
@@ -1112,13 +1179,35 @@ function applyMove(g, side, a) {
   return "";
 }
 // game over: scores for both players, paperclips for an X02.0 win
+function weekKey(now) { return new Date(weekStart(now) + TZ_OFFSET).toISOString().slice(0, 10); }
+async function battleWin(env, p) {        // a win counts for the player's subject this week
+  if (!env.DB || p.subj < 0) return;
+  const wk = weekKey(Date.now());
+  if (p.sbw.week !== wk) p.sbw = { week: wk, n: 0 };
+  p.sbw.n++;
+  try { await env.DB.prepare("INSERT INTO battle (week, subj, n) VALUES (?, ?, 1) ON CONFLICT(week, subj) DO UPDATE SET n = n + 1").bind(wk, p.subj).run(); } catch (e) {}
+}
 async function settle(env, g) {
   const s = g.state, key = s.mode === "classic" ? "fc" : "fx", rewards = {};
   const cards = await playerCards(env, g);
+  const profs = {};
+  for (const side of [1, 2]) { const uid = uidOfSide(g, side); if (uid) profs[side] = (await getProfile(env, uid)).p; }
+  // rating: X02 games long enough to be real, both players known
+  const rated = s.reason !== "cancel" && profs[1] && profs[2] && uidOfSide(g, 1) !== uidOfSide(g, 2) && s.result && (s.mode === "classic" || (s.g && s.g.moves >= FRIEND_MIN_MOVES));
+  const eloOld = { 1: profs[1] && profs[1].elo, 2: profs[2] && profs[2].elo }, eloD = {};
+  if (rated) {
+    const e1 = 1 / (1 + Math.pow(10, (eloOld[2] - eloOld[1]) / 400)), sc1 = s.result === 3 ? 0.5 : s.result === 1 ? 1 : 0;
+    const k = s.mode === "classic" ? ELO_K / 2 : ELO_K;
+    eloD[1] = Math.round(k * (sc1 - e1)); eloD[2] = -eloD[1];
+    s.elo = eloD;
+  }
   for (const side of [1, 2]) {
     const uid = uidOfSide(g, side);
     if (!uid) continue;
-    const { p } = await getProfile(env, uid);
+    const p = profs[side];
+    if (rated) { p.elo += eloD[side]; p.eloN++; }
+    if (s.reason !== "cancel" && (s.mode === "classic" || (s.g && s.g.moves >= 6))) { const got = taskEvent(p, ["online"]); if (got.length) (s.tasksGot = s.tasksGot || {})[side] = got; }
+    if (rated && s.result === side) await battleWin(env, p);
     const real = s.mode === "classic" ? 1 : (s.g && s.g.moves >= FRIEND_MIN_MOVES ? REF_NEED : 0);
     const rp = await refProgress(env, uid, real, p, (cards[side] || {}).name);
     if (rp) (s.refPaid = s.refPaid || {})[side] = rp;
@@ -1141,7 +1230,13 @@ async function settle(env, g) {
     try {
       const row = await env.DB.prepare("SELECT lang FROM players WHERE id = ?").bind(uid).first();
       const t = TEXT[lang(row && row.lang)], other = (cards[3 - side] || {}).name || "?";
-      const text = s.result === 3 ? t.resDraw(other) : s.result === side ? t.resWin(other, s.mode === "x02" && s.g ? s.g.moves : 0) : t.resLose(other);
+      let text = s.result === 3 ? t.resDraw(other) : s.result === side ? t.resWin(other, s.mode === "x02" && s.g ? s.g.moves : 0) : t.resLose(other);
+      if (rated) {
+        const ne = profs[side].elo;
+        text += "\n" + t.eloLine(eloD[side], ne, t.league[leagueOf(ne)]);
+        if (leagueOf(ne) !== leagueOf(eloOld[side])) text += "\n" + (eloD[side] > 0 ? t.leagueUp(t.league[leagueOf(ne)]) : t.leagueDown(t.league[leagueOf(ne)]));
+        if (s.result !== side && s.result !== 3 && eloOld[3 - side] < eloOld[side] && profs[3 - side].elo > ne) text += "\n" + t.overtaken(other);
+      }
       const kb = [[{ text: t.share, switch_inline_query: "" }], [{ text: t.play, web_app: { url: GAME_URL } }]];
       if (s.result !== side) kb.unshift([{ text: s.result === 3 ? t.rematchBtn : t.revenge, url: `${BOT_LINK}?startapp=g_${g.id}` }]);
       await tg(env, "sendMessage", { chat_id: uid, text, reply_markup: { inline_keyboard: kb } });
@@ -1235,11 +1330,19 @@ async function refProgress(env, uid, add, p, inviteeName) {
   p.clips += REF_REWARD;
   const { p: ip } = await getProfile(env, r.inviter);
   ip.clips += REF_REWARD;
+  // ladder «Наставник»: coins at 1 / 3 / 10 / 25 counted invitations
+  const paidN = ((await env.DB.prepare("SELECT COUNT(*) AS n FROM refs WHERE inviter = ? AND paid = 1").bind(r.inviter).first()) || {}).n || 0;
+  let mentorUp = null;
+  for (const [need, coins] of MENTOR) {
+    if (paidN < need) break;
+    const m = await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, ?, ?)").bind(r.inviter, "mentor" + need, now).run();
+    if (m.meta && m.meta.changes) { ip.coins += coins; mentorUp = [need, coins]; }
+  }
   await putProfile(env, r.inviter, ip, null);
   try {
     const row = await env.DB.prepare("SELECT lang FROM players WHERE id = ?").bind(r.inviter).first();
     const t = TEXT[lang(row && row.lang)];
-    await tg(env, "sendMessage", { chat_id: r.inviter, text: t.refPaid(inviteeName || "Друг"), reply_markup: playButton(t) });
+    await tg(env, "sendMessage", { chat_id: r.inviter, text: t.refPaid(inviteeName || "Друг") + (mentorUp ? "\n\n" + t.mentorUp(mentorUp[0], mentorUp[1]) : ""), reply_markup: playButton(t) });
   } catch (e) {}
   return REF_REWARD;
 }
@@ -1348,7 +1451,7 @@ async function gameApi(env, path, body, user) {
     } else if (path === "/api/g/say") {
       const k = Number(body.k) | 0;
       const last = [...g.chat].reverse().find(c => c.p === side);
-      if (k < 0 || k >= PHRASES) err = "bad";
+      if (!((k >= 0 && k < PHRASES) || (k >= 100 && k < 100 + EMOTES))) err = "bad";
       else if (last && now - last.t < 2500) err = "slow";
       else { g.chat = [...g.chat, { p: side, k, t: now }].slice(-12); changed = true; }
     } else if (path === "/api/g/resign") {
@@ -1459,9 +1562,16 @@ async function api(request, env, path) {
       capped = n < REWARD[bot];
       if (n) reward = { clips: n };
     }
+    let tasksGot = [];
+    if (counted) {
+      const evs = ["bot"]; if (bot[0] === "x") evs.push("x02play");
+      if (fair) { evs.push("botwin"); if (HARD.includes(bot)) evs.push("hardwin"); if (bot[0] === "c") evs.push("classicwin"); }
+      tasksGot = taskEvent(p, evs);
+      if (fair) await battleWin(env, p);
+    }
     await putProfile(env, user.id, p, metaOf(user));
     await countPlay(env, bot[0] === "c" ? "classic" : "x02");
-    return json({ ...publicProfile(p), reward, capped, refPaid });
+    return json({ ...publicProfile(p), reward, capped, refPaid, tasksGot });
   }
 
   if (path === "/api/bonus") {
@@ -1481,6 +1591,54 @@ async function api(request, env, path) {
     if (kind === "install") p.coins += BONUS.install; else p.clips += BONUS[kind];
     await putProfile(env, user.id, p, metaOf(user));
     return json({ ...publicProfile(p), paid: BONUS[kind] });
+  }
+
+  if (path === "/api/task") {        // client-side events: the daily puzzle solved
+    if (body.kind !== "daily") return json({ error: "bad" }, 400);
+    const tasksGot = taskEvent(p, ["daily"]);
+    await putProfile(env, user.id, p, null);
+    return json({ ...publicProfile(p), tasksGot });
+  }
+
+  if (path === "/api/subj") {        // the subject written on the cover: the player's team in the subject battle
+    const k = Number(body.subj);
+    if (!Number.isInteger(k) || k < -1 || k >= SUBJ_N) return json({ error: "bad" }, 400);
+    if (p.subj !== k) { p.subj = k; await putProfile(env, user.id, p, null); }
+    return json({ ok: true, subj: p.subj });
+  }
+
+  if (path === "/api/battle") {        // this week's subject battle + last week's prize
+    if (!env.DB) return json({ week: [], last: [] });
+    await ensureSchema(env);
+    const now = Date.now(), wk = weekKey(now), lwk = weekKey(now - 7 * 86400000);
+    const rows = (await env.DB.prepare("SELECT week, subj, n FROM battle WHERE week IN (?, ?) ORDER BY n DESC").bind(wk, lwk).all()).results || [];
+    const week = rows.filter(r => r.week === wk).map(r => ({ s: r.subj, n: r.n })), last = rows.filter(r => r.week === lwk).map(r => ({ s: r.subj, n: r.n }));
+    let prize = 0;
+    if (last.length && p.sbw.week === lwk && p.sbw.n > 0 && p.subj === last[0].s && p.sbPaid !== lwk) {
+      p.sbPaid = lwk; p.clips += BATTLE_PRIZE; prize = BATTLE_PRIZE;
+      await putProfile(env, user.id, p, null);
+    }
+    return json({ week, last, mine: p.subj, myWins: p.sbw.week === wk ? p.sbw.n : 0, prize, ...(prize ? publicProfile(p) : {}) });
+  }
+
+  if (path === "/api/gift") {        // a free gift to a friend: +10 paperclips to them (paid by the game), 3 a day, once a day per friend
+    if (!env.DB) return json({ error: "bad" }, 400);
+    const to = await fidCheck(env, user.id, String(body.fid || ""));
+    if (!to || to === user.id) return json({ error: "bad" }, 400);
+    const now = Date.now(), day = taskDay(now);
+    const sent = ((await env.DB.prepare("SELECT COUNT(*) AS n FROM bonuses WHERE id = ? AND kind LIKE ?").bind(user.id, `gift:${day}:%`).first()) || {}).n || 0;
+    if (sent >= GIFT_DAILY) return json({ error: "limit" });
+    const r = await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, ?, ?)").bind(user.id, `gift:${day}:${to}`, now).run();
+    if (!(r.meta && r.meta.changes)) return json({ error: "already" });
+    const { p: fp } = await getProfile(env, to);
+    fp.clips += GIFT_CLIPS;
+    await putProfile(env, to, fp, null);
+    try {
+      const row = await env.DB.prepare("SELECT lang FROM players WHERE id = ?").bind(to).first();
+      const ft = TEXT[lang(row && row.lang)];
+      if (!fp.quiet) await tg(env, "sendMessage", { chat_id: to, text: ft.giftGot(nameOfUser(user), GIFT_CLIPS), reply_markup: { inline_keyboard: [[{ text: ft.giftBack, url: `${BOT_LINK}?startapp=friends` }]] } });
+    } catch (e) {}
+    return json({ ok: true, left: GIFT_DAILY - sent - 1 });
   }
 
   if (path === "/api/note") {        // the comment line on the cover: forwarded to the owner, at most once an hour per player
@@ -1506,13 +1664,16 @@ async function api(request, env, path) {
       const r = await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, ?, ?)").bind(user.id, "d:" + day, now).run();
       if (!(r.meta && r.meta.changes)) return json({ ...publicProfile((await getProfile(env, user.id)).p), paid: 0 });
     }
-    const n = p.streak.last === yday ? p.streak.n + 1 : 1, slot = (n - 1) % 7;
+    const yday2 = new Date(d0 - 2 * 86400000).toISOString().slice(0, 10);
+    let froze = false;
+    if (p.streak.last === yday2 && p.freeze > 0 && p.streak.n > 0) { p.freeze--; froze = true; }
+    const n = p.streak.last === yday || froze ? p.streak.n + 1 : 1, slot = (n - 1) % 7;
     let paid = STREAK[slot], gift = "";
     if (slot === 6) { gift = ["x_fire", "o_fire"].find(id => !p.owned.includes(id)) || ""; if (gift) p.owned.push(gift); else paid += 100; }
     p.streak = { last: day, n };
     p.clips += paid;
     await putProfile(env, user.id, p, metaOf(user));
-    return json({ ...publicProfile(p), paid, gift, n });
+    return json({ ...publicProfile(p), paid, gift, n, froze });
   }
 
   if (path === "/api/friends") {
@@ -1607,7 +1768,13 @@ async function api(request, env, path) {
 
   if (path === "/api/spend") {
     const item = String(body.item || "");
-    if (EXCHANGE[item]) {
+    if (SPEND[item]) {
+      if (item === "freeze" && p.freeze >= FREEZE_MAX) return json({ error: "max", ...publicProfile(p) }, 409);
+      if (p.coins < SPEND[item]) return json({ error: "coins", ...publicProfile(p) }, 409);
+      p.coins -= SPEND[item];
+      if (item === "freeze") p.freeze++;
+      if (env.DB) { try { await env.DB.prepare("INSERT INTO plays (day, mode, n) VALUES (?, ?, 1) ON CONFLICT(day, mode) DO UPDATE SET n = n + 1").bind(today(), "buy_" + item).run(); } catch (e) {} }
+    } else if (EXCHANGE[item]) {
       const [c, n] = EXCHANGE[item];
       if (p.coins < c) return json({ error: "coins", ...publicProfile(p) }, 409);
       p.coins -= c; p.clips += n;
@@ -1670,6 +1837,17 @@ async function adminStats(env) {
   const instN = (await one("SELECT COUNT(*) AS n FROM bonuses WHERE kind = 'install'")).n || 0;
   const instBack = (await one("SELECT COUNT(*) AS n FROM bonuses b JOIN players p ON p.id = b.id WHERE b.kind = 'install' AND p.seen > b.t + 86400000")).n || 0;
   const noteN = (await one("SELECT COUNT(*) AS n FROM notes")).n || 0;
+  const ret = async (from, to, after) => (await one("SELECT COUNT(*) AS n, COALESCE(SUM(seen >= created + ?3), 0) AS b FROM players WHERE created BETWEEN ?1 AND ?2", from, to, after));
+  const r1 = await ret(now - 8 * 86400000, now - 86400000, 86400000), r7 = await ret(now - 37 * 86400000, now - 7 * 86400000, 7 * 86400000);
+  const pct = x => x.n ? Math.round(100 * x.b / x.n) + "%" : "—";
+  const playsAll = m => (plays.find(r => r.mode === m) || {}).n || 0;
+  const tday = taskDay(now);
+  const tasksAll = (await one("SELECT COUNT(*) AS n FROM players WHERE json_extract(data, '$.tasks.day') = ? AND json_extract(data, '$.tasks.all') = 1", tday)).n || 0;
+  const tasksAny = (await one("SELECT COUNT(*) AS n FROM players WHERE json_extract(data, '$.tasks.day') = ? AND json_array_length(json_extract(data, '$.tasks.done')) > 0", tday)).n || 0;
+  const rated = (await env.DB.prepare("SELECT name, username, json_extract(data, '$.elo') AS e FROM players WHERE json_extract(data, '$.eloN') > 0 ORDER BY e DESC LIMIT 3").all()).results || [];
+  const chests = (await one("SELECT COUNT(*) AS n FROM players WHERE json_array_length(json_extract(data, '$.packs')) > 0")).n || 0;
+  const quietN = (await one("SELECT COUNT(*) AS n FROM players WHERE json_extract(data, '$.quiet') = 1")).n || 0;
+  const giftN = (await one("SELECT COUNT(*) AS n FROM bonuses WHERE kind LIKE 'gift:%' AND t >= ?", d7)).n || 0;
   return `📊 <b>X02.0 — статистика</b>\n\n` +
     `Игроков всего: <b>${total}</b>\n` +
     `Новых сегодня: <b>${newToday}</b> · за 7 дней: <b>${new7}</b>\n` +
@@ -1682,7 +1860,12 @@ async function adminStats(env) {
     `Комментариев с обложки: <b>${noteN}</b>\n` +
     `Новые за 7 дней по источникам: ${src7.length ? src7.map(r => `${escHtml(srcName(r.src))} — ${r.n}`).join(", ") : "—"}\n` +
     `Приглашения: пришло <b>${refAll.n || 0}</b>, засчитано <b>${refAll.p || 0}</b> · на одного активного игрока: ${((refAll.p || 0) / activeTotal).toFixed(2)}\n` +
-    `Покупок: <b>${pay.n || 0}</b> · звёзд: <b>${pay.s || 0} ⭐</b>`;
+    `Покупок: <b>${pay.n || 0}</b> · звёзд: <b>${pay.s || 0} ⭐</b> · купили сундук: ${chests}\n\n` +
+    `<b>Удержание</b>: вернулись на 2-й день — ${pct(r1)} (из ${r1.n || 0}), через неделю — ${pct(r7)} (из ${r7.n || 0})\n` +
+    `Задания сегодня: начали ${tasksAny}, закрыли все три — ${tasksAll}\n` +
+    `За монеты (7 дней): подсказок ${playsAll("buy_hint")}, заморозок ${playsAll("buy_freeze")}, повторов задачи ${playsAll("buy_retry")}\n` +
+    `Подарков друзьям за 7 дней: ${giftN} · напоминаний отправлено за 7 дней: ${playsAll("reminders")} · отключили напоминания: ${quietN}\n` +
+    `Топ рейтинга: ${rated.length ? rated.map(r => `${escHtml(r.name || (r.username ? "@" + r.username : "?"))} ${Math.round(r.e)}`).join(", ") : "—"}`;
 }
 async function adminPlayers(env, page) {
   const per = 25, now = Date.now();
@@ -1808,6 +1991,13 @@ async function onUpdate(env, update) {
     await tg(env, "sendMessage", { chat_id: msg.chat.id, text: code ? t.link(code) : "Напиши так: /link название_канала" });
     return;
   }
+  if (text.startsWith("/quiet") && msg.chat.type === "private") {
+    const { p } = await getProfile(env, msg.from.id);
+    p.quiet = !p.quiet;
+    await putProfile(env, msg.from.id, p, null);
+    await tg(env, "sendMessage", { chat_id: msg.chat.id, text: p.quiet ? t.quietOn : t.quietOff });
+    return;
+  }
   if (text.startsWith("/stats") || text.startsWith("/players")) {
     if (!env.DB) { await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.noDb }); return; }
     if (String(await getMeta(env, "owner")) !== String(msg.from.id)) { await tg(env, "sendMessage", { chat_id: msg.chat.id, text: t.notOwner }); return; }
@@ -1826,15 +2016,15 @@ async function onUpdate(env, update) {
 }
 
 // ---- bot settings (webhook, commands, menu button, description): applied by itself after a deploy that changes SETUP_VER
-const SETUP_VER = "15.1";
+const SETUP_VER = "17.2";
 const BOT_INFO = {
-  ru: { cmd: [["start", "Играть"], ["top", "Рейтинг недели"], ["paysupport", "Помощь с оплатой"]],
+  ru: { cmd: [["start", "Играть"], ["top", "Рейтинг недели"], ["quiet", "Вкл/выкл напоминания"], ["paysupport", "Помощь с оплатой"]],
     short: "Крестики-нолики 2.0 — игра сложнее шахмат 🧠",
     desc: "X02.0 — крестики-нолики 2.0. Девять досок в одной, звёзды и зачёркивания: игра сложнее шахмат.\n\nИграй с ботами и друзьями прямо в Telegram, решай головоломку дня и стань королём своего чата." },
-  uz: { cmd: [["start", "O'ynash"], ["top", "Hafta reytingi"], ["paysupport", "To'lov bo'yicha yordam"]],
+  uz: { cmd: [["start", "O'ynash"], ["top", "Hafta reytingi"], ["quiet", "Eslatmalarni yoqish/o'chirish"], ["paysupport", "To'lov bo'yicha yordam"]],
     short: "Iks-nol 2.0 — shaxmatdan ham qiyin o'yin 🧠",
     desc: "X02.0 — iks-nol 2.0. Bitta doskada to'qqizta doska, yulduzlar va o'chirishlar: shaxmatdan ham qiyin o'yin.\n\nBotlar va do'stlar bilan Telegramda o'ynang, kun jumbog'ini yeching va chatingiz qiroli bo'ling." },
-  en: { cmd: [["start", "Play"], ["top", "Weekly ranking"], ["paysupport", "Payment help"]],
+  en: { cmd: [["start", "Play"], ["top", "Weekly ranking"], ["quiet", "Reminders on/off"], ["paysupport", "Payment help"]],
     short: "Tic-tac-toe 2.0 — a game harder than chess 🧠",
     desc: "X02.0 — tic-tac-toe 2.0. Nine boards in one, stars and strikes: a game harder than chess.\n\nPlay bots and friends right in Telegram, solve the puzzle of the day and become the king of your chat." },
 };
@@ -1878,8 +2068,40 @@ async function dayTwoReminders(env) {
   return sent;
 }
 
+// 19:07 Tashkent: a streak about to burn, or a nudge for those who went quiet (at most one message a day, never to /quiet players)
+async function eveningReminders(env) {
+  if (!env.DB || !env.BOT_TOKEN) return 0;
+  await ensureSchema(env);
+  const now = Date.now(), day = taskDay(now), yday = taskDay(now - 86400000);
+  const sentToday = "rm:" + day;
+  const rows = (await env.DB.prepare(
+    `SELECT id, lang, data, seen FROM players p WHERE seen < ?1 AND seen > ?2 AND COALESCE(json_extract(data, '$.quiet'), 0) = 0
+       AND NOT EXISTS (SELECT 1 FROM bonuses b WHERE b.id = p.id AND (b.kind = ?3 OR (b.kind LIKE 'rmb:%' AND b.t > ?4))) LIMIT 400`)
+    .bind(dayStart(now), now - 8 * 86400000, sentToday, now - 3 * 86400000).all()).results || [];
+  let sent = 0;
+  for (const r of rows) {
+    let p; try { p = normProfile(JSON.parse(r.data)); } catch (e) { continue; }
+    const t = TEXT[lang(r.lang)];
+    let text = "", kind = sentToday;
+    if (p.streak.last === yday && p.streak.n >= 2) {
+      const next = STREAK[p.streak.n % 7];
+      text = t.remindStreak(p.streak.n, next) + (p.freeze ? "\n" + t.remindFreeze(p.freeze) : "");
+    } else if (now - r.seen > 2 * 86400000) { text = t.remindBack; kind = "rmb:" + day; }
+    else continue;
+    await env.DB.prepare("INSERT OR IGNORE INTO bonuses (id, kind, t) VALUES (?, ?, ?)").bind(r.id, kind, now).run();
+    try {
+      const res = await tg(env, "sendMessage", { chat_id: r.id, text: text + "\n\n" + t.quietHint, reply_markup: playButton(t) });
+      if (res && res.ok) sent++;
+    } catch (e) {}
+  }
+  try { await env.DB.prepare("INSERT INTO plays (day, mode, n) VALUES (?, 'reminders', ?) ON CONFLICT(day, mode) DO UPDATE SET n = n + excluded.n").bind(today(), sent).run(); } catch (e) {}
+  return sent;
+}
+
 export default {
-  async scheduled(event, env, ctx) { ctx.waitUntil(dayTwoReminders(env).catch(() => 0)); },
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil((event && /^7 14 /.test(event.cron || "") ? eveningReminders(env) : dayTwoReminders(env)).catch(() => 0));
+  },
 
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
